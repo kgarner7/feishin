@@ -21,6 +21,7 @@ import {
     Menu,
     nativeImage,
     BrowserWindowConstructorOptions,
+    WebRequestFilter,
 } from 'electron';
 import electronLocalShortcut from 'electron-localshortcut';
 import log from 'electron-log';
@@ -100,6 +101,61 @@ const getAssetPath = (...paths: string[]): string => {
 
 export const getMainWindow = () => {
     return mainWindow;
+};
+
+export const setupSsoCookies = async (url: string): Promise<void> => {
+    const main = mainWindow;
+    if (!main) return;
+
+    const cookies = await main.webContents.session.cookies.get({});
+
+    const filter: WebRequestFilter = { types: ['xhr'], urls: [`${url}/*`] };
+
+    let beforeTimeout: ReturnType<typeof setTimeout> | undefined;
+
+    main.webContents.session.webRequest.onBeforeSendHeaders(filter, (details, callback) => {
+        details.requestHeaders.Cookie = cookies
+            .map((cookie) => `${cookie.name}=${cookie.value}`)
+            .join('; ');
+        callback(details);
+
+        if (!beforeTimeout) {
+            beforeTimeout = setTimeout(() => {
+                main.webContents.session.webRequest.onBeforeSendHeaders(null);
+            }, 5000);
+        }
+    });
+
+    let afterTimeout: ReturnType<typeof setTimeout> | undefined;
+
+    main.webContents.session.webRequest.onHeadersReceived(filter, (details, callback) => {
+        details.responseHeaders['set-cookie'] = cookies.map((cookie) => {
+            let cookieString = `${cookie.name}=${cookie.value}; SameSite=None;`;
+
+            for (const [key, value] of Object.entries(cookie)) {
+                if (key === 'name' || key === 'value' || key === 'sameSite') {
+                    // eslint-disable-next-line no-continue
+                    continue;
+                }
+
+                if (value !== undefined) {
+                    cookieString += `; ${key}=${value}`;
+                }
+            }
+
+            console.log(cookieString);
+
+            return cookieString;
+        });
+
+        if (!afterTimeout) {
+            afterTimeout = setTimeout(() => {
+                main.webContents.session.webRequest.onHeadersReceived(null);
+            }, 5000);
+        }
+
+        callback(details);
+    });
 };
 
 const createWinThumbarButtons = () => {
@@ -232,6 +288,19 @@ const createWindow = async () => {
         ...(nativeFrame && isMacOS() && nativeFrameConfig.macOS),
         ...(nativeFrame && isWindows() && nativeFrameConfig.windows),
     });
+
+    console.log('fetching...');
+
+    const currentServer = {
+        sso: true,
+        url: 'https://music.kendallgarner.com',
+    };
+
+    console.log('ok so far');
+
+    if (currentServer.sso) {
+        await setupSsoCookies(currentServer.url);
+    }
 
     electronLocalShortcut.register(mainWindow, 'Ctrl+Shift+I', () => {
         mainWindow?.webContents.openDevTools();
@@ -544,6 +613,36 @@ ipcMain.on('player-quit', async () => {
     mpvInstance = null;
 });
 
+ipcMain.handle('sso-login', (_event, url: string) => {
+    return new Promise<void>((resolve, reject) => {
+        if (mainWindow) {
+            const second = new BrowserWindow({
+                height: 600,
+                parent: mainWindow,
+                webPreferences: {
+                    devTools: false,
+                },
+                width: 800,
+            });
+            second.loadURL(url);
+            second.once('ready-to-show', () => {
+                second.show();
+
+                second.once('close', async () => {
+                    if (mainWindow) {
+                        await setupSsoCookies(url);
+                        resolve();
+                    } else {
+                        reject(new Error('No main window'));
+                    }
+                });
+            });
+        } else {
+            reject(new Error('No main window'));
+        }
+    });
+});
+
 // Must duplicate with the one in renderer process settings.store.ts
 enum BindingActions {
     GLOBAL_SEARCH = 'globalSearch',
@@ -647,6 +746,7 @@ app.whenReady()
     .then(() => {
         createWindow();
         createTray();
+
         app.on('activate', () => {
             // On macOS it's common to re-create a window in the app when the
             // dock icon is clicked and there are no other windows open.

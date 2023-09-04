@@ -11,6 +11,7 @@ import { useAuthStore, useAuthStoreActions } from '/@/renderer/store';
 import { ServerType } from '/@/renderer/types';
 import { api } from '/@/renderer/api';
 
+const browser = isElectron() ? window.electron.browser : null;
 const localSettings = isElectron() ? window.electron.localSettings : null;
 
 const SERVER_TYPES = [
@@ -35,6 +36,7 @@ export const AddServerForm = ({ onCancel }: AddServerFormProps) => {
             name: '',
             password: '',
             savePassword: false,
+            sso: false,
             type: ServerType.JELLYFIN,
             url: 'http://',
             username: '',
@@ -52,6 +54,15 @@ export const AddServerForm = ({ onCancel }: AddServerFormProps) => {
 
         try {
             setIsLoading(true);
+            if (values.sso) {
+                if (browser) {
+                    await browser.ssoLogin(values.url);
+                    console.log('login completed');
+                } else {
+                    throw new Error('SSO login only supported in desktop app');
+                }
+            }
+
             const data: AuthenticationResponse | undefined = await authFunction(
                 values.url,
                 {
@@ -137,6 +148,12 @@ export const AddServerForm = ({ onCancel }: AddServerFormProps) => {
                         {...form.getInputProps('savePassword', {
                             type: 'checkbox',
                         })}
+                    />
+                )}
+                {localSettings && form.values.type === ServerType.NAVIDROME && (
+                    <Checkbox
+                        label="Login with SSO"
+                        {...form.getInputProps('sso', { type: 'checkbox' })}
                     />
                 )}
                 {form.values.type === ServerType.SUBSONIC && (

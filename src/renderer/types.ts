@@ -66,6 +66,7 @@ export type ServerListItem = {
     name: string;
     ndCredential?: string;
     savePassword?: boolean;
+    sso: boolean;
     type: ServerType;
     url: string;
     userId: string | null;

@@ -167,7 +167,7 @@ export const contract = c.router({
     },
 });
 
-const axiosClient = axios.create({});
+const axiosClient = axios.create({ withCredentials: isElectron() });
 
 axiosClient.defaults.paramsSerializer = (params) => {
     return qs.stringify(params, { arrayFormat: 'repeat' });
@@ -223,6 +223,7 @@ const TIMEOUT_ERROR = Error();
 
 axiosClient.interceptors.response.use(
     (response) => {
+        console.log(response.headers);
         const serverId = useAuthStore.getState().currentServer?.id;
 
         if (serverId) {

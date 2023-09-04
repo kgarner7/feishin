@@ -11,6 +11,7 @@ import { useAuthStoreActions } from '/@/renderer/store';
 import { ServerListItem, ServerType } from '/@/renderer/types';
 import { api } from '/@/renderer/api';
 
+const browser = isElectron() ? window.electron.browser : null;
 const localSettings = isElectron() ? window.electron.localSettings : null;
 
 interface EditServerFormProps {
@@ -41,6 +42,7 @@ export const EditServerForm = ({ isUpdate, password, server, onCancel }: EditSer
             name: server?.name,
             password: password || '',
             savePassword: server.savePassword || false,
+            sso: server.sso || false,
             type: server?.type,
             url: server?.url,
             username: server?.username,
@@ -59,6 +61,16 @@ export const EditServerForm = ({ isUpdate, password, server, onCancel }: EditSer
 
         try {
             setIsLoading(true);
+
+            if (values.sso) {
+                if (browser) {
+                    await browser.ssoLogin(server.url);
+                    console.log('login completed');
+                } else {
+                    throw new Error('SSO login only supported in desktop app');
+                }
+            }
+
             const data: AuthenticationResponse | undefined = await authFunction(
                 values.url,
                 {
@@ -78,6 +90,7 @@ export const EditServerForm = ({ isUpdate, password, server, onCancel }: EditSer
                 name: values.name,
                 ndCredential: data.ndCredential,
                 savePassword: values.savePassword,
+                sso: values.sso,
                 type: values.type,
                 url: values.url,
                 userId: data.userId,
@@ -147,6 +160,12 @@ export const EditServerForm = ({ isUpdate, password, server, onCancel }: EditSer
                         {...form.getInputProps('legacyAuth', {
                             type: 'checkbox',
                         })}
+                    />
+                )}
+                {localSettings && isNavidrome && (
+                    <Checkbox
+                        label="Login with SSO"
+                        {...form.getInputProps('sso', { type: 'checkbox' })}
                     />
                 )}
                 <Group position="right">
