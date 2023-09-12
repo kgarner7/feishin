@@ -38,7 +38,7 @@ const configuration: webpack.Configuration = {
 
     output: {
         path: webpackPaths.distWebPath,
-        publicPath: '/',
+        publicPath: '/feishin/',
         filename: 'renderer.js',
         library: {
             type: 'umd',
