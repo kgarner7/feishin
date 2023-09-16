@@ -88,7 +88,7 @@ const normalizeSong = (
         container: item.suffix,
         createdAt: item.createdAt.split('T')[0],
         discNumber: item.discNumber,
-        duration: item.duration,
+        duration: item.duration * 1000,
         gain:
             item.rgAlbumGain || item.rgTrackGain
                 ? { album: item.rgAlbumGain, track: item.rgTrackGain }

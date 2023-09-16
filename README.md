@@ -57,6 +57,10 @@ If you're using a device running macOS 12 (Monterey) or higher, [check here](htt
 
 ## FAQ
 
+### MPV is either not working or is rapidly switching between pause/play states
+
+First thing to do is check that your MPV binary path is correct. Navigate to the settings page and re-set the path and restart the app. If your issue still isn't resolved, try reinstalling MPV. Known working versions include `v0.35.x` and `v0.36.x`. `v0.34.x` is a known broken version.
+
 ### What music servers does Feishin support?
 
 Feishin supports any music server that implements a [Navidrome](https://www.navidrome.org/) or [Jellyfin](https://jellyfin.org/) API. **Subsonic API is not currently supported**. This will likely be added in [later when the new Subsonic API is decided on](https://support.symfonium.app/t/subsonic-servers-participation/1233).
