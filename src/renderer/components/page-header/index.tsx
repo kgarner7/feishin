@@ -7,13 +7,13 @@ import { useWindowSettings } from '/@/renderer/store/settings.store';
 import { Platform } from '/@/renderer/types';
 
 const Container = styled(motion(Flex))<{
-    height?: string;
-    position?: string;
+    $height?: string;
+    $position?: string;
 }>`
-    position: ${(props) => props.position || 'relative'};
+    position: ${(props) => props.$position || 'relative'};
     z-index: 200;
     width: 100%;
-    height: ${(props) => props.height || '65px'};
+    height: ${(props) => props.$height || '65px'};
     background: var(--titlebar-bg);
 `;
 
@@ -40,13 +40,13 @@ const Header = styled(motion.div)<{
     }
 `;
 
-const BackgroundImage = styled.div<{ background: string }>`
+const BackgroundImage = styled.div<{ $background: string }>`
     position: absolute;
     top: 0;
     z-index: 1;
     width: 100%;
     height: 100%;
-    background: ${(props) => props.background || 'var(--titlebar-bg)'};
+    background: ${(props) => props.$background || 'var(--titlebar-bg)'};
 `;
 
 const BackgroundImageOverlay = styled.div<{ theme: 'light' | 'dark' }>`
@@ -79,24 +79,6 @@ const TitleWrapper = styled(motion.div)`
     height: 100%;
 `;
 
-const DragContainer = styled.div`
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: -1;
-    width: calc(100% - 130px);
-    height: 65px;
-    -webkit-app-region: drag;
-
-    button {
-        -webkit-app-region: no-drag;
-    }
-
-    input {
-        -webkit-app-region: no-drag;
-    }
-`;
-
 const variants: Variants = {
     animate: {
         opacity: 1,
@@ -125,38 +107,35 @@ export const PageHeader = ({
 
     return (
         <>
-            {windowBarStyle === Platform.WEB && <DragContainer />}
-            {!isHidden && (
-                <Container
-                    ref={ref}
-                    height={height}
-                    position={position}
-                    {...props}
+            <Container
+                ref={ref}
+                $height={height}
+                $position={position}
+                {...props}
+            >
+                <Header
+                    $isDraggable={windowBarStyle === Platform.WEB}
+                    $isHidden={isHidden}
+                    $padRight={padRight}
                 >
-                    <Header
-                        $isDraggable={windowBarStyle === Platform.WEB}
-                        $isHidden={isHidden}
-                        $padRight={padRight}
-                    >
-                        <AnimatePresence initial={animated ?? false}>
-                            <TitleWrapper
-                                animate="animate"
-                                exit="exit"
-                                initial="initial"
-                                variants={variants}
-                            >
-                                {children}
-                            </TitleWrapper>
-                        </AnimatePresence>
-                    </Header>
-                    {backgroundColor && (
-                        <>
-                            <BackgroundImage background={backgroundColor || 'var(--titlebar-bg)'} />
-                            <BackgroundImageOverlay theme={theme as 'light' | 'dark'} />
-                        </>
-                    )}
-                </Container>
-            )}
+                    <AnimatePresence initial={animated ?? false}>
+                        <TitleWrapper
+                            animate="animate"
+                            exit="exit"
+                            initial="initial"
+                            variants={variants}
+                        >
+                            {children}
+                        </TitleWrapper>
+                    </AnimatePresence>
+                </Header>
+                {backgroundColor && (
+                    <>
+                        <BackgroundImage $background={backgroundColor || 'var(--titlebar-bg)'} />
+                        <BackgroundImageOverlay theme={theme as 'light' | 'dark'} />
+                    </>
+                )}
+            </Container>
         </>
     );
 };

@@ -9,6 +9,24 @@ import { PageHeader, PageHeaderProps } from '/@/renderer/components/page-header'
 import { useWindowSettings } from '/@/renderer/store/settings.store';
 import { Platform } from '/@/renderer/types';
 
+const DragContainer = styled.div`
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    width: calc(100% - 130px);
+    height: 65px;
+    -webkit-app-region: drag;
+
+    button {
+        -webkit-app-region: no-drag;
+    }
+
+    input {
+        -webkit-app-region: no-drag;
+    }
+`;
+
 interface ScrollAreaProps extends MantineScrollAreaProps {
     children: ReactNode;
 }
@@ -29,7 +47,10 @@ const StyledScrollArea = styled(MantineScrollArea)`
     }
 `;
 
-const StyledNativeScrollArea = styled.div<{ scrollBarOffset?: string; windowBarStyle?: Platform }>`
+const StyledNativeScrollArea = styled.div<{
+    $scrollBarOffset?: string;
+    $windowBarStyle?: Platform;
+}>`
     height: 100%;
 `;
 
@@ -125,16 +146,19 @@ export const NativeScrollArea = forwardRef(
 
         return (
             <>
-                <PageHeader
-                    animated
-                    isHidden={!shouldShowHeader}
-                    position="absolute"
-                    {...pageHeaderProps}
-                />
+                {windowBarStyle === Platform.WEB && <DragContainer />}
+                {shouldShowHeader && (
+                    <PageHeader
+                        animated
+                        isHidden={false}
+                        position="absolute"
+                        {...pageHeaderProps}
+                    />
+                )}
                 <StyledNativeScrollArea
                     ref={mergedRef}
-                    scrollBarOffset={scrollBarOffset}
-                    windowBarStyle={windowBarStyle}
+                    $scrollBarOffset={scrollBarOffset}
+                    $windowBarStyle={windowBarStyle}
                     {...props}
                 >
                     {children}
