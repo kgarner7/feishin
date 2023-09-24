@@ -393,12 +393,10 @@ const savePlayQueue = async (args: SaveQueueArgs): Promise<void> => {
 const savePlayQueue2 = async (args: SaveQueueArgs): Promise<void> => {
     const { query, apiClientProps } = args;
 
-    console.log(args);
-
     const res = await ssApiClient(apiClientProps).savePlayQueue2({
-        query: {
+        body: {
             id: query.songs,
-            index: query.currentIndex,
+            index: query.currentIndex !== undefined ? query.currentIndex + 1 : undefined,
             position: query.positionMs,
         },
     });
@@ -460,7 +458,7 @@ const getPlayQueue2 = async (args: GetQueueArgs): Promise<GetQueueResponse> => {
     return {
         changed,
         changedBy,
-        currentIndex: queueIndex ?? 0,
+        currentIndex: queueIndex !== undefined ? queueIndex - 1 : 0,
         entry: entries,
         position,
         username,

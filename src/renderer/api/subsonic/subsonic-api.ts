@@ -88,9 +88,9 @@ export const contract = c.router({
         },
     },
     savePlayQueue2: {
-        method: 'GET',
+        body: ssType._parameters.saveQueue2,
+        method: 'POST',
         path: 'savePlayQueue2.view',
-        query: ssType._parameters.saveQueue2,
         responses: {
             200: ssType._response.saveQueue,
         },
@@ -195,11 +195,18 @@ export const ssApiClient = (args: {
                 baseUrl = url;
             }
 
+            let data = body;
+
+            if (path === 'savePlayQueue2.view') {
+                headers['Content-Type'] = 'application/x-www-form-urlencoded';
+                data = qs.stringify(JSON.parse(body), { arrayFormat: 'repeat' });
+            }
+
             try {
                 const result = await axiosClient.request<
                     z.infer<typeof ssType._response.baseResponse>
                 >({
-                    data: body,
+                    data,
                     headers,
                     method: method as Method,
                     params: {

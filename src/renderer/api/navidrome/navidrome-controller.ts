@@ -270,7 +270,9 @@ const getSongList = async (args: SongListArgs): Promise<SongListResponse> => {
     }
 
     return {
-        items: res.body.data.map((song) => ndNormalize.song(song, apiClientProps.server, '')),
+        items: res.body.data.map((song) =>
+            ndNormalize.song(song, apiClientProps.server, '', query.imageSize),
+        ),
         startIndex: query?.startIndex || 0,
         totalRecordCount: Number(res.body.headers.get('x-total-count') || 0),
     };
@@ -551,12 +553,10 @@ const getPlayQueue2 = async (args: GetQueueArgs): Promise<GetQueueResponse> => {
 
     const entries = entry.map((song) => songMapping.get(song.id)!);
 
-    console.log(res.body);
-
     return {
         changed,
         changedBy,
-        currentIndex: queueIndex ?? 0,
+        currentIndex: queueIndex !== undefined ? queueIndex - 1 : 0,
         entry: entries,
         position,
         username,
