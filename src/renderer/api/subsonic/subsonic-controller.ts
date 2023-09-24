@@ -390,6 +390,24 @@ const savePlayQueue = async (args: SaveQueueArgs): Promise<void> => {
     }
 };
 
+const savePlayQueue2 = async (args: SaveQueueArgs): Promise<void> => {
+    const { query, apiClientProps } = args;
+
+    console.log(args);
+
+    const res = await ssApiClient(apiClientProps).savePlayQueue2({
+        query: {
+            id: query.songs,
+            index: query.currentIndex,
+            position: query.positionMs,
+        },
+    });
+
+    if (res.status !== 200) {
+        throw new Error('Failed to save play queue');
+    }
+};
+
 const getPlayQueue = async (args: GetQueueArgs): Promise<GetQueueResponse> => {
     const { apiClientProps } = args;
 
@@ -426,16 +444,41 @@ const getPlayQueue = async (args: GetQueueArgs): Promise<GetQueueResponse> => {
     };
 };
 
+const getPlayQueue2 = async (args: GetQueueArgs): Promise<GetQueueResponse> => {
+    const { apiClientProps } = args;
+
+    const res = await ssApiClient(apiClientProps).getPlayQueue2();
+
+    if (res.status !== 200) {
+        throw new Error('Failed to get random songs');
+    }
+
+    const { changed, changedBy, queueIndex, entry, position, username } = res.body.playQueue2;
+
+    const entries = entry.map((song) => ssNormalize.song(song, apiClientProps.server, ''));
+
+    return {
+        changed,
+        changedBy,
+        currentIndex: queueIndex ?? 0,
+        entry: entries,
+        position,
+        username,
+    };
+};
+
 export const ssController = {
     authenticate,
     createFavorite,
     getArtistInfo,
     getMusicFolderList,
     getPlayQueue,
+    getPlayQueue2,
     getRandomSongList,
     getTopSongList,
     removeFavorite,
     savePlayQueue,
+    savePlayQueue2,
     scrobble,
     search3,
     setRating,

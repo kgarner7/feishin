@@ -48,6 +48,13 @@ export const contract = c.router({
             200: ssType._response.playQueue,
         },
     },
+    getPlayQueue2: {
+        method: 'GET',
+        path: 'getPlayQueue2.view',
+        responses: {
+            200: ssType._response.playQueue2,
+        },
+    },
     getRandomSongList: {
         method: 'GET',
         path: 'getRandomSongs.view',
@@ -76,6 +83,14 @@ export const contract = c.router({
         method: 'GET',
         path: 'savePlayQueue.view',
         query: ssType._parameters.saveQueue,
+        responses: {
+            200: ssType._response.saveQueue,
+        },
+    },
+    savePlayQueue2: {
+        method: 'GET',
+        path: 'savePlayQueue2.view',
+        query: ssType._parameters.saveQueue2,
         responses: {
             200: ssType._response.saveQueue,
         },
