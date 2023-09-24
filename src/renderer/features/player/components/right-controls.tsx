@@ -31,11 +31,16 @@ import { PlayerbarSlider } from '/@/renderer/features/player/components/playerba
 import { api } from '/@/renderer/api';
 import { usePlayQueueAdd } from '/@/renderer/features/player/hooks/use-playqueue-add';
 import { Play } from '/@/renderer/types';
+import { useCenterControls } from '/@/renderer/features/player/hooks/use-center-controls';
 
 const ipc = isElectron() ? window.electron.ipc : null;
 const remote = isElectron() ? window.electron.remote : null;
 
-export const RightControls = () => {
+interface RightControlsProps {
+    playersRef: any;
+}
+
+export const RightControls = ({ playersRef }: RightControlsProps) => {
     const isMinWidth = useMediaQuery('(max-width: 480px)');
     const volume = useVolume();
     const muted = useMuted();
@@ -51,6 +56,7 @@ export const RightControls = () => {
     const addToFavoritesMutation = useCreateFavorite({});
     const removeFromFavoritesMutation = useDeleteFavorite({});
     const handlePlayQueueAdd = usePlayQueueAdd();
+    const { handleSeekSlider } = useCenterControls({ playersRef });
 
     const handleAddToFavorites = () => {
         if (!currentSong) return;
@@ -118,7 +124,7 @@ export const RightControls = () => {
     const showRating = isSongDefined && server?.type === ServerType.NAVIDROME;
 
     const handleSaveQueue = useCallback(() => {
-        if (server === null || server.type === ServerType.JELLYFIN) return;
+        if (server === null) return;
 
         const { current, queue } = usePlayerStore.getState();
         let songIds: string[] = [];
@@ -140,6 +146,7 @@ export const RightControls = () => {
                 apiClientProps: { server },
                 query: {
                     current: current.song?.id,
+                    currentIndex: current.index,
                     positionMs: current.song ? Math.round(current.time * 1000) : undefined,
                     songs: songIds,
                 },
@@ -157,15 +164,19 @@ export const RightControls = () => {
     }, [server]);
 
     const handleRestoreQueue = useCallback(async () => {
-        if (server === null || server.type === ServerType.JELLYFIN) return;
+        if (server === null) return;
 
         const queue = await api.controller.getPlayQueue({ apiClientProps: { server } });
-        handlePlayQueueAdd?.({
-            byData: queue?.entry,
-            initialIndex: queue?.currentIndex,
-            playType: Play.NOW,
-        });
-    }, [handlePlayQueueAdd, server]);
+        if (queue && handlePlayQueueAdd) {
+            await handlePlayQueueAdd({
+                byData: queue.entry,
+                initialIndex: queue.currentIndex,
+                playType: Play.NOW,
+            });
+
+            handleSeekSlider(queue.position ? queue.position / 1000 : 0);
+        }
+    }, [handlePlayQueueAdd, handleSeekSlider, server]);
 
     useHotkeys([
         [bindings.volumeDown.isGlobal ? '' : bindings.volumeDown.hotkey, handleVolumeDown],
@@ -272,7 +283,7 @@ export const RightControls = () => {
                     variant="secondary"
                     onClick={handleToggleQueue}
                 />
-                {server && server.type !== ServerType.JELLYFIN && (
+                {server && (
                     <>
                         <PlayerButton
                             icon={<RiUploadCloud2Line size="1.1rem" />}

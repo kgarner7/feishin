@@ -1004,6 +1004,7 @@ export type ScrobbleQuery = {
     event?: 'pause' | 'unpause' | 'timeupdate' | 'start';
     id: string;
     position?: number;
+    queueIndex?: number;
     submission: boolean;
 };
 
@@ -1132,6 +1133,7 @@ export type LyricsOverride = Omit<FullLyricsMetadata, 'lyrics'> & { id: string }
 
 export type SaveQueueQuery = {
     current?: string;
+    currentIndex?: number;
     positionMs?: number;
     songs: string[];
 };
