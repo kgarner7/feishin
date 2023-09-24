@@ -213,7 +213,7 @@ const saveQueueParameters = z.object({
 });
 
 const saveQueueParameters2 = z.object({
-    id: z.string().array(),
+    id: z.string().array().optional(),
     index: z.number().optional(),
     position: z.number().optional(),
 });

@@ -199,7 +199,7 @@ export const ssApiClient = (args: {
 
             if (path === 'savePlayQueue2.view') {
                 headers['Content-Type'] = 'application/x-www-form-urlencoded';
-                data = qs.stringify(JSON.parse(body), { arrayFormat: 'repeat' });
+                data = qs.stringify(JSON.parse(body as string), { arrayFormat: 'repeat' });
             }
 
             try {

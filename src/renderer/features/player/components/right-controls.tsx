@@ -10,7 +10,8 @@ import {
     RiHeartLine,
     RiHeartFill,
     RiUploadCloud2Line,
-    RiDownloadCloud2Line,
+    RiUploadCloud2Fill,
+    RiDownloadCloud2Fill,
 } from 'react-icons/ri';
 import {
     useAppStoreActions,
@@ -122,6 +123,32 @@ export const RightControls = ({ playersRef }: RightControlsProps) => {
 
     const isSongDefined = Boolean(currentSong?.id);
     const showRating = isSongDefined && server?.type === ServerType.NAVIDROME;
+
+    const handleSavePosition = useCallback(() => {
+        if (server === null) return;
+
+        const { current } = usePlayerStore.getState();
+
+        api.controller
+            .savePlayQueue2({
+                apiClientProps: { server },
+                query: {
+                    current: current.song?.id,
+                    currentIndex: current.index,
+                    positionMs: current.song ? Math.round(current.time * 1000) : undefined,
+                },
+            })
+            .then(() => {
+                return toast.success({ message: '', title: 'Saved play queue' });
+            })
+            .catch((error) => {
+                toast.error({
+                    message: 'This is most likely because your queue is too large (> 1000 tracks)',
+                    title: 'Failed to save play queue',
+                });
+                console.error(error);
+            });
+    }, [server]);
 
     const handleSaveQueue = useCallback(() => {
         if (server === null) return;
@@ -287,12 +314,18 @@ export const RightControls = ({ playersRef }: RightControlsProps) => {
                     <>
                         <PlayerButton
                             icon={<RiUploadCloud2Line size="1.1rem" />}
+                            tooltip={{ label: 'Save queue position', openDelay: 500 }}
+                            variant="secondary"
+                            onClick={handleSavePosition}
+                        />
+                        <PlayerButton
+                            icon={<RiUploadCloud2Fill size="1.1rem" />}
                             tooltip={{ label: 'Save queue', openDelay: 500 }}
                             variant="secondary"
                             onClick={handleSaveQueue}
                         />
                         <PlayerButton
-                            icon={<RiDownloadCloud2Line size="1.1rem" />}
+                            icon={<RiDownloadCloud2Fill size="1.1rem" />}
                             tooltip={{ label: 'Restore queue', openDelay: 500 }}
                             variant="secondary"
                             onClick={handleRestoreQueue}

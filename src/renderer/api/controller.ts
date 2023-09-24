@@ -51,6 +51,7 @@ import type {
     SaveQueueArgs,
     GetQueueArgs,
     GetQueueResponse,
+    SaveQueueArgs2,
 } from '/@/renderer/api/types';
 import { ServerType } from '/@/renderer/types';
 import { DeletePlaylistResponse, RandomSongListArgs } from './types';
@@ -94,6 +95,7 @@ export type ControllerEndpoint = Partial<{
     getUserList: (args: UserListArgs) => Promise<UserListResponse>;
     removeFromPlaylist: (args: RemoveFromPlaylistArgs) => Promise<RemoveFromPlaylistResponse>;
     savePlayQueue: (args: SaveQueueArgs) => Promise<void>;
+    savePlayQueue2: (args: SaveQueueArgs2) => Promise<void>;
     scrobble: (args: ScrobbleArgs) => Promise<ScrobbleResponse>;
     search: (args: SearchArgs) => Promise<SearchResponse>;
     setRating: (args: SetRatingArgs) => Promise<RatingResponse>;
@@ -140,6 +142,7 @@ const endpoints: ApiController = {
         getUserList: undefined,
         removeFromPlaylist: jfController.removeFromPlaylist,
         savePlayQueue: jfController.savePlayQueue,
+        savePlayQueue2: undefined,
         scrobble: jfController.scrobble,
         search: jfController.search,
         setRating: undefined,
@@ -178,6 +181,7 @@ const endpoints: ApiController = {
         getUserList: ndController.getUserList,
         removeFromPlaylist: ndController.removeFromPlaylist,
         savePlayQueue: ssController.savePlayQueue2,
+        savePlayQueue2: ssController.savePlayQueue2,
         scrobble: ssController.scrobble,
         search: ssController.search3,
         setRating: ssController.setRating,
@@ -490,6 +494,15 @@ const savePlayQueue = async (args: SaveQueueArgs) => {
     )?.(args);
 };
 
+const savePlayQueue2 = async (args: SaveQueueArgs2) => {
+    return (
+        apiController(
+            'savePlayQueue2',
+            args.apiClientProps.server?.type,
+        ) as ControllerEndpoint['savePlayQueue2']
+    )?.(args);
+};
+
 const getPlayQueue = async (args: GetQueueArgs) => {
     return (
         apiController(
@@ -525,6 +538,7 @@ export const controller = {
     getUserList,
     removeFromPlaylist,
     savePlayQueue,
+    savePlayQueue2,
     scrobble,
     search,
     updatePlaylist,

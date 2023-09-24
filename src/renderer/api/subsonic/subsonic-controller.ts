@@ -25,6 +25,7 @@ import {
     GetQueueArgs,
     GetQueueResponse,
     QueueSong,
+    SaveQueueArgs2,
 } from '/@/renderer/api/types';
 import { randomString } from '/@/renderer/utils';
 
@@ -390,7 +391,7 @@ const savePlayQueue = async (args: SaveQueueArgs): Promise<void> => {
     }
 };
 
-const savePlayQueue2 = async (args: SaveQueueArgs): Promise<void> => {
+const savePlayQueue2 = async (args: SaveQueueArgs2): Promise<void> => {
     const { query, apiClientProps } = args;
 
     const res = await ssApiClient(apiClientProps).savePlayQueue2({
