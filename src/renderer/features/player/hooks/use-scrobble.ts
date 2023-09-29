@@ -36,17 +36,18 @@ Progress Events (Jellyfin only):
 const checkScrobbleConditions = (args: {
     scrobbleAtDuration: number;
     scrobbleAtPercentage: number;
-    songCompletedDuration: number;
-    songDuration: number;
+    songCompletedDurationSec: number;
+    songDurationMs: number;
 }) => {
-    const { scrobbleAtDuration, scrobbleAtPercentage, songCompletedDuration, songDuration } = args;
-    const percentageOfSongCompleted = songDuration
-        ? (songCompletedDuration / songDuration) * 100
+    const { scrobbleAtDuration, scrobbleAtPercentage, songCompletedDurationSec, songDurationMs } =
+        args;
+    const percentageOfSongCompleted = songDurationMs
+        ? ((songCompletedDurationSec * 1000) / songDurationMs) * 100
         : 0;
 
     return (
         percentageOfSongCompleted >= scrobbleAtPercentage ||
-        songCompletedDuration >= scrobbleAtDuration
+        songCompletedDurationSec >= scrobbleAtDuration
     );
 };
 
@@ -105,8 +106,8 @@ export const useScrobble = () => {
                 const shouldSubmitScrobble = checkScrobbleConditions({
                     scrobbleAtDuration: scrobbleSettings?.scrobbleAtDuration,
                     scrobbleAtPercentage: scrobbleSettings?.scrobbleAtPercentage,
-                    songCompletedDuration: previousSongTime,
-                    songDuration: previousSong.duration,
+                    songCompletedDurationSec: previousSongTime,
+                    songDurationMs: previousSong.duration,
                 });
 
                 if (
@@ -226,8 +227,8 @@ export const useScrobble = () => {
                 const shouldSubmitScrobble = checkScrobbleConditions({
                     scrobbleAtDuration: scrobbleSettings?.scrobbleAtDuration,
                     scrobbleAtPercentage: scrobbleSettings?.scrobbleAtPercentage,
-                    songCompletedDuration: usePlayerStore.getState().current.time,
-                    songDuration: currentSong.duration,
+                    songCompletedDurationSec: usePlayerStore.getState().current.time,
+                    songDurationMs: currentSong.duration,
                 });
 
                 if (!isCurrentSongScrobbled && shouldSubmitScrobble) {
@@ -271,8 +272,8 @@ export const useScrobble = () => {
             const shouldSubmitScrobble = checkScrobbleConditions({
                 scrobbleAtDuration: scrobbleSettings?.scrobbleAtDuration,
                 scrobbleAtPercentage: scrobbleSettings?.scrobbleAtPercentage,
-                songCompletedDuration: currentTime,
-                songDuration: currentSong.duration,
+                songCompletedDurationSec: currentTime,
+                songDurationMs: currentSong.duration,
             });
 
             const queueIndex = currentSong.serverType === ServerType.JELLYFIN ? index : undefined;
