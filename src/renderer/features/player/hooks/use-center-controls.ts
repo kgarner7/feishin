@@ -308,6 +308,7 @@ export const useCenterControls = (args: { playersRef: any }) => {
                 const playerData = next();
                 mprisUpdateSong({ song: playerData.current.song, status: PlayerStatus.PLAYING });
                 mpvPlayer!.setQueue(playerData);
+                mpvPlayer!.next();
             },
             web: () => {
                 const playerData = next();
@@ -330,6 +331,7 @@ export const useCenterControls = (args: { playersRef: any }) => {
                         status: PlayerStatus.PLAYING,
                     });
                     mpvPlayer!.setQueue(playerData);
+                    mpvPlayer!.next();
                 }
             },
             web: () => {
@@ -357,6 +359,7 @@ export const useCenterControls = (args: { playersRef: any }) => {
                 const playerData = next();
                 mprisUpdateSong({ song: playerData.current.song, status: PlayerStatus.PLAYING });
                 mpvPlayer!.setQueue(playerData);
+                mpvPlayer!.next();
             },
             web: () => {
                 if (!isLastTrack) {
@@ -423,6 +426,7 @@ export const useCenterControls = (args: { playersRef: any }) => {
                         status: PlayerStatus.PLAYING,
                     });
                     mpvPlayer!.setQueue(playerData);
+                    mpvPlayer!.previous();
                 } else {
                     const playerData = setCurrentIndex(queue.length - 1);
                     mprisUpdateSong({
@@ -430,6 +434,7 @@ export const useCenterControls = (args: { playersRef: any }) => {
                         status: PlayerStatus.PLAYING,
                     });
                     mpvPlayer!.setQueue(playerData);
+                    mpvPlayer!.previous();
                 }
             },
             web: () => {
@@ -459,6 +464,7 @@ export const useCenterControls = (args: { playersRef: any }) => {
                     song: playerData.current.song,
                 });
                 mpvPlayer!.setQueue(playerData);
+                mpvPlayer!.previous();
             },
             web: () => {
                 if (isFirstTrack) {
@@ -485,6 +491,7 @@ export const useCenterControls = (args: { playersRef: any }) => {
                         status: PlayerStatus.PLAYING,
                     });
                     mpvPlayer!.setQueue(playerData);
+                    mpvPlayer!.previous();
                 } else {
                     mpvPlayer!.stop();
                 }
