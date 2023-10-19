@@ -51,6 +51,8 @@ import {
     QueueSong,
     GetQueueArgs,
     GetQueueResponse,
+    SongDetailArgs,
+    SongDetailResponse,
 } from '/@/renderer/api/types';
 import { jfApiClient } from '/@/renderer/api/jellyfin/jellyfin-api';
 import { jfNormalize } from './jellyfin-normalize';
@@ -104,9 +106,9 @@ const authenticate = async (
             Username: body.username,
         },
         headers: {
-            'x-emby-authorization': `MediaBrowser Client="Feishin", Device="${getHostname()}", DeviceId="Feishin-${getHostname()}-${body.username}", Version="${
-                packageJson.version
-            }"`,
+            'x-emby-authorization': `MediaBrowser Client="Feishin", Device="${getHostname()}", DeviceId="Feishin-${getHostname()}-${
+                body.username
+            }", Version="${packageJson.version}"`,
         },
     });
 
@@ -1019,6 +1021,23 @@ const getPlayQueue = async (args: GetQueueArgs): Promise<GetQueueResponse> => {
     };
 };
 
+const getSongDetail = async (args: SongDetailArgs): Promise<SongDetailResponse> => {
+    const { query, apiClientProps } = args;
+
+    const res = await jfApiClient(apiClientProps).getSongDetail({
+        params: {
+            id: query.id,
+            userId: apiClientProps.server?.userId ?? '',
+        },
+    });
+
+    if (res.status !== 200) {
+        throw new Error('Failed to get song detail');
+    }
+
+    return jfNormalize.song(res.body, apiClientProps.server, '');
+};
+
 export const jfController = {
     addToPlaylist,
     authenticate,
@@ -1039,6 +1058,7 @@ export const jfController = {
     getPlaylistList,
     getPlaylistSongList,
     getRandomSongList,
+    getSongDetail,
     getSongList,
     getTopSongList,
     removeFromPlaylist,
