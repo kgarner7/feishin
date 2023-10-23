@@ -37,6 +37,7 @@ const remote = isElectron() ? window.electron.remote : null;
 
 export const App = () => {
     const theme = useTheme();
+    const accent = useSettingsStore((store) => store.general.accent);
     const { builtIn, custom, system, type } = useSettingsStore((state) => state.font);
     const { type: playbackType } = usePlaybackSettings();
     const { bindings } = useHotkeySettings();
@@ -80,6 +81,11 @@ export const App = () => {
         }
     }, [builtIn, custom, system, type]);
 
+    useEffect(() => {
+        const root = document.documentElement;
+        root.style.setProperty('--primary-color', accent);
+    }, [accent]);
+
     const providerValue = useMemo(() => {
         return { handlePlayQueueAdd };
     }, [handlePlayQueueAdd]);
@@ -93,7 +99,8 @@ export const App = () => {
 
             if (!isRunning) {
                 const extraParameters = useSettingsStore.getState().playback.mpvExtraParameters;
-                const properties = {
+                const properties: Record<string, any> = {
+                    speed: usePlayerStore.getState().current.speed,
                     ...getMpvProperties(useSettingsStore.getState().playback.mpvProperties),
                 };
 

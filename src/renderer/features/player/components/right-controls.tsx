@@ -21,13 +21,14 @@ import {
     useMuted,
     usePlayerStore,
     useSidebarStore,
+    useSpeed,
     useVolume,
 } from '/@/renderer/store';
 import { useRightControls } from '../hooks/use-right-controls';
 import { PlayerButton } from './player-button';
 import { LibraryItem, QueueSong, ServerType, Song } from '/@/renderer/api/types';
 import { useCreateFavorite, useDeleteFavorite, useSetRating } from '/@/renderer/features/shared';
-import { Rating, toast } from '/@/renderer/components';
+import { DropdownMenu, Rating, toast } from '/@/renderer/components';
 import { PlayerbarSlider } from '/@/renderer/features/player/components/playerbar-slider';
 import { api } from '/@/renderer/api';
 import { usePlayQueueAdd } from '/@/renderer/features/player/hooks/use-playqueue-add';
@@ -40,6 +41,8 @@ interface RightControlsProps {
     seekRef: MutableRefObject<((position: number) => void) | undefined>;
 }
 
+const PLAYBACK_SPEEDS = [0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0];
+
 export const RightControls = ({ seekRef }: RightControlsProps) => {
     const isMinWidth = useMediaQuery('(max-width: 480px)');
     const volume = useVolume();
@@ -49,8 +52,16 @@ export const RightControls = ({ seekRef }: RightControlsProps) => {
     const { setSideBar } = useAppStoreActions();
     const { rightExpanded: isQueueExpanded } = useSidebarStore();
     const { bindings } = useHotkeySettings();
-    const { handleVolumeSlider, handleVolumeWheel, handleMute, handleVolumeDown, handleVolumeUp } =
-        useRightControls();
+    const {
+        handleVolumeSlider,
+        handleVolumeWheel,
+        handleMute,
+        handleVolumeDown,
+        handleVolumeUp,
+        handleSpeed,
+    } = useRightControls();
+
+    const speed = useSpeed();
 
     const updateRatingMutation = useSetRating({});
     const addToFavoritesMutation = useCreateFavorite({});
@@ -277,6 +288,28 @@ export const RightControls = ({ seekRef }: RightControlsProps) => {
                 align="center"
                 spacing="xs"
             >
+                <DropdownMenu>
+                    <DropdownMenu.Target>
+                        <PlayerButton
+                            icon={<>{speed} x</>}
+                            tooltip={{
+                                label: 'Playback speed',
+                                openDelay: 500,
+                            }}
+                            variant="secondary"
+                        />
+                    </DropdownMenu.Target>
+                    <DropdownMenu.Dropdown>
+                        {PLAYBACK_SPEEDS.map((speed) => (
+                            <DropdownMenu.Item
+                                key={`speed-select-${speed}`}
+                                onClick={() => handleSpeed(Number(speed))}
+                            >
+                                {speed}
+                            </DropdownMenu.Item>
+                        ))}
+                    </DropdownMenu.Dropdown>
+                </DropdownMenu>
                 <PlayerButton
                     icon={
                         currentSong?.userFavorite ? (
@@ -330,6 +363,14 @@ export const RightControls = ({ seekRef }: RightControlsProps) => {
                         />
                     </>
                 )}
+                {!isMinWidth ? (
+                    <PlayerButton
+                        icon={<HiOutlineQueueList size="1.1rem" />}
+                        tooltip={{ label: 'View queue', openDelay: 500 }}
+                        variant="secondary"
+                        onClick={handleToggleQueue}
+                    />
+                ) : null}
                 <Group
                     noWrap
                     spacing="xs"
