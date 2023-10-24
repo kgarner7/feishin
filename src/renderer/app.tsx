@@ -25,6 +25,7 @@ import { getMpvProperties } from '/@/renderer/features/settings/components/playb
 import { PlayerState, usePlayerStore, useQueueControls } from '/@/renderer/store';
 import { FontType, PlaybackType, PlayerStatus } from '/@/renderer/types';
 import '@ag-grid-community/styles/ag-grid.css';
+import { useDiscordRpc } from '/@/renderer/features/discord-rpc/use-discord-rpc';
 
 ModuleRegistry.registerModules([ClientSideRowModelModule, InfiniteRowModelModule]);
 
@@ -45,6 +46,7 @@ export const App = () => {
     const { clearQueue, restoreQueue } = useQueueControls();
     const remoteSettings = useRemoteSettings();
     const textStyleRef = useRef<HTMLStyleElement>();
+    useDiscordRpc();
 
     useEffect(() => {
         if (type === FontType.SYSTEM && system) {
