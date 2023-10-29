@@ -20,6 +20,7 @@ import {
     useHotkeySettings,
     useMuted,
     usePlayerStore,
+    usePreviousSong,
     useSidebarStore,
     useSpeed,
     useVolume,
@@ -49,6 +50,7 @@ export const RightControls = ({ seekRef }: RightControlsProps) => {
     const muted = useMuted();
     const server = useCurrentServer();
     const currentSong = useCurrentSong();
+    const previousSong = usePreviousSong();
     const { setSideBar } = useAppStoreActions();
     const { rightExpanded: isQueueExpanded } = useSidebarStore();
     const { bindings } = useHotkeySettings();
@@ -68,15 +70,15 @@ export const RightControls = ({ seekRef }: RightControlsProps) => {
     const removeFromFavoritesMutation = useDeleteFavorite({});
     const handlePlayQueueAdd = usePlayQueueAdd();
 
-    const handleAddToFavorites = () => {
-        if (!currentSong) return;
+    const handleAddToFavorites = (song: QueueSong | undefined) => {
+        if (!song?.id) return;
 
         addToFavoritesMutation.mutate({
             query: {
-                id: [currentSong.id],
+                id: [song.id],
                 type: LibraryItem.SONG,
             },
-            serverId: currentSong?.serverId,
+            serverId: song?.serverId,
         });
     };
 
@@ -104,25 +106,25 @@ export const RightControls = ({ seekRef }: RightControlsProps) => {
         });
     };
 
-    const handleRemoveFromFavorites = () => {
-        if (!currentSong) return;
+    const handleRemoveFromFavorites = (song: QueueSong | undefined) => {
+        if (!song?.id) return;
 
         removeFromFavoritesMutation.mutate({
             query: {
-                id: [currentSong.id],
+                id: [song.id],
                 type: LibraryItem.SONG,
             },
-            serverId: currentSong?.serverId,
+            serverId: song?.serverId,
         });
     };
 
-    const handleToggleFavorite = () => {
-        if (!currentSong) return;
+    const handleToggleFavorite = (song: QueueSong | undefined) => {
+        if (!song?.id) return;
 
-        if (currentSong.userFavorite) {
-            handleRemoveFromFavorites();
+        if (song.userFavorite) {
+            handleRemoveFromFavorites(song);
         } else {
-            handleAddToFavorites();
+            handleAddToFavorites(song);
         }
     };
 
@@ -219,6 +221,30 @@ export const RightControls = ({ seekRef }: RightControlsProps) => {
         [bindings.volumeUp.isGlobal ? '' : bindings.volumeUp.hotkey, handleVolumeUp],
         [bindings.volumeMute.isGlobal ? '' : bindings.volumeMute.hotkey, handleMute],
         [bindings.toggleQueue.isGlobal ? '' : bindings.toggleQueue.hotkey, handleToggleQueue],
+        [
+            bindings.favoriteCurrentAdd.isGlobal ? '' : bindings.favoriteCurrentAdd.hotkey,
+            () => handleAddToFavorites(currentSong),
+        ],
+        [
+            bindings.favoriteCurrentRemove.isGlobal ? '' : bindings.favoriteCurrentRemove.hotkey,
+            () => handleRemoveFromFavorites(currentSong),
+        ],
+        [
+            bindings.favoriteCurrentToggle.isGlobal ? '' : bindings.favoriteCurrentToggle.hotkey,
+            () => handleToggleFavorite(currentSong),
+        ],
+        [
+            bindings.favoritePreviousAdd.isGlobal ? '' : bindings.favoritePreviousAdd.hotkey,
+            () => handleAddToFavorites(previousSong),
+        ],
+        [
+            bindings.favoritePreviousRemove.isGlobal ? '' : bindings.favoritePreviousRemove.hotkey,
+            () => handleRemoveFromFavorites(previousSong),
+        ],
+        [
+            bindings.favoritePreviousToggle.isGlobal ? '' : bindings.favoritePreviousToggle.hotkey,
+            () => handleToggleFavorite(previousSong),
+        ],
         [bindings.rate0.isGlobal ? '' : bindings.rate0.hotkey, () => handleClearRating(null, 0)],
         [bindings.rate1.isGlobal ? '' : bindings.rate1.hotkey, () => handleUpdateRating(1)],
         [bindings.rate2.isGlobal ? '' : bindings.rate2.hotkey, () => handleUpdateRating(2)],
@@ -279,7 +305,6 @@ export const RightControls = ({ seekRef }: RightControlsProps) => {
                         size="sm"
                         value={currentSong?.userRating || 0}
                         onChange={handleUpdateRating}
-                        onClick={handleClearRating}
                     />
                 )}
             </Group>
@@ -333,7 +358,7 @@ export const RightControls = ({ seekRef }: RightControlsProps) => {
                         openDelay: 500,
                     }}
                     variant="secondary"
-                    onClick={handleToggleFavorite}
+                    onClick={() => handleToggleFavorite(currentSong)}
                 />
                 <PlayerButton
                     icon={<HiOutlineQueueList size="1.1rem" />}
