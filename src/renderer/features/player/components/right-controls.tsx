@@ -1,7 +1,8 @@
-import { MouseEvent, MutableRefObject, useCallback, useEffect } from 'react';
+import { MutableRefObject, useCallback, useEffect } from 'react';
 import { Flex, Group } from '@mantine/core';
 import { useHotkeys, useMediaQuery } from '@mantine/hooks';
 import isElectron from 'is-electron';
+import { useTranslation } from 'react-i18next';
 import { HiOutlineQueueList } from 'react-icons/hi2';
 import {
     RiVolumeUpFill,
@@ -45,6 +46,7 @@ interface RightControlsProps {
 const PLAYBACK_SPEEDS = [0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0];
 
 export const RightControls = ({ seekRef }: RightControlsProps) => {
+    const { t } = useTranslation();
     const isMinWidth = useMediaQuery('(max-width: 480px)');
     const volume = useVolume();
     const muted = useMuted();
@@ -89,18 +91,6 @@ export const RightControls = ({ seekRef }: RightControlsProps) => {
             query: {
                 item: [currentSong],
                 rating,
-            },
-            serverId: currentSong?.serverId,
-        });
-    };
-
-    const handleClearRating = (_e: MouseEvent<HTMLDivElement> | null, rating?: number) => {
-        if (!currentSong || !rating) return;
-
-        updateRatingMutation.mutate({
-            query: {
-                item: [currentSong],
-                rating: 0,
             },
             serverId: currentSong?.serverId,
         });
@@ -245,7 +235,7 @@ export const RightControls = ({ seekRef }: RightControlsProps) => {
             bindings.favoritePreviousToggle.isGlobal ? '' : bindings.favoritePreviousToggle.hotkey,
             () => handleToggleFavorite(previousSong),
         ],
-        [bindings.rate0.isGlobal ? '' : bindings.rate0.hotkey, () => handleClearRating(null, 0)],
+        [bindings.rate0.isGlobal ? '' : bindings.rate0.hotkey, () => handleUpdateRating(0)],
         [bindings.rate1.isGlobal ? '' : bindings.rate1.hotkey, () => handleUpdateRating(1)],
         [bindings.rate2.isGlobal ? '' : bindings.rate2.hotkey, () => handleUpdateRating(2)],
         [bindings.rate3.isGlobal ? '' : bindings.rate3.hotkey, () => handleUpdateRating(3)],
@@ -318,7 +308,7 @@ export const RightControls = ({ seekRef }: RightControlsProps) => {
                         <PlayerButton
                             icon={<>{speed} x</>}
                             tooltip={{
-                                label: 'Playback speed',
+                                label: t('player.playbackSpeed', { postProcess: 'sentenceCase' }),
                                 openDelay: 500,
                             }}
                             variant="secondary"
@@ -354,7 +344,9 @@ export const RightControls = ({ seekRef }: RightControlsProps) => {
                         },
                     }}
                     tooltip={{
-                        label: currentSong?.userFavorite ? 'Unfavorite' : 'Favorite',
+                        label: currentSong?.userFavorite
+                            ? t('player.unfavorite', { postProcess: 'titleCase' })
+                            : t('player.favorite', { postProcess: 'titleCase' }),
                         openDelay: 500,
                     }}
                     variant="secondary"
@@ -410,7 +402,10 @@ export const RightControls = ({ seekRef }: RightControlsProps) => {
                                 <RiVolumeDownFill size="1.2rem" />
                             )
                         }
-                        tooltip={{ label: muted ? 'Muted' : volume, openDelay: 500 }}
+                        tooltip={{
+                            label: muted ? t('player.muted', { postProcess: 'titleCase' }) : volume,
+                            openDelay: 500,
+                        }}
                         variant="secondary"
                         onClick={handleMute}
                         onWheel={handleVolumeWheel}

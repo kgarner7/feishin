@@ -58,6 +58,7 @@ import { DeletePlaylistResponse, RandomSongListArgs } from './types';
 import { ndController } from '/@/renderer/api/navidrome/navidrome-controller';
 import { ssController } from '/@/renderer/api/subsonic/subsonic-controller';
 import { jfController } from '/@/renderer/api/jellyfin/jellyfin-controller';
+import i18n from '/@/i18n/i18n';
 
 export type ControllerEndpoint = Partial<{
     addToPlaylist: (args: AddToPlaylistArgs) => Promise<AddToPlaylistResponse>;
@@ -228,7 +229,12 @@ const apiController = (endpoint: keyof ControllerEndpoint, type?: ServerType) =>
     const serverType = type || useAuthStore.getState().currentServer?.type;
 
     if (!serverType) {
-        toast.error({ message: 'No server selected', title: 'Unable to route request' });
+        toast.error({
+            message: i18n.t('error.serverNotSelectedError', {
+                postProcess: 'sentenceCase',
+            }) as string,
+            title: i18n.t('error.apiRouteError', { postProcess: 'sentenceCase' }) as string,
+        });
         throw new Error(`No server selected`);
     }
 
@@ -237,10 +243,16 @@ const apiController = (endpoint: keyof ControllerEndpoint, type?: ServerType) =>
     if (typeof controllerFn !== 'function') {
         toast.error({
             message: `Endpoint ${endpoint} is not implemented for ${serverType}`,
-            title: 'Unable to route request',
+            title: i18n.t('error.apiRouteError', { postProcess: 'sentenceCase' }) as string,
         });
 
-        throw new Error(`Endpoint ${endpoint} is not implemented for ${serverType}`);
+        throw new Error(
+            i18n.t('error.endpointNotImplementedError', {
+                endpoint,
+                postProcess: 'sentenceCase',
+                serverType,
+            }) as string,
+        );
     }
 
     return endpoints[serverType][endpoint];

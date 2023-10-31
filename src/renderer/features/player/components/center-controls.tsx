@@ -3,6 +3,7 @@ import { useHotkeys } from '@mantine/hooks';
 import { useQueryClient } from '@tanstack/react-query';
 import formatDuration from 'format-duration';
 import isElectron from 'is-electron';
+import { useTranslation } from 'react-i18next';
 import { IoIosPause } from 'react-icons/io';
 import {
     RiMenuAddFill,
@@ -93,6 +94,7 @@ const ControlsContainer = styled.div`
 `;
 
 export const CenterControls = ({ playersRef, seekRef }: CenterControlsProps) => {
+    const { t } = useTranslation();
     const queryClient = useQueryClient();
     const [isSeeking, setIsSeeking] = useState(false);
     const currentSong = useCurrentSong();
@@ -176,7 +178,7 @@ export const CenterControls = ({ playersRef, seekRef }: CenterControlsProps) => 
                     <PlayerButton
                         icon={<RiStopFill size={15} />}
                         tooltip={{
-                            label: 'Stop',
+                            label: t('player.stop', { postProcess: 'sentenceCase' }),
                             openDelay: 500,
                         }}
                         variant="tertiary"
@@ -188,10 +190,11 @@ export const CenterControls = ({ playersRef, seekRef }: CenterControlsProps) => 
                         tooltip={{
                             label:
                                 shuffle === PlayerShuffle.NONE
-                                    ? 'Shuffle disabled'
-                                    : shuffle === PlayerShuffle.TRACK
-                                    ? 'Shuffle tracks'
-                                    : 'Shuffle albums',
+                                    ? t('player.shuffle', {
+                                          context: 'off',
+                                          postProcess: 'sentenceCase',
+                                      })
+                                    : t('player.shuffle', { postProcess: 'sentenceCase' }),
                             openDelay: 500,
                         }}
                         variant="tertiary"
@@ -199,7 +202,10 @@ export const CenterControls = ({ playersRef, seekRef }: CenterControlsProps) => 
                     />
                     <PlayerButton
                         icon={<RiSkipBackFill size={15} />}
-                        tooltip={{ label: 'Previous track', openDelay: 500 }}
+                        tooltip={{
+                            label: t('player.previous', { postProcess: 'sentenceCase' }),
+                            openDelay: 500,
+                        }}
                         variant="secondary"
                         onClick={handlePrevTrack}
                     />
@@ -207,7 +213,10 @@ export const CenterControls = ({ playersRef, seekRef }: CenterControlsProps) => 
                         <PlayerButton
                             icon={<RiRewindFill size={15} />}
                             tooltip={{
-                                label: `Skip backwards ${skip?.skipBackwardSeconds} seconds`,
+                                label: t('player.skip', {
+                                    context: 'back',
+                                    postProcess: 'sentenceCase',
+                                }),
                                 openDelay: 500,
                             }}
                             variant="secondary"
@@ -223,7 +232,10 @@ export const CenterControls = ({ playersRef, seekRef }: CenterControlsProps) => 
                             )
                         }
                         tooltip={{
-                            label: status === PlayerStatus.PAUSED ? 'Play' : 'Pause',
+                            label:
+                                status === PlayerStatus.PAUSED
+                                    ? t('player.play', { postProcess: 'sentenceCase' })
+                                    : t('player.pause', { postProcess: 'sentenceCase' }),
                             openDelay: 500,
                         }}
                         variant="main"
@@ -233,7 +245,10 @@ export const CenterControls = ({ playersRef, seekRef }: CenterControlsProps) => 
                         <PlayerButton
                             icon={<RiSpeedFill size={15} />}
                             tooltip={{
-                                label: `Skip forwards ${skip?.skipForwardSeconds} seconds`,
+                                label: t('player.stop', {
+                                    context: 'forward',
+                                    postProcess: 'sentenceCase',
+                                }),
                                 openDelay: 500,
                             }}
                             variant="secondary"
@@ -242,7 +257,10 @@ export const CenterControls = ({ playersRef, seekRef }: CenterControlsProps) => 
                     )}
                     <PlayerButton
                         icon={<RiSkipForwardFill size={15} />}
-                        tooltip={{ label: 'Next track', openDelay: 500 }}
+                        tooltip={{
+                            label: t('player.next', { postProcess: 'sentenceCase' }),
+                            openDelay: 500,
+                        }}
                         variant="secondary"
                         onClick={handleNextTrack}
                     />
@@ -258,10 +276,19 @@ export const CenterControls = ({ playersRef, seekRef }: CenterControlsProps) => 
                         tooltip={{
                             label: `${
                                 repeat === PlayerRepeat.NONE
-                                    ? 'Repeat disabled'
+                                    ? t('player.repeat', {
+                                          context: 'off',
+                                          postProcess: 'sentenceCase',
+                                      })
                                     : repeat === PlayerRepeat.ALL
-                                    ? 'Repeat all'
-                                    : 'Repeat one'
+                                    ? t('player.repeat', {
+                                          context: 'all',
+                                          postProcess: 'sentenceCase',
+                                      })
+                                    : t('player.repeat', {
+                                          context: 'one',
+                                          postProcess: 'sentenceCase',
+                                      })
                             }`,
                             openDelay: 500,
                         }}
@@ -272,7 +299,7 @@ export const CenterControls = ({ playersRef, seekRef }: CenterControlsProps) => 
                     <PlayerButton
                         icon={<RiMenuAddFill size={15} />}
                         tooltip={{
-                            label: 'Shuffle all',
+                            label: t('player.playRandom', { postProcess: 'sentenceCase' }),
                             openDelay: 500,
                         }}
                         variant="tertiary"
