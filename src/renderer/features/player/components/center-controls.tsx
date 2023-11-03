@@ -245,7 +245,7 @@ export const CenterControls = ({ playersRef, seekRef }: CenterControlsProps) => 
                         <PlayerButton
                             icon={<RiSpeedFill size={15} />}
                             tooltip={{
-                                label: t('player.stop', {
+                                label: t('player.skip', {
                                     context: 'forward',
                                     postProcess: 'sentenceCase',
                                 }),
