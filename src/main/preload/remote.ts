@@ -28,6 +28,18 @@ const requestVolume = (cb: (event: IpcRendererEvent, data: { volume: number }) =
     ipcRenderer.on('request-volume', cb);
 };
 
+const requestSavePosition = (cb: (event: IpcRendererEvent) => void) => {
+    ipcRenderer.on('request-save-position', cb);
+};
+
+const requestSaveQueue = (cb: (event: IpcRendererEvent) => void) => {
+    ipcRenderer.on('request-save-queue', cb);
+};
+
+const requestRestoreQueue = (cb: (event: IpcRendererEvent) => void) => {
+    ipcRenderer.on('request-restore-queue', cb);
+};
+
 const setRemoteEnabled = (enabled: boolean): Promise<string | null> => {
     const result = ipcRenderer.invoke('remote-enable', enabled);
     return result;
@@ -83,6 +95,9 @@ export const remote = {
     requestFavorite,
     requestPosition,
     requestRating,
+    requestRestoreQueue,
+    requestSavePosition,
+    requestSaveQueue,
     requestSeek,
     requestVolume,
     setRemoteEnabled,

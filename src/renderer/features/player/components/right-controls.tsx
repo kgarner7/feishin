@@ -279,14 +279,36 @@ export const RightControls = ({ seekRef }: RightControlsProps) => {
                 });
             });
 
+            remote.requestSavePosition(() => {
+                handleSavePosition();
+            });
+
+            remote.requestSaveQueue(() => {
+                handleSaveQueue();
+            });
+
+            remote.requestRestoreQueue(() => {
+                handleRestoreQueue();
+            });
+
             return () => {
                 ipc?.removeAllListeners('request-favorite');
                 ipc?.removeAllListeners('request-rating');
+                ipc?.removeAllListeners('request-save-position');
+                ipc?.removeAllListeners('request-save-queue');
+                ipc?.removeAllListeners('request-restore-queue');
             };
         }
 
         return () => {};
-    }, [addToFavoritesMutation, removeFromFavoritesMutation, updateRatingMutation]);
+    }, [
+        addToFavoritesMutation,
+        handleRestoreQueue,
+        handleSavePosition,
+        handleSaveQueue,
+        removeFromFavoritesMutation,
+        updateRatingMutation,
+    ]);
 
     return (
         <Flex

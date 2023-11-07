@@ -472,6 +472,18 @@ const enableServer = (config: RemoteConfig): Promise<void> => {
                                 }
                                 break;
                             }
+                            case 'savePosition': {
+                                getMainWindow()?.webContents.send('request-save-position');
+                                break;
+                            }
+                            case 'saveQueue': {
+                                getMainWindow()?.webContents.send('request-save-queue');
+                                break;
+                            }
+                            case 'restoreQueue': {
+                                getMainWindow()?.webContents.send('request-restore-queue');
+                                break;
+                            }
                         }
                     } catch (error) {
                         console.error(error);

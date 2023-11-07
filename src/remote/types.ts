@@ -58,9 +58,24 @@ export interface ClientAuth {
     header: string;
 }
 
+export interface ClientSavePosition {
+    event: 'savePosition';
+}
+
+export interface ClientSaveQueue {
+    event: 'saveQueue';
+}
+
+export interface ClientRestoreQueue {
+    event: 'restoreQueue';
+}
+
 export type ClientEvent =
     | ClientAuth
     | ClientSimpleEvent
     | ClientFavorite
     | ClientRating
+    | ClientRestoreQueue
+    | ClientSavePosition
+    | ClientSaveQueue
     | ClientVolume;

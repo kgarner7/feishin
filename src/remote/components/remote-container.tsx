@@ -4,6 +4,7 @@ import { useInfo, useSend, useShowImage } from '/@/remote/store';
 import { RemoteButton } from '/@/remote/components/buttons/remote-button';
 import formatDuration from 'format-duration';
 import {
+    RiDownloadCloud2Fill,
     RiHeartLine,
     RiPauseFill,
     RiPlayFill,
@@ -12,6 +13,8 @@ import {
     RiShuffleFill,
     RiSkipBackFill,
     RiSkipForwardFill,
+    RiUploadCloud2Fill,
+    RiUploadCloud2Line,
     RiVolumeUpFill,
 } from 'react-icons/ri';
 import { PlayerRepeat, PlayerStatus } from '/@/renderer/types';
@@ -170,6 +173,41 @@ export const RemoteContainer = () => {
                         </Grid.Col>
                     </MediaQuery>
                 )}
+                <Grid.Col
+                    md={3}
+                    span={4}
+                >
+                    <RemoteButton
+                        disabled={!song}
+                        tooltip="Save queue position"
+                        onClick={() => send({ event: 'savePosition' })}
+                    >
+                        <RiUploadCloud2Line size={25} />
+                    </RemoteButton>
+                </Grid.Col>
+                <Grid.Col
+                    md={3}
+                    span={4}
+                >
+                    <RemoteButton
+                        disabled={!song}
+                        tooltip="Save queue"
+                        onClick={() => send({ event: 'saveQueue' })}
+                    >
+                        <RiUploadCloud2Fill size={25} />
+                    </RemoteButton>
+                </Grid.Col>
+                <Grid.Col
+                    md={3}
+                    span={4}
+                >
+                    <RemoteButton
+                        tooltip="Restore queue"
+                        onClick={() => send({ event: 'restoreQueue' })}
+                    >
+                        <RiDownloadCloud2Fill size={25} />
+                    </RemoteButton>
+                </Grid.Col>
             </Grid>
             <WrapperSlider
                 leftLabel={<RiVolumeUpFill size={20} />}
