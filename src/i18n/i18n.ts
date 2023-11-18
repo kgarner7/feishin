@@ -11,6 +11,9 @@ import de from './locales/de.json';
 import it from './locales/it.json';
 import ru from './locales/ru.json';
 import ptBr from './locales/pt-BR.json';
+import sr from './locales/sr.json';
+import sv from './locales/sv.json';
+import cs from './locales/cs.json';
 
 const resources = {
     en: { translation: en },
@@ -23,12 +26,19 @@ const resources = {
     ja: { translation: ja },
     pl: { translation: pl },
     'zh-Hans': { translation: zhHans },
+    sr: { translation: sr },
+    sv: { translation: sv },
+    cs: { translation: cs },
 };
 
 export const languages = [
     {
         label: 'English',
         value: 'en',
+    },
+    {
+        label: 'Čeština',
+        value: 'cs',
     },
     {
         label: 'Español',
@@ -63,6 +73,14 @@ export const languages = [
         value: 'pl',
     },
     {
+        label: 'Srpski',
+        value: 'sr',
+    },
+    {
+        label: 'Svenska',
+        value: 'sv',
+    },
+    {
         label: '简体中文',
         value: 'zh-Hans',
     },
@@ -88,7 +106,9 @@ const titleCasePostProcessor: PostProcessorModule = {
     type: 'postProcessor',
     name: 'titleCase',
     process: (value: string) => {
-        return value.charAt(0).toLocaleUpperCase() + value.slice(1).toLowerCase();
+        return value.replace(/\S\S*/g, (txt) => {
+            return txt.charAt(0).toLocaleUpperCase() + txt.slice(1).toLowerCase();
+        });
     },
 };
 

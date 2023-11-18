@@ -2,7 +2,7 @@
     "name": "feishin",
     "productName": "Feishin",
     "description": "Feishin music server",
-    "version": "0.5.1",
+    "version": "0.5.2",
     "scripts": {
         "build": "concurrently \"npm run build:main\" \"npm run build:renderer\" \"npm run build:remote\"",
         "build:main": "cross-env NODE_ENV=production TS_NODE_TRANSPILE_ONLY=true webpack --config ./.erb/configs/webpack.config.main.prod.ts",
@@ -56,7 +56,7 @@
             "package.json"
         ],
         "afterSign": ".erb/scripts/notarize.js",
-        "electronVersion": "25.8.1",
+        "electronVersion": "27.1.0",
         "mac": {
             "target": {
                 "target": "default",
@@ -229,8 +229,8 @@
         "css-loader": "^6.7.1",
         "css-minimizer-webpack-plugin": "^3.4.1",
         "detect-port": "^1.3.0",
-        "electron": "^25.8.1",
-        "electron-builder": "^24.6.3",
+        "electron": "^27.1.0",
+        "electron-builder": "^24.9.0",
         "electron-devtools-installer": "^3.2.0",
         "electron-notarize": "^1.2.1",
         "electronmon": "^2.0.2",
