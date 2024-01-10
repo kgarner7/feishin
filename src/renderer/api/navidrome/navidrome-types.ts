@@ -342,6 +342,18 @@ const removeFromPlaylistParameters = z.object({
     id: z.array(z.string()),
 });
 
+const queue = z.object({
+    changedBy: z.string(),
+    createdAt: z.string(),
+    current: z.string(),
+    id: z.string(),
+    items: z.array(song),
+    position: z.number(),
+    queueIndex: z.number(),
+    updatedAt: z.string(),
+    userId: z.string(),
+});
+
 export const ndType = {
     _enum: {
         albumArtistList: ndAlbumArtistListSort,
@@ -380,6 +392,7 @@ export const ndType = {
         playlistList,
         playlistSong,
         playlistSongList,
+        queue,
         removeFromPlaylist,
         song,
         songList,

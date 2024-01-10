@@ -121,6 +121,14 @@ export const contract = c.router({
             500: resultWithHeaders(ndType._response.error),
         },
     },
+    getQueue: {
+        method: 'GET',
+        path: 'queue',
+        responses: {
+            200: resultWithHeaders(ndType._response.queue),
+            500: resultWithHeaders(ndType._response.error),
+        },
+    },
     getSongDetail: {
         method: 'GET',
         path: 'song/:id',

@@ -525,41 +525,23 @@ const getPlayQueue = async (args: GetQueueArgs): Promise<GetQueueResponse> => {
 const getPlayQueue2 = async (args: GetQueueArgs): Promise<GetQueueResponse> => {
     const { apiClientProps } = args;
 
-    const res = await ssApiClient(apiClientProps).getPlayQueue2();
+    const res = await ndApiClient(apiClientProps).getQueue();
 
     if (res.status !== 200) {
         throw new Error('Failed to get play queue');
     }
 
-    const songsData = await ndApiClient(apiClientProps).getSongList({
-        query: {
-            _order: 'ASC',
-            _start: 0,
-        },
-    });
+    const { updatedAt, changedBy, queueIndex, items, position } = res.body.data;
 
-    if (songsData.status !== 200) {
-        throw new Error('Failed to query songs via Navidrome API');
-    }
-
-    const songMapping = new Map<string, QueueSong>(
-        songsData.body.data.map((song): [string, QueueSong] => [
-            song.id,
-            ndNormalize.song(song, apiClientProps.server, ''),
-        ]),
-    );
-
-    const { changed, changedBy, queueIndex, entry, position, username } = res.body.playQueue2;
-
-    const entries = entry.map((song) => songMapping.get(song.id)!);
+    const entries = items.map((song) => ndNormalize.song(song, apiClientProps.server, ''));
 
     return {
-        changed,
+        changed: updatedAt,
         changedBy,
         currentIndex: queueIndex !== undefined ? queueIndex - 1 : 0,
         entry: entries,
         position,
-        username,
+        username: apiClientProps.server?.username ?? '',
     };
 };
 
