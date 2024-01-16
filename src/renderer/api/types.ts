@@ -1173,3 +1173,14 @@ export type FontData = {
     postscriptName: string;
     style: string;
 };
+
+export type NavidromeLine = {
+    start?: number;
+    value: string;
+};
+
+export type NavidromeLyrics = {
+    lang: string;
+    line: NavidromeLine[];
+    synced: boolean;
+};

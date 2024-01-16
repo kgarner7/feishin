@@ -6,6 +6,7 @@ import {
     InternetProviderLyricResponse,
     FullLyricsMetadata,
     LyricGetQuery,
+    NavidromeLyrics,
 } from '/@/renderer/api/types';
 import { QueryHookArgs } from '/@/renderer/lib/react-query';
 import { getServerById, useLyricsSettings } from '/@/renderer/store';
@@ -94,13 +95,26 @@ export const useSongLyricsBySong = (
             if (!song) return null;
 
             if (song.lyrics) {
-                return {
-                    artist: song.artists?.[0]?.name,
-                    lyrics: formatLyrics(song.lyrics),
-                    name: song.name,
-                    remote: false,
-                    source: server?.name ?? 'music server',
-                };
+                const json = JSON.parse(song.lyrics) as NavidromeLyrics[];
+
+                if (json.length > 0) {
+                    const data = json[0];
+                    let lyrics: SynchronizedLyricsArray | string;
+
+                    if (data.synced) {
+                        lyrics = data.line.map((line) => [line.start!, line.value]);
+                    } else {
+                        lyrics = data.line.map((line) => line.value).join('\n');
+                    }
+
+                    return {
+                        artist: song.artists?.[0]?.name,
+                        lyrics,
+                        name: song.name,
+                        remote: false,
+                        source: server?.name ?? 'music server',
+                    };
+                }
             }
 
             if (server.type === ServerType.JELLYFIN) {
