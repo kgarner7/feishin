@@ -128,8 +128,7 @@
         },
         "linux": {
             "target": [
-                "AppImage",
-                "tar.xz"
+                "AppImage"
             ],
             "icon": "assets/icons/icon.png",
             "category": "AudioVideo;Audio;Player"
