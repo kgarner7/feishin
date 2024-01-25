@@ -252,6 +252,7 @@ export interface SettingsState {
 export interface SettingsSlice extends SettingsState {
     actions: {
         reset: () => void;
+        resetSampleRate: () => void;
         setSettings: (data: Partial<SettingsState>) => void;
         setSidebarItems: (items: SidebarItemType[]) => void;
         setTable: (type: TableType, data: DataTableProps) => void;
@@ -568,6 +569,11 @@ export const useSettingsStore = create<SettingsSlice>()(
                         } else {
                             set(initialState);
                         }
+                    },
+                    resetSampleRate: () => {
+                        set((state) => {
+                            state.playback.mpvProperties.audioSampleRateHz = 0;
+                        });
                     },
                     setSettings: (data) => {
                         set({ ...get(), ...data });
