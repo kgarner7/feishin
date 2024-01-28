@@ -1,7 +1,11 @@
 import { ipcRenderer } from 'electron';
 
 const removeAllListeners = (channel: string) => {
-    ipcRenderer.removeAllListeners(channel);
+    if (ipcRenderer) {
+        ipcRenderer.removeAllListeners(channel);
+    } else {
+        console.error('ipc renderer is gone');
+    }
 };
 
 const send = (channel: string, ...args: any[]) => {
