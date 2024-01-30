@@ -24,6 +24,8 @@ import {
     BrowserWindowConstructorOptions,
     protocol,
     net,
+    screen,
+    Rectangle,
 } from 'electron';
 import electronLocalShortcut from 'electron-localshortcut';
 import log from 'electron-log';
@@ -206,10 +208,38 @@ const createWindow = async () => {
         },
     };
 
+    // Check inspired by https://github.com/electron/electron/issues/526#issuecomment-563010533
+    const savedPosition = store.get('window_settings') as Rectangle | undefined;
+    const positionSettings: Partial<Rectangle> = {
+        height: 900,
+        width: 1440,
+    };
+    if (savedPosition) {
+        // Behavior: if the window fits completely within the current screen, use that setting
+        // If windows change, then x/y will likely be invalid, but width/height may be
+        // In that case, the window is loaded in the center
+        const { x, y, width, height } = screen.getDisplayMatching(savedPosition).workArea;
+        if (
+            savedPosition.x >= x &&
+            savedPosition.y >= y &&
+            savedPosition.x + savedPosition.width <= x + width &&
+            savedPosition.y + savedPosition.height <= y + height
+        ) {
+            // Feishin is completely within bounds. Implies the below condition
+            positionSettings.x = savedPosition.x;
+            positionSettings.y = savedPosition.y;
+        }
+
+        if (savedPosition.width <= width && savedPosition.height <= height) {
+            // Width and height are within the screen's range
+            positionSettings.height = savedPosition.height;
+            positionSettings.width = savedPosition.width;
+        }
+    }
+
     mainWindow = new BrowserWindow({
         autoHideMenuBar: true,
         frame: false,
-        height: 900,
         icon: getAssetPath('icons/icon.png'),
         minHeight: 640,
         minWidth: 480,
@@ -225,10 +255,10 @@ const createWindow = async () => {
                 : path.join(__dirname, '../../.erb/dll/preload.js'),
             webSecurity: !store.get('ignore_cors'),
         },
-        width: 1440,
         ...(nativeFrame && isLinux() && nativeFrameConfig.linux),
         ...(nativeFrame && isMacOS() && nativeFrameConfig.macOS),
         ...(nativeFrame && isWindows() && nativeFrameConfig.windows),
+        ...positionSettings,
     });
 
     electronLocalShortcut.register(mainWindow, 'Ctrl+Shift+I', () => {
@@ -340,6 +370,11 @@ const createWindow = async () => {
     let saved = false;
 
     mainWindow.on('close', (event) => {
+        const main = getMainWindow();
+        if (main) {
+            store.set('window_settings', main.getNormalBounds());
+        }
+
         if (!exitFromTray && store.get('window_exit_to_tray')) {
             if (isMacOS() && !forceQuit) {
                 exitFromTray = true;
