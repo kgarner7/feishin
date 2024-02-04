@@ -99,6 +99,7 @@ export const CenterControls = ({ playersRef, seekRef }: CenterControlsProps) => 
     const [isSeeking, setIsSeeking] = useState(false);
     const currentSong = useCurrentSong();
     const skip = useSettingsStore((state) => state.general.skipButtons);
+    const buttonSize = useSettingsStore((state) => state.general.buttonSize);
     const playerType = usePlayerType();
     const player1 = playersRef?.current?.player1;
     const player2 = playersRef?.current?.player2;
@@ -176,7 +177,7 @@ export const CenterControls = ({ playersRef, seekRef }: CenterControlsProps) => 
             <ControlsContainer>
                 <ButtonsContainer>
                     <PlayerButton
-                        icon={<RiStopFill size={20} />}
+                        icon={<RiStopFill size={buttonSize} />}
                         tooltip={{
                             label: t('player.stop', { postProcess: 'sentenceCase' }),
                         }}
@@ -185,7 +186,7 @@ export const CenterControls = ({ playersRef, seekRef }: CenterControlsProps) => 
                     />
                     <PlayerButton
                         $isActive={shuffle !== PlayerShuffle.NONE}
-                        icon={<RiShuffleFill size={20} />}
+                        icon={<RiShuffleFill size={buttonSize} />}
                         tooltip={{
                             label:
                                 shuffle === PlayerShuffle.NONE
@@ -199,7 +200,7 @@ export const CenterControls = ({ playersRef, seekRef }: CenterControlsProps) => 
                         onClick={handleToggleShuffle}
                     />
                     <PlayerButton
-                        icon={<RiSkipBackFill size={20} />}
+                        icon={<RiSkipBackFill size={buttonSize} />}
                         tooltip={{
                             label: t('player.previous', { postProcess: 'sentenceCase' }),
                         }}
@@ -208,7 +209,7 @@ export const CenterControls = ({ playersRef, seekRef }: CenterControlsProps) => 
                     />
                     {skip?.enabled && (
                         <PlayerButton
-                            icon={<RiRewindFill size={20} />}
+                            icon={<RiRewindFill size={buttonSize} />}
                             tooltip={{
                                 label: t('player.skip', {
                                     context: 'back',
@@ -223,9 +224,9 @@ export const CenterControls = ({ playersRef, seekRef }: CenterControlsProps) => 
                         disabled={currentSong?.id === undefined}
                         icon={
                             status === PlayerStatus.PAUSED ? (
-                                <RiPlayFill size={20} />
+                                <RiPlayFill size={buttonSize} />
                             ) : (
-                                <IoIosPause size={20} />
+                                <IoIosPause size={buttonSize} />
                             )
                         }
                         tooltip={{
@@ -239,7 +240,7 @@ export const CenterControls = ({ playersRef, seekRef }: CenterControlsProps) => 
                     />
                     {skip?.enabled && (
                         <PlayerButton
-                            icon={<RiSpeedFill size={20} />}
+                            icon={<RiSpeedFill size={buttonSize} />}
                             tooltip={{
                                 label: t('player.skip', {
                                     context: 'forward',
@@ -251,7 +252,7 @@ export const CenterControls = ({ playersRef, seekRef }: CenterControlsProps) => 
                         />
                     )}
                     <PlayerButton
-                        icon={<RiSkipForwardFill size={20} />}
+                        icon={<RiSkipForwardFill size={buttonSize} />}
                         tooltip={{
                             label: t('player.next', { postProcess: 'sentenceCase' }),
                         }}
@@ -262,9 +263,9 @@ export const CenterControls = ({ playersRef, seekRef }: CenterControlsProps) => 
                         $isActive={repeat !== PlayerRepeat.NONE}
                         icon={
                             repeat === PlayerRepeat.ONE ? (
-                                <RiRepeatOneLine size={20} />
+                                <RiRepeatOneLine size={buttonSize} />
                             ) : (
-                                <RiRepeat2Line size={20} />
+                                <RiRepeat2Line size={buttonSize} />
                             )
                         }
                         tooltip={{
@@ -290,7 +291,7 @@ export const CenterControls = ({ playersRef, seekRef }: CenterControlsProps) => 
                     />
 
                     <PlayerButton
-                        icon={<BsDice3 size={20} />}
+                        icon={<BsDice3 size={buttonSize} />}
                         tooltip={{
                             label: t('player.playRandom', { postProcess: 'sentenceCase' }),
                         }}
