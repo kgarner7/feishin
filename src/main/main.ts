@@ -57,6 +57,12 @@ if (store.get('ignore_ssl')) {
     app.commandLine.appendSwitch('ignore-certificate-errors');
 }
 
+// From https://github.com/tutao/tutanota/commit/92c6ed27625fcf367f0fbcc755d83d7ff8fde94b
+if (isLinux() && !process.argv.some((a) => a.startsWith('--password-store='))) {
+    const paswordStore = store.get('password_store', 'gnome-libsecret') as string;
+    app.commandLine.appendSwitch('password-store', paswordStore);
+}
+
 let mainWindow: BrowserWindow | null = null;
 let tray: Tray | null = null;
 let exitFromTray = false;
@@ -317,9 +323,9 @@ const createWindow = async () => {
         }
     });
 
-    const globalMediaKeysEnabled = store.get('global_media_hotkeys') as boolean;
+    const globalMediaKeysEnabled = store.get('global_media_hotkeys', true) as boolean;
 
-    if (globalMediaKeysEnabled !== false) {
+    if (globalMediaKeysEnabled) {
         enableMediaKeys(mainWindow);
     }
 
@@ -633,7 +639,7 @@ ipcMain.on(
             }
         }
 
-        const globalMediaKeysEnabled = store.get('global_media_hotkeys') as boolean;
+        const globalMediaKeysEnabled = store.get('global_media_hotkeys', true) as boolean;
 
         if (globalMediaKeysEnabled) {
             enableMediaKeys(mainWindow);
