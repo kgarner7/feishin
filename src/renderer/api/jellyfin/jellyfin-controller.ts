@@ -53,6 +53,8 @@ import {
     GetQueueResponse,
     SongDetailArgs,
     SongDetailResponse,
+    ServerInfo,
+    ServerInfoArgs,
 } from '/@/renderer/api/types';
 import { jfApiClient } from '/@/renderer/api/jellyfin/jellyfin-api';
 import { jfNormalize } from './jellyfin-normalize';
@@ -1025,6 +1027,18 @@ const getSongDetail = async (args: SongDetailArgs): Promise<SongDetailResponse> 
     return jfNormalize.song(res.body, apiClientProps.server, '');
 };
 
+const getServerInfo = async (args: ServerInfoArgs): Promise<ServerInfo> => {
+    const { apiClientProps } = args;
+
+    const res = await jfApiClient(apiClientProps).getServerInfo();
+
+    if (res.status !== 200) {
+        throw new Error('Failed to get server info');
+    }
+
+    return { id: apiClientProps.server?.id, version: res.body.Version };
+};
+
 export const jfController = {
     addToPlaylist,
     authenticate,
@@ -1045,6 +1059,7 @@ export const jfController = {
     getPlaylistList,
     getPlaylistSongList,
     getRandomSongList,
+    getServerInfo,
     getSongDetail,
     getSongList,
     getTopSongList,

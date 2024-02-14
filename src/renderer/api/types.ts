@@ -1098,17 +1098,11 @@ export type InternetProviderLyricSearchResponse = {
     source: LyricSource;
 };
 
-export type SynchronizedLyricMetadata = {
-    lyrics: SynchronizedLyricsArray;
+export type FullLyricsMetadata = {
+    lyrics: LyricsResponse;
     remote: boolean;
-} & Omit<InternetProviderLyricResponse, 'lyrics'>;
-
-export type UnsynchronizedLyricMetadata = {
-    lyrics: string;
-    remote: boolean;
-} & Omit<InternetProviderLyricResponse, 'lyrics'>;
-
-export type FullLyricsMetadata = SynchronizedLyricMetadata | UnsynchronizedLyricMetadata;
+    source: string;
+} & Omit<InternetProviderLyricResponse, 'id' | 'lyrics' | 'source'>;
 
 export type LyricOverride = Omit<InternetProviderLyricResponse, 'lyrics'>;
 
@@ -1179,13 +1173,34 @@ export type FontData = {
     style: string;
 };
 
-export type NavidromeLine = {
-    start?: number;
-    value: string;
+export type ServerInfoArgs = BaseEndpointArgs;
+
+export enum SubsonicExtensions {
+    FORM_POST = 'formPost',
+    SONG_LYRICS = 'songLyrics',
+    TRANSCODE_OFFSET = 'transcodeOffset',
+}
+
+export type ServerInfo = {
+    features?: Record<string, number[]>;
+    id?: string;
+    version: string;
 };
 
-export type NavidromeLyrics = {
+export type StructuredLyricsArgs = {
+    query: LyricsQuery;
+} & BaseEndpointArgs;
+
+export type StructuredUnsyncedLyric = {
+    lyrics: string;
+    synced: false;
+} & Omit<FullLyricsMetadata, 'lyrics'>;
+
+export type StructuredSyncedLyric = {
+    lyrics: SynchronizedLyricsArray;
+    synced: true;
+} & Omit<FullLyricsMetadata, 'lyrics'>;
+
+export type StructuredLyric = {
     lang: string;
-    line: NavidromeLine[];
-    synced: boolean;
-};
+} & (StructuredUnsyncedLyric | StructuredSyncedLyric);

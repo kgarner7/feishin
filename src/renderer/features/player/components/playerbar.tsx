@@ -1,7 +1,7 @@
 import { useCallback, useRef } from 'react';
 import isElectron from 'is-electron';
 import styled from 'styled-components';
-import { useSettingsStore } from '/@/renderer/store/settings.store';
+import { usePlaybackType, useSettingsStore } from '/@/renderer/store/settings.store';
 import { PlaybackType } from '/@/renderer/types';
 import { AudioPlayer } from '/@/renderer/components';
 import {
@@ -64,6 +64,7 @@ const remote = isElectron() ? window.electron.remote : null;
 export const Playerbar = () => {
     const playersRef = PlayersRef;
     const settings = useSettingsStore((state) => state.playback);
+    const playbackType = usePlaybackType();
     const volume = useVolume();
     const player1 = usePlayer1Data();
     const player2 = usePlayer2Data();
@@ -100,7 +101,7 @@ export const Playerbar = () => {
                     <RightControls seekRef={handleSeekRef} />
                 </RightGridItem>
             </PlayerbarControlsGrid>
-            {settings.type === PlaybackType.WEB && (
+            {playbackType === PlaybackType.WEB && (
                 <AudioPlayer
                     ref={playersRef}
                     autoNext={autoNextFn}

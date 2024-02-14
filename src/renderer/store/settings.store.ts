@@ -23,6 +23,7 @@ import {
 } from '/@/renderer/types';
 import { randomString } from '/@/renderer/utils';
 import i18n from '/@/i18n/i18n';
+import { usePlayerStore } from '/@/renderer/store/player.store';
 
 const utils = isElectron() ? window.electron.utils : null;
 
@@ -90,6 +91,23 @@ export const sidebarItems = [
         route: AppRoute.SETTINGS,
     },
 ];
+
+export type SortableItem<T> = {
+    disabled: boolean;
+    id: T;
+};
+
+export enum HomeItem {
+    MOST_PLAYED = 'mostPlayed',
+    RANDOM = 'random',
+    RECENTLY_ADDED = 'recentlyAdded',
+    RECENTLY_PLAYED = 'recentlyPlayed',
+}
+
+export const homeItems = Object.values(HomeItem).map((item) => ({
+    disabled: false,
+    id: item,
+}));
 
 export type PersistedTableColumn = {
     column: TableColumn;
@@ -173,6 +191,7 @@ export interface SettingsState {
         defaultFullPlaylist: boolean;
         externalLinks: boolean;
         followSystemTheme: boolean;
+        homeItems: SortableItem<HomeItem>[];
         language: string;
         passwordStore?: string;
         playButtonBehavior: Play;
@@ -255,6 +274,7 @@ export interface SettingsSlice extends SettingsState {
     actions: {
         reset: () => void;
         resetSampleRate: () => void;
+        setHomeItems: (item: SortableItem<HomeItem>[]) => void;
         setSettings: (data: Partial<SettingsState>) => void;
         setSidebarItems: (items: SidebarItemType[]) => void;
         setTable: (type: TableType, data: DataTableProps) => void;
@@ -288,6 +308,7 @@ const initialState: SettingsState = {
         defaultFullPlaylist: true,
         externalLinks: true,
         followSystemTheme: false,
+        homeItems,
         language: 'en',
         passwordStore: undefined,
         playButtonBehavior: Play.NOW,
@@ -381,7 +402,7 @@ const initialState: SettingsState = {
             scrobbleAtPercentage: 75,
         },
         style: PlaybackStyle.GAPLESS,
-        type: PlaybackType.LOCAL,
+        type: PlaybackType.WEB,
     },
     remote: {
         enabled: false,
@@ -579,6 +600,11 @@ export const useSettingsStore = create<SettingsSlice>()(
                             state.playback.mpvProperties.audioSampleRateHz = 0;
                         });
                     },
+                    setHomeItems: (items: SortableItem<HomeItem>[]) => {
+                        set((state) => {
+                            state.general.homeItems = items;
+                        });
+                    },
                     setSettings: (data) => {
                         set({ ...get(), ...data });
                     },
@@ -616,7 +642,16 @@ export const useTableSettings = (type: TableType) =>
 
 export const useGeneralSettings = () => useSettingsStore((state) => state.general, shallow);
 
-export const usePlayerType = () => useSettingsStore((state) => state.playback.type, shallow);
+export const usePlaybackType = () =>
+    useSettingsStore((state) => {
+        const isFallback = usePlayerStore.getState().fallback;
+
+        if (isFallback) {
+            return PlaybackType.WEB;
+        }
+
+        return state.playback.type;
+    });
 
 export const usePlayButtonBehavior = () =>
     useSettingsStore((state) => state.general.playButtonBehavior, shallow);

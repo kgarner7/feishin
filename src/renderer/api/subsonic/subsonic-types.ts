@@ -243,6 +243,47 @@ const playQueue2 = z.object({
     }),
 });
 
+const ping = z.object({
+    openSubsonic: z.boolean().optional(),
+    serverVersion: z.string().optional(),
+    version: z.string(),
+});
+
+const extension = z.object({
+    name: z.string(),
+    versions: z.number().array(),
+});
+
+const serverInfo = z.object({
+    openSubsonicExtensions: z.array(extension),
+});
+
+const structuredLyricsParameters = z.object({
+    id: z.string(),
+});
+
+const lyricLine = z.object({
+    start: z.number().optional(),
+    value: z.string(),
+});
+
+const structuredLyric = z.object({
+    displayArtist: z.string().optional(),
+    displayTitle: z.string().optional(),
+    lang: z.string(),
+    line: z.array(lyricLine),
+    offset: z.number().optional(),
+    synced: z.boolean(),
+});
+
+const structuredLyrics = z.object({
+    lyricsList: z
+        .object({
+            structuredLyrics: z.array(structuredLyric).optional(),
+        })
+        .optional(),
+});
+
 export const ssType = {
     _parameters: {
         albumList: albumListParameters,
@@ -256,6 +297,7 @@ export const ssType = {
         scrobble: scrobbleParameters,
         search3: search3Parameters,
         setRating: setRatingParameters,
+        structuredLyrics: structuredLyricsParameters,
         topSongsList: topSongsListParameters,
     },
     _response: {
@@ -268,6 +310,7 @@ export const ssType = {
         baseResponse,
         createFavorite,
         musicFolderList,
+        ping,
         playQueue,
         playQueue2,
         randomSongList,
@@ -275,8 +318,10 @@ export const ssType = {
         saveQueue,
         scrobble,
         search3,
+        serverInfo,
         setRating,
         song,
+        structuredLyrics,
         topSongsList,
     },
 };

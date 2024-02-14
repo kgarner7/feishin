@@ -687,6 +687,10 @@ const getSessions = z.array(
     ),
 );
 
+const serverInfo = z.object({
+    Version: z.string(),
+});
+
 export const jfType = {
     _enum: {
         albumArtistList: albumArtistListSort,
@@ -743,6 +747,7 @@ export const jfType = {
         removeFromPlaylist,
         scrobble,
         search,
+        serverInfo,
         song,
         songList,
         topSongsList,

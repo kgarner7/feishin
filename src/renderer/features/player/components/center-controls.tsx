@@ -32,7 +32,7 @@ import {
 } from '/@/renderer/store';
 import {
     useHotkeySettings,
-    usePlayerType,
+    usePlaybackType,
     useSettingsStore,
 } from '/@/renderer/store/settings.store';
 import { PlayerStatus, PlaybackType, PlayerShuffle, PlayerRepeat } from '/@/renderer/types';
@@ -100,7 +100,7 @@ export const CenterControls = ({ playersRef, seekRef }: CenterControlsProps) => 
     const currentSong = useCurrentSong();
     const skip = useSettingsStore((state) => state.general.skipButtons);
     const buttonSize = useSettingsStore((state) => state.general.buttonSize);
-    const playerType = usePlayerType();
+    const playbackType = usePlaybackType();
     const player1 = playersRef?.current?.player1;
     const player2 = playersRef?.current?.player2;
     const status = useCurrentStatus();
@@ -135,7 +135,7 @@ export const CenterControls = ({ playersRef, seekRef }: CenterControlsProps) => 
         let interval: any;
 
         if (status === PlayerStatus.PLAYING && !isSeeking) {
-            if (!isElectron() || playerType === PlaybackType.WEB) {
+            if (!isElectron() || playbackType === PlaybackType.WEB) {
                 interval = setInterval(() => {
                     setCurrentTime(currentPlayerRef.getCurrentTime());
                 }, 1000);
@@ -145,7 +145,7 @@ export const CenterControls = ({ playersRef, seekRef }: CenterControlsProps) => 
         }
 
         return () => clearInterval(interval);
-    }, [currentPlayerRef, isSeeking, setCurrentTime, playerType, status]);
+    }, [currentPlayerRef, isSeeking, setCurrentTime, playbackType, status]);
 
     useEffect(() => {
         seekRef.current = handleSeekSlider;
