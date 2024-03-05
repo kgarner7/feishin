@@ -60,6 +60,17 @@ export enum ServerType {
     SUBSONIC = 'subsonic',
 }
 
+export const toServerType = (value?: string): ServerType | null => {
+    switch (value?.toLowerCase()) {
+        case ServerType.JELLYFIN:
+            return ServerType.JELLYFIN;
+        case ServerType.NAVIDROME:
+            return ServerType.NAVIDROME;
+        default:
+            return null;
+    }
+};
+
 export type ServerListItem = {
     credential: string;
     features?: Record<string, number[]>;
@@ -214,3 +225,9 @@ export enum FontType {
 }
 
 export type TitleTheme = 'dark' | 'light' | 'system';
+
+export enum AuthState {
+    INVALID = 'invalid',
+    LOADING = 'loading',
+    VALID = 'valid',
+}

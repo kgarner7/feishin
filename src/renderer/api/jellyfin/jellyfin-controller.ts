@@ -55,6 +55,8 @@ import {
     SongDetailResponse,
     ServerInfo,
     ServerInfoArgs,
+    SimilarSongsArgs,
+    Song,
 } from '/@/renderer/api/types';
 import { jfApiClient } from '/@/renderer/api/jellyfin/jellyfin-api';
 import { jfNormalize } from './jellyfin-normalize';
@@ -63,6 +65,7 @@ import packageJson from '../../../../package.json';
 import { z } from 'zod';
 import { JFSongListSort, JFSortOrder } from '/@/renderer/api/jellyfin.types';
 import isElectron from 'is-electron';
+import { ServerFeatures } from '/@/renderer/api/features.types';
 
 const formatCommaDelimitedString = (value: string[]) => {
     return value.join(',');
@@ -1036,7 +1039,43 @@ const getServerInfo = async (args: ServerInfoArgs): Promise<ServerInfo> => {
         throw new Error('Failed to get server info');
     }
 
-    return { id: apiClientProps.server?.id, version: res.body.Version };
+    const features: ServerFeatures = {
+        smartPlaylists: false,
+        songLyrics: true,
+    };
+
+    return {
+        features,
+        id: apiClientProps.server?.id,
+        version: res.body.Version,
+    };
+};
+
+const getSimilarSongs = async (args: SimilarSongsArgs): Promise<Song[]> => {
+    const { apiClientProps, query } = args;
+
+    const res = await jfApiClient(apiClientProps).getSimilarSongs({
+        params: {
+            itemId: query.songId,
+        },
+        query: {
+            Fields: 'Genres, DateCreated, MediaSources, ParentId',
+            Limit: query.count,
+            UserId: apiClientProps.server?.userId || undefined,
+        },
+    });
+
+    if (res.status !== 200) {
+        throw new Error('Failed to get similar songs');
+    }
+
+    return res.body.Items.reduce<Song[]>((acc, song) => {
+        if (song.Id !== query.songId) {
+            acc.push(jfNormalize.song(song, apiClientProps.server, ''));
+        }
+
+        return acc;
+    }, []);
 };
 
 export const jfController = {
@@ -1060,6 +1099,7 @@ export const jfController = {
     getPlaylistSongList,
     getRandomSongList,
     getServerInfo,
+    getSimilarSongs,
     getSongDetail,
     getSongList,
     getTopSongList,

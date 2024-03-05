@@ -56,8 +56,10 @@ import type {
     ServerInfoArgs,
     StructuredLyricsArgs,
     StructuredLyric,
+    SimilarSongsArgs,
+    Song,
+    ServerType,
 } from '/@/renderer/api/types';
-import { ServerType } from '/@/renderer/types';
 import { DeletePlaylistResponse, RandomSongListArgs } from './types';
 import { ndController } from '/@/renderer/api/navidrome/navidrome-controller';
 import { ssController } from '/@/renderer/api/subsonic/subsonic-controller';
@@ -95,6 +97,7 @@ export type ControllerEndpoint = Partial<{
     getPlaylistSongList: (args: PlaylistSongListArgs) => Promise<SongListResponse>;
     getRandomSongList: (args: RandomSongListArgs) => Promise<SongListResponse>;
     getServerInfo: (args: ServerInfoArgs) => Promise<ServerInfo>;
+    getSimilarSongs: (args: SimilarSongsArgs) => Promise<Song[]>;
     getSongDetail: (args: SongDetailArgs) => Promise<SongDetailResponse>;
     getSongList: (args: SongListArgs) => Promise<SongListResponse>;
     getStructuredLyrics: (args: StructuredLyricsArgs) => Promise<StructuredLyric[]>;
@@ -144,6 +147,7 @@ const endpoints: ApiController = {
         getPlaylistSongList: jfController.getPlaylistSongList,
         getRandomSongList: jfController.getRandomSongList,
         getServerInfo: jfController.getServerInfo,
+        getSimilarSongs: jfController.getSimilarSongs,
         getSongDetail: jfController.getSongDetail,
         getSongList: jfController.getSongList,
         getStructuredLyrics: undefined,
@@ -184,7 +188,8 @@ const endpoints: ApiController = {
         getPlaylistList: ndController.getPlaylistList,
         getPlaylistSongList: ndController.getPlaylistSongList,
         getRandomSongList: ssController.getRandomSongList,
-        getServerInfo: ssController.getServerInfo,
+        getServerInfo: ndController.getServerInfo,
+        getSimilarSongs: ssController.getSimilarSongs,
         getSongDetail: ndController.getSongDetail,
         getSongList: ndController.getSongList,
         getStructuredLyrics: ssController.getStructuredLyrics,
@@ -224,6 +229,7 @@ const endpoints: ApiController = {
         getPlaylistDetail: undefined,
         getPlaylistList: undefined,
         getServerInfo: ssController.getServerInfo,
+        getSimilarSongs: ssController.getSimilarSongs,
         getSongDetail: undefined,
         getSongList: undefined,
         getStructuredLyrics: ssController.getStructuredLyrics,
@@ -554,6 +560,15 @@ const getStructuredLyrics = async (args: StructuredLyricsArgs) => {
     )?.(args);
 };
 
+const getSimilarSongs = async (args: SimilarSongsArgs) => {
+    return (
+        apiController(
+            'getSimilarSongs',
+            args.apiClientProps.server?.type,
+        ) as ControllerEndpoint['getSimilarSongs']
+    )?.(args);
+};
+
 export const controller = {
     addToPlaylist,
     authenticate,
@@ -575,6 +590,7 @@ export const controller = {
     getPlaylistSongList,
     getRandomSongList,
     getServerInfo,
+    getSimilarSongs,
     getSongDetail,
     getSongList,
     getStructuredLyrics,

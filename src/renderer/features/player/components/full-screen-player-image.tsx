@@ -1,7 +1,7 @@
 import { Flex, Stack, Group, Center } from '@mantine/core';
 import { useSetState } from '@mantine/hooks';
 import { AnimatePresence, HTMLMotionProps, motion, Variants } from 'framer-motion';
-import { useEffect, useRef, useLayoutEffect, useState, useCallback } from 'react';
+import { useEffect, useRef, useLayoutEffect, useState, useCallback, Fragment } from 'react';
 import { RiAlbumFill } from 'react-icons/ri';
 import { generatePath } from 'react-router';
 import { Link } from 'react-router-dom';
@@ -134,7 +134,7 @@ export const FullScreenPlayerImage = () => {
     const albumArtRes = useSettingsStore((store) => store.general.albumArtRes);
 
     const { queue } = usePlayerData();
-    const { opacity, useImageAspectRatio } = useFullScreenPlayerStore();
+    const { useImageAspectRatio } = useFullScreenPlayerStore();
     const currentSong = queue.current;
     const { color: background } = useFastAverageColor({
         algorithm: 'dominant',
@@ -250,7 +250,6 @@ export const FullScreenPlayerImage = () => {
             <MetadataContainer
                 className="full-screen-player-image-metadata"
                 maw="100%"
-                opacity={opacity}
                 spacing="xs"
                 w="100%"
             >
@@ -258,7 +257,6 @@ export const FullScreenPlayerImage = () => {
                     align="center"
                     order={1}
                     overflow="hidden"
-                    pb="0.5rem"
                     style={{
                         textShadow: 'var(--fullscreen-player-text-shadow)',
                     }}
@@ -279,49 +277,53 @@ export const FullScreenPlayerImage = () => {
                     to={generatePath(AppRoute.LIBRARY_ALBUMS_DETAIL, {
                         albumId: currentSong?.albumId || '',
                     })}
-                    transform="uppercase"
                     w="100%"
                     weight={600}
                 >
                     {currentSong?.album}{' '}
                 </TextTitle>
-                {currentSong?.artists?.map((artist, index) => (
-                    <TextTitle
-                        key={`fs-artist-${artist.id}`}
-                        align="center"
-                        order={3}
-                        style={{
-                            textShadow: 'var(--fullscreen-player-text-shadow)',
-                        }}
-                        transform="uppercase"
-                    >
-                        {index > 0 && (
+                <TextTitle
+                    key="fs-artists"
+                    align="center"
+                    order={3}
+                    style={{
+                        textShadow: 'var(--fullscreen-player-text-shadow)',
+                    }}
+                >
+                    {currentSong?.artists?.map((artist, index) => (
+                        <Fragment key={`fs-artist-${artist.id}`}>
+                            {index > 0 && (
+                                <Text
+                                    $secondary
+                                    sx={{
+                                        display: 'inline-block',
+                                        padding: '0 0.5rem',
+                                    }}
+                                >
+                                    •
+                                </Text>
+                            )}
                             <Text
-                                sx={{
-                                    display: 'inline-block',
-                                    padding: '0 0.5rem',
+                                $link
+                                $secondary
+                                component={Link}
+                                style={{
+                                    textShadow: 'var(--fullscreen-player-text-shadow)',
                                 }}
+                                to={generatePath(AppRoute.LIBRARY_ALBUM_ARTISTS_DETAIL, {
+                                    albumArtistId: artist.id,
+                                })}
+                                weight={600}
                             >
-                                •
+                                {artist.name}
                             </Text>
-                        )}
-                        <Text
-                            $link
-                            component={Link}
-                            style={{
-                                textShadow: 'var(--fullscreen-player-text-shadow)',
-                            }}
-                            to={generatePath(AppRoute.LIBRARY_ALBUM_ARTISTS_DETAIL, {
-                                albumArtistId: artist.id,
-                            })}
-                            transform="uppercase"
-                            weight={600}
-                        >
-                            {artist.name}
-                        </Text>
-                    </TextTitle>
-                ))}
-                <Group position="center">
+                        </Fragment>
+                    ))}
+                </TextTitle>
+                <Group
+                    mt="sm"
+                    position="center"
+                >
                     {currentSong?.container && (
                         <Badge size="lg">
                             {currentSong?.container} {currentSong?.bitRate}

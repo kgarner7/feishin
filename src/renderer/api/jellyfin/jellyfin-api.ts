@@ -3,7 +3,7 @@ import { jfType } from '/@/renderer/api/jellyfin/jellyfin-types';
 import { initClient, initContract } from '@ts-rest/core';
 import axios, { AxiosError, AxiosResponse, isAxiosError, Method } from 'axios';
 import qs from 'qs';
-import { ServerListItem } from '/@/renderer/types';
+import { ServerListItem } from '/@/renderer/api/types';
 import omitBy from 'lodash/omitBy';
 import { z } from 'zod';
 import { authenticationFailure } from '/@/renderer/api/utils';
@@ -173,6 +173,15 @@ export const contract = c.router({
         query: jfType._parameters.similarArtistList,
         responses: {
             200: jfType._response.albumArtistList,
+            400: jfType._response.error,
+        },
+    },
+    getSimilarSongs: {
+        method: 'GET',
+        path: 'items/:itemId/similar',
+        query: jfType._parameters.similarSongs,
+        responses: {
+            200: jfType._response.similarSongs,
             400: jfType._response.error,
         },
     },

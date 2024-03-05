@@ -355,6 +355,10 @@ const queue = z.object({
     userId: z.string(),
 });
 
+export enum NavidromeExtensions {
+    SMART_PLAYLISTS = 'smartPlaylists',
+}
+
 export const ndType = {
     _enum: {
         albumArtistList: ndAlbumArtistListSort,
