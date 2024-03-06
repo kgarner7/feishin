@@ -255,7 +255,7 @@ const extension = z.object({
 });
 
 const serverInfo = z.object({
-    openSubsonicExtensions: z.array(extension),
+    openSubsonicExtensions: z.array(extension).optional(),
 });
 
 const structuredLyricsParameters = z.object({

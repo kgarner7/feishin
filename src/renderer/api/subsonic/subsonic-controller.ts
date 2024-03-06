@@ -34,7 +34,7 @@ import {
     Song,
 } from '/@/renderer/api/types';
 import { randomString } from '/@/renderer/utils';
-import { ServerFeatures } from '/@/renderer/api/features.types';
+import { ServerFeatures } from '/@/renderer/api/features-types';
 
 const authenticate = async (
     url: string,
@@ -482,10 +482,7 @@ const getServerInfo = async (args: ServerInfoArgs): Promise<ServerInfo> => {
         throw new Error('Failed to ping server');
     }
 
-    const features: ServerFeatures = {
-        smartPlaylists: false,
-        songLyrics: false,
-    };
+    const features: ServerFeatures = {};
 
     if (!ping.body.openSubsonic || !ping.body.serverVersion) {
         return { features, version: ping.body.version };
@@ -498,12 +495,14 @@ const getServerInfo = async (args: ServerInfoArgs): Promise<ServerInfo> => {
     }
 
     const subsonicFeatures: Record<string, number[]> = {};
-    for (const extension of res.body.openSubsonicExtensions) {
-        subsonicFeatures[extension.name] = extension.versions;
+    if (Array.isArray(res.body.openSubsonicExtensions)) {
+        for (const extension of res.body.openSubsonicExtensions) {
+            subsonicFeatures[extension.name] = extension.versions;
+        }
     }
 
     if (subsonicFeatures[SubsonicExtensions.SONG_LYRICS]) {
-        features.songLyrics = true;
+        features.lyricsMultipleStructured = true;
     }
 
     return { features, id: apiClientProps.server?.id, version: ping.body.serverVersion };
