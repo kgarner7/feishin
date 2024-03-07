@@ -8,7 +8,7 @@ import isElectron from 'is-electron';
 import { nanoid } from 'nanoid/non-secure';
 import { AuthenticationResponse } from '/@/renderer/api/types';
 import { useAuthStoreActions } from '/@/renderer/store';
-import { toServerType } from '/@/renderer/types';
+import { ServerType, toServerType } from '/@/renderer/types';
 import { api } from '/@/renderer/api';
 import { useTranslation } from 'react-i18next';
 
