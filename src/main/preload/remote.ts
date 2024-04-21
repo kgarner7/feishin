@@ -28,10 +28,6 @@ const requestVolume = (cb: (event: IpcRendererEvent, data: { volume: number }) =
     ipcRenderer.on('request-volume', cb);
 };
 
-const requestSavePosition = (cb: (event: IpcRendererEvent) => void) => {
-    ipcRenderer.on('request-save-position', cb);
-};
-
 const requestSaveQueue = (cb: (event: IpcRendererEvent) => void) => {
     ipcRenderer.on('request-save-queue', cb);
 };
@@ -96,7 +92,6 @@ export const remote = {
     requestPosition,
     requestRating,
     requestRestoreQueue,
-    requestSavePosition,
     requestSaveQueue,
     requestSeek,
     requestVolume,

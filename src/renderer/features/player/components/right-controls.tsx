@@ -1,4 +1,4 @@
-import { MutableRefObject, useCallback, useEffect } from 'react';
+import { MutableRefObject, useCallback, useEffect, useRef } from 'react';
 import { Flex, Group } from '@mantine/core';
 import { useHotkeys, useMediaQuery } from '@mantine/hooks';
 import isElectron from 'is-electron';
@@ -11,7 +11,6 @@ import {
     RiVolumeMuteFill,
     RiHeartLine,
     RiHeartFill,
-    RiUploadCloud2Line,
     RiUploadCloud2Fill,
     RiDownloadCloud2Fill,
 } from 'react-icons/ri';
@@ -24,6 +23,7 @@ import {
     useMuted,
     usePlayerStore,
     usePreviousSong,
+    useSettingsStore,
     useSidebarStore,
     useSpeed,
     useVolume,
@@ -73,6 +73,9 @@ export const RightControls = ({ seekRef }: RightControlsProps) => {
     const addToFavoritesMutation = useCreateFavorite({});
     const removeFromFavoritesMutation = useDeleteFavorite({});
     const handlePlayQueueAdd = usePlayQueueAdd();
+    const autosave = useSettingsStore((state) => state.playback.autoSave);
+    const songCount = useRef(0);
+    const priorSongId = useRef<string | undefined>();
 
     const handleAddToFavorites = (song: QueueSong | undefined) => {
         if (!song?.id) return;
@@ -139,32 +142,6 @@ export const RightControls = ({ seekRef }: RightControlsProps) => {
     const isSongDefined = Boolean(currentSong?.id);
     const showRating = isSongDefined && server?.type === ServerType.NAVIDROME;
 
-    const handleSavePosition = useCallback(() => {
-        if (server === null) return;
-
-        const { current } = usePlayerStore.getState();
-
-        api.controller
-            .savePlayQueue2({
-                apiClientProps: { server },
-                query: {
-                    current: current.song?.id,
-                    currentIndex: current.index,
-                    positionMs: current.song ? Math.round(current.time * 1000) : undefined,
-                },
-            })
-            .then(() => {
-                return toast.success({ message: '', title: 'Saved play queue' });
-            })
-            .catch((error) => {
-                toast.error({
-                    message: 'This is most likely because your queue is too large (> 1000 tracks)',
-                    title: 'Failed to save play queue',
-                });
-                console.error(error);
-            });
-    }, [server]);
-
     const handleSaveQueue = useCallback(() => {
         if (server === null) return;
 
@@ -205,18 +182,39 @@ export const RightControls = ({ seekRef }: RightControlsProps) => {
             });
     }, [server]);
 
+    useEffect(() => {
+        if (autosave.enabled) {
+            if (currentSong?.uniqueId !== priorSongId.current) {
+                if (songCount.current === autosave.songCount - 1) {
+                    handleSaveQueue();
+                } else {
+                    songCount.current += 1;
+                }
+
+                priorSongId.current = currentSong?.uniqueId;
+            }
+        }
+    }, [autosave.enabled, autosave.songCount, currentSong?.uniqueId, handleSaveQueue]);
+
     const handleRestoreQueue = useCallback(async () => {
         if (server === null) return;
 
-        const queue = await api.controller.getPlayQueue({ apiClientProps: { server } });
-        if (queue && handlePlayQueueAdd) {
-            await handlePlayQueueAdd({
-                byData: queue.entry,
-                initialIndex: queue.currentIndex,
-                playType: Play.NOW,
-            });
+        try {
+            const queue = await api.controller.getPlayQueue({ apiClientProps: { server } });
+            if (queue && handlePlayQueueAdd) {
+                handlePlayQueueAdd({
+                    byData: queue.entry,
+                    initialIndex: queue.currentIndex,
+                    playType: Play.NOW,
+                });
+            }
 
             if (seekRef.current) seekRef.current(queue.position ? queue.position / 1000 : 0);
+        } catch (error) {
+            toast.error({
+                message: (error as Error).message,
+                title: 'Failed to get play queue',
+            });
         }
     }, [handlePlayQueueAdd, seekRef, server]);
 
@@ -286,10 +284,6 @@ export const RightControls = ({ seekRef }: RightControlsProps) => {
                 });
             });
 
-            remote.requestSavePosition(() => {
-                handleSavePosition();
-            });
-
             remote.requestSaveQueue(() => {
                 handleSaveQueue();
             });
@@ -301,7 +295,6 @@ export const RightControls = ({ seekRef }: RightControlsProps) => {
             return () => {
                 ipc?.removeAllListeners('request-favorite');
                 ipc?.removeAllListeners('request-rating');
-                ipc?.removeAllListeners('request-save-position');
                 ipc?.removeAllListeners('request-save-queue');
                 ipc?.removeAllListeners('request-restore-queue');
             };
@@ -311,7 +304,6 @@ export const RightControls = ({ seekRef }: RightControlsProps) => {
     }, [
         addToFavoritesMutation,
         handleRestoreQueue,
-        handleSavePosition,
         handleSaveQueue,
         removeFromFavoritesMutation,
         updateRatingMutation,
@@ -418,12 +410,6 @@ export const RightControls = ({ seekRef }: RightControlsProps) => {
                 />
                 {server && (
                     <>
-                        <PlayerButton
-                            icon={<RiUploadCloud2Line size="1.1rem" />}
-                            tooltip={{ label: 'Save queue position', openDelay: 500 }}
-                            variant="secondary"
-                            onClick={handleSavePosition}
-                        />
                         <PlayerButton
                             icon={<RiUploadCloud2Fill size="1.1rem" />}
                             tooltip={{ label: 'Save queue', openDelay: 500 }}

@@ -89,6 +89,58 @@ export const ScrobbleSettings = () => {
             }),
             title: t('setting.minimumScrobbleSeconds', { postProcess: 'sentenceCase' }),
         },
+        {
+            control: (
+                <Switch
+                    aria-label="Toggle autosave"
+                    defaultChecked={settings.autoSave.enabled}
+                    onChange={(e) => {
+                        setSettings({
+                            playback: {
+                                ...settings,
+                                autoSave: {
+                                    ...settings.autoSave,
+                                    enabled: e.currentTarget.checked,
+                                },
+                            },
+                        });
+                    }}
+                />
+            ),
+            description: t('setting.autoSave', {
+                context: 'description',
+                postProcess: 'sentenceCase',
+            }),
+            title: t('setting.autoSave', { postProcess: 'sentenceCase' }),
+        },
+        {
+            control: (
+                <NumberInput
+                    aria-label="Autosave tracks"
+                    defaultValue={settings.autoSave.songCount}
+                    min={1}
+                    width={75}
+                    onChange={(e) => {
+                        if (e === '') return;
+                        setSettings({
+                            playback: {
+                                ...settings,
+                                autoSave: {
+                                    ...settings.scrobble,
+                                    songCount: e,
+                                },
+                            },
+                        });
+                    }}
+                />
+            ),
+            description: t('setting.autoSaveCount', {
+                context: 'description',
+                postProcess: 'sentenceCase',
+            }),
+            isHidden: !settings.autoSave.enabled,
+            title: t('setting.autoSaveCount', { postProcess: 'sentenceCase' }),
+        },
     ];
 
     return <SettingsSection options={scrobbleOptions} />;

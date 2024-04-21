@@ -14,7 +14,6 @@ import {
     RiSkipBackFill,
     RiSkipForwardFill,
     RiUploadCloud2Fill,
-    RiUploadCloud2Line,
     RiVolumeUpFill,
 } from 'react-icons/ri';
 import { PlayerRepeat, PlayerStatus } from '/@/renderer/types';
@@ -173,18 +172,6 @@ export const RemoteContainer = () => {
                         </Grid.Col>
                     </MediaQuery>
                 )}
-                <Grid.Col
-                    md={3}
-                    span={4}
-                >
-                    <RemoteButton
-                        disabled={!song}
-                        tooltip="Save queue position"
-                        onClick={() => send({ event: 'savePosition' })}
-                    >
-                        <RiUploadCloud2Line size={25} />
-                    </RemoteButton>
-                </Grid.Col>
                 <Grid.Col
                     md={3}
                     span={4}

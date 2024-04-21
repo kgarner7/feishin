@@ -235,6 +235,10 @@ export interface SettingsState {
     };
     playback: {
         audioDeviceId?: string | null;
+        autoSave: {
+            enabled: boolean;
+            songCount: number;
+        };
         crossfadeDuration: number;
         crossfadeStyle: CrossfadeStyle;
         mpvExtraParameters: string[];
@@ -385,6 +389,10 @@ const initialState: SettingsState = {
     },
     playback: {
         audioDeviceId: undefined,
+        autoSave: {
+            enabled: false,
+            songCount: 10,
+        },
         crossfadeDuration: 5,
         crossfadeStyle: CrossfadeStyle.EQUALPOWER,
         mpvExtraParameters: [],
