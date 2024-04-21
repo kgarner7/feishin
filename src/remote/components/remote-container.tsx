@@ -61,6 +61,7 @@ export const RemoteContainer = () => {
             >
                 <Grid.Col span={4}>
                     <RemoteButton
+                        disabled={!song}
                         tooltip="Previous track"
                         onClick={() => send({ event: 'previous' })}
                     >
@@ -69,7 +70,8 @@ export const RemoteContainer = () => {
                 </Grid.Col>
                 <Grid.Col span={4}>
                     <RemoteButton
-                        tooltip={status === PlayerStatus.PLAYING ? 'Pause' : 'Play'}
+                        disabled={!song}
+                        tooltip={song && status === PlayerStatus.PLAYING ? 'Pause' : 'Play'}
                         onClick={() => {
                             if (status === PlayerStatus.PLAYING) {
                                 send({ event: 'pause' });
@@ -78,7 +80,7 @@ export const RemoteContainer = () => {
                             }
                         }}
                     >
-                        {status === PlayerStatus.PLAYING ? (
+                        {song && status === PlayerStatus.PLAYING ? (
                             <RiPauseFill size={25} />
                         ) : (
                             <RiPlayFill size={25} />
@@ -88,6 +90,7 @@ export const RemoteContainer = () => {
 
                 <Grid.Col span={4}>
                     <RemoteButton
+                        disabled={!song}
                         tooltip="Next track"
                         onClick={() => send({ event: 'next' })}
                     >

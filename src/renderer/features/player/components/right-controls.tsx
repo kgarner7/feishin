@@ -74,7 +74,7 @@ export const RightControls = ({ seekRef }: RightControlsProps) => {
     const removeFromFavoritesMutation = useDeleteFavorite({});
     const handlePlayQueueAdd = usePlayQueueAdd();
     const autosave = useSettingsStore((state) => state.playback.autoSave);
-    const songCount = useRef(0);
+    const songCount = useRef(1);
     const priorSongId = useRef<string | undefined>();
 
     const handleAddToFavorites = (song: QueueSong | undefined) => {
@@ -185,8 +185,9 @@ export const RightControls = ({ seekRef }: RightControlsProps) => {
     useEffect(() => {
         if (autosave.enabled) {
             if (currentSong?.uniqueId !== priorSongId.current) {
-                if (songCount.current === autosave.songCount - 1) {
+                if (songCount.current === autosave.songCount) {
                     handleSaveQueue();
+                    songCount.current = 1;
                 } else {
                     songCount.current += 1;
                 }
