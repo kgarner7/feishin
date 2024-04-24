@@ -355,6 +355,18 @@ const queue = z.object({
     userId: z.string(),
 });
 
+const shareItem = z.object({
+    id: z.string(),
+});
+
+const shareItemParameters = z.object({
+    description: z.string(),
+    downloadable: z.boolean(),
+    expires: z.number(),
+    resourceIds: z.string(),
+    resourceType: z.string(),
+});
+
 export const ndType = {
     _enum: {
         albumArtistList: ndAlbumArtistListSort,
@@ -373,6 +385,7 @@ export const ndType = {
         genreList: genreListParameters,
         playlistList: playlistListParameters,
         removeFromPlaylist: removeFromPlaylistParameters,
+        shareItem: shareItemParameters,
         songList: songListParameters,
         updatePlaylist: updatePlaylistParameters,
         userList: userListParameters,
@@ -395,6 +408,7 @@ export const ndType = {
         playlistSongList,
         queue,
         removeFromPlaylist,
+        shareItem,
         song,
         songList,
         updatePlaylist,
