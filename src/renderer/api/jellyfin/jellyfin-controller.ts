@@ -67,6 +67,7 @@ import { JFSongListSort, JFSortOrder } from '/@/renderer/api/jellyfin.types';
 import isElectron from 'is-electron';
 import { ServerFeature } from '/@/renderer/api/features-types';
 import { VersionInfo, getFeatures } from '/@/renderer/api/utils';
+import chunk from 'lodash/chunk';
 
 const formatCommaDelimitedString = (value: string[]) => {
     return value.join(',');
@@ -477,6 +478,11 @@ const getSongList = async (args: SongListArgs): Promise<SongListResponse> => {
     };
 };
 
+// Limit the query to 50 at a time to be *extremely* conservative on the
+// length of the full URL, since the ids are part of the query string and
+// not the POST body
+const MAX_ITEMS_PER_PLAYLIST_ADD = 50;
+
 const addToPlaylist = async (args: AddToPlaylistArgs): Promise<AddToPlaylistResponse> => {
     const { query, body, apiClientProps } = args;
 
@@ -484,19 +490,23 @@ const addToPlaylist = async (args: AddToPlaylistArgs): Promise<AddToPlaylistResp
         throw new Error('No userId found');
     }
 
-    const res = await jfApiClient(apiClientProps).addToPlaylist({
-        body: null,
-        params: {
-            id: query.id,
-        },
-        query: {
-            Ids: body.songId,
-            UserId: apiClientProps.server?.userId,
-        },
-    });
+    const chunks = chunk(body.songId, MAX_ITEMS_PER_PLAYLIST_ADD);
 
-    if (res.status !== 204) {
-        throw new Error('Failed to add to playlist');
+    for (const chunk of chunks) {
+        const res = await jfApiClient(apiClientProps).addToPlaylist({
+            body: null,
+            params: {
+                id: query.id,
+            },
+            query: {
+                Ids: chunk.join(','),
+                UserId: apiClientProps.server?.userId,
+            },
+        });
+
+        if (res.status !== 204) {
+            throw new Error('Failed to add to playlist');
+        }
     }
 
     return null;
@@ -507,18 +517,22 @@ const removeFromPlaylist = async (
 ): Promise<RemoveFromPlaylistResponse> => {
     const { query, apiClientProps } = args;
 
-    const res = await jfApiClient(apiClientProps).removeFromPlaylist({
-        body: null,
-        params: {
-            id: query.id,
-        },
-        query: {
-            EntryIds: query.songId,
-        },
-    });
+    const chunks = chunk(query.songId, MAX_ITEMS_PER_PLAYLIST_ADD);
 
-    if (res.status !== 204) {
-        throw new Error('Failed to remove from playlist');
+    for (const chunk of chunks) {
+        const res = await jfApiClient(apiClientProps).removeFromPlaylist({
+            body: null,
+            params: {
+                id: query.id,
+            },
+            query: {
+                EntryIds: chunk.join(','),
+            },
+        });
+
+        if (res.status !== 204) {
+            throw new Error('Failed to remove from playlist');
+        }
     }
 
     return null;

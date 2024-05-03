@@ -389,11 +389,13 @@ const genericItem = z.object({
     Name: z.string(),
 });
 
+const songDetailParameters = baseParameters;
+
 const song = z.object({
     Album: z.string(),
     AlbumArtist: z.string(),
     AlbumArtists: z.array(genericItem),
-    AlbumId: z.string(),
+    AlbumId: z.string().optional(),
     AlbumPrimaryImageTag: z.string(),
     ArtistItems: z.array(genericItem),
     Artists: z.array(z.string()),
@@ -609,14 +611,14 @@ const addToPlaylist = z.object({
 });
 
 const addToPlaylistParameters = z.object({
-    Ids: z.array(z.string()),
+    Ids: z.string(),
     UserId: z.string(),
 });
 
 const removeFromPlaylist = z.null();
 
 const removeFromPlaylistParameters = z.object({
-    EntryIds: z.array(z.string()),
+    EntryIds: z.string(),
 });
 
 const deletePlaylist = z.null();
@@ -737,6 +739,7 @@ export const jfType = {
         search: searchParameters,
         similarArtistList: similarArtistListParameters,
         similarSongs: similarSongsParameters,
+        songDetail: songDetailParameters,
         songList: songListParameters,
         updatePlaylist: updatePlaylistParameters,
     },
