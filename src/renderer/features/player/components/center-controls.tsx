@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { useHotkeys } from '@mantine/hooks';
 import { useQueryClient } from '@tanstack/react-query';
 import formatDuration from 'format-duration';
-import isElectron from 'is-electron';
 import { useTranslation } from 'react-i18next';
 import { IoIosPause } from 'react-icons/io';
 import {
@@ -134,7 +133,7 @@ export const CenterControls = ({ playersRef }: CenterControlsProps) => {
         let interval: any;
 
         if (status === PlayerStatus.PLAYING && !isSeeking) {
-            if (!isElectron() || playbackType === PlaybackType.WEB) {
+            if (!window.__TAURI__ || playbackType === PlaybackType.WEB) {
                 interval = setInterval(() => {
                     setCurrentTime(currentPlayerRef.getCurrentTime());
                 }, 1000);

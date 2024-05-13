@@ -24,9 +24,10 @@ import { PlaybackType } from '/@/renderer/types';
 import { useTranslation } from 'react-i18next';
 import { RiCloseLine, RiRestartLine } from 'react-icons/ri';
 import { usePlayerControls, usePlayerStore, useQueueControls } from '/@/renderer/store';
+import { getMpvPlayer } from '/@/renderer/api/tauri';
 
 const localSettings = isElectron() ? window.electron.localSettings : null;
-const mpvPlayer = isElectron() ? window.electron.mpvPlayer : null;
+const mpvPlayer = getMpvPlayer();
 
 export const getMpvSetting = (
     key: keyof SettingsState['playback']['mpvProperties'],

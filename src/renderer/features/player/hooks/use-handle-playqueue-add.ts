@@ -30,6 +30,7 @@ import {
 import { queryKeys } from '/@/renderer/api/query-keys';
 import { useTranslation } from 'react-i18next';
 import { PlayersRef } from '/@/renderer/features/player/ref/players-ref';
+import { getMpvPlayer } from '/@/renderer/api/tauri';
 
 const getRootQueryKey = (itemType: LibraryItem, serverId: string) => {
     let queryKey;
@@ -58,7 +59,7 @@ const getRootQueryKey = (itemType: LibraryItem, serverId: string) => {
     return queryKey;
 };
 
-const mpvPlayer = isElectron() ? window.electron.mpvPlayer : null;
+const mpvPlayer = getMpvPlayer();
 const remote = isElectron() ? window.electron.remote : null;
 
 const addToQueue = usePlayerStore.getState().actions.addToQueue;

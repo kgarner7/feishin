@@ -60,7 +60,6 @@ import { jfType } from '/@/renderer/api/jellyfin/jellyfin-types';
 import packageJson from '../../../../package.json';
 import { z } from 'zod';
 import { JFSongListSort, JFSortOrder } from '/@/renderer/api/jellyfin.types';
-import isElectron from 'is-electron';
 import { ServerFeature } from '/@/renderer/api/features-types';
 import { VersionInfo, getFeatures } from '/@/renderer/api/utils';
 import chunk from 'lodash/chunk';
@@ -70,7 +69,7 @@ const formatCommaDelimitedString = (value: string[]) => {
 };
 
 function getHostname(): string {
-    if (isElectron()) {
+    if (window.__TAURI__) {
         return 'Desktop Client';
     }
     const agent = navigator.userAgent;

@@ -17,8 +17,9 @@ import debounce from 'lodash/debounce';
 import { QueueSong } from '/@/renderer/api/types';
 import { toast } from '/@/renderer/components';
 import { useTranslation } from 'react-i18next';
+import { getMpvPlayer } from '/@/renderer/api/tauri';
 
-const mpvPlayer = isElectron() ? window.electron.mpvPlayer : null;
+const mpvPlayer = getMpvPlayer();
 const mpvPlayerListener = isElectron() ? window.electron.mpvPlayerListener : null;
 const ipc = isElectron() ? window.electron.ipc : null;
 const utils = isElectron() ? window.electron.utils : null;
@@ -74,7 +75,7 @@ export const useCenterControls = (args: { playersRef: any }) => {
         resetPlayers();
     }, [player1Ref, player2Ref, resetPlayers]);
 
-    const isMpvPlayer = isElectron() && playbackType === PlaybackType.LOCAL;
+    const isMpvPlayer = window.__TAURI__ && playbackType === PlaybackType.LOCAL;
 
     const mprisUpdateSong = (args?: {
         currentTime?: number;

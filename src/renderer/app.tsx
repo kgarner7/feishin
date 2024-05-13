@@ -26,12 +26,13 @@ import '@ag-grid-community/styles/ag-grid.css';
 import { useDiscordRpc } from '/@/renderer/features/discord-rpc/use-discord-rpc';
 import i18n from '/@/i18n/i18n';
 import { useServerVersion } from '/@/renderer/hooks/use-server-version';
+import { client, getMpvPlayer } from '/@/renderer/api/tauri';
 
 ModuleRegistry.registerModules([ClientSideRowModelModule, InfiniteRowModelModule]);
 
 initSimpleImg({ threshold: 0.05 }, true);
 
-const mpvPlayer = isElectron() ? window.electron.mpvPlayer : null;
+const mpvPlayer = getMpvPlayer();
 const ipc = isElectron() ? window.electron.ipc : null;
 const remote = isElectron() ? window.electron.remote : null;
 const utils = isElectron() ? window.electron.utils : null;
@@ -49,6 +50,10 @@ export const App = () => {
     const textStyleRef = useRef<HTMLStyleElement>();
     useDiscordRpc();
     useServerVersion();
+
+    useEffect(() => {
+        window.tauri = client;
+    }, []);
 
     useEffect(() => {
         if (type === FontType.SYSTEM && system) {
@@ -109,10 +114,14 @@ export const App = () => {
                         ...getMpvProperties(useSettingsStore.getState().playback.mpvProperties),
                     };
 
-                    await mpvPlayer?.initialize({
-                        extraParameters,
-                        properties,
-                    });
+                    try {
+                        await mpvPlayer?.initialize({
+                            extraParameters,
+                            properties,
+                        });
+                    } catch (error) {
+                        console.error('Failed to initialize', error);
+                    }
 
                     mpvPlayer?.volume(properties.volume);
                 }
@@ -121,7 +130,7 @@ export const App = () => {
             utils?.restoreQueue();
         };
 
-        if (isElectron()) {
+        if (window.__TAURI__) {
             initializeMpv();
         }
 

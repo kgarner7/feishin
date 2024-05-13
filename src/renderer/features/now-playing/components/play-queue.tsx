@@ -37,8 +37,9 @@ import { QUEUE_CONTEXT_MENU_ITEMS } from '/@/renderer/features/context-menu/cont
 import { VirtualGridAutoSizerContainer } from '/@/renderer/components/virtual-grid';
 import { useAppFocus } from '/@/renderer/hooks';
 import { PlayersRef } from '/@/renderer/features/player/ref/players-ref';
+import { getMpvPlayer } from '/@/renderer/api/tauri';
 
-const mpvPlayer = isElectron() ? window.electron.mpvPlayer : null;
+const mpvPlayer = getMpvPlayer();
 const remote = isElectron() ? window.electron.remote : null;
 
 type QueueProps = {

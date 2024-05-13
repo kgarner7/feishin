@@ -8,8 +8,9 @@ import {
     useVolume,
 } from '/@/renderer/store';
 import { useGeneralSettings } from '/@/renderer/store/settings.store';
+import { getMpvPlayer } from '/@/renderer/api/tauri';
 
-const mpvPlayer = isElectron() ? window.electron.mpvPlayer : null;
+const mpvPlayer = getMpvPlayer();
 const mpvPlayerListener = isElectron() ? window.electron.mpvPlayerListener : null;
 const ipc = isElectron() ? window.electron.ipc : null;
 const remote = isElectron() ? window.electron.remote : null;

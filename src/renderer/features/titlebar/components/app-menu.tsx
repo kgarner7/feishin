@@ -32,7 +32,7 @@ import {
 import { ServerListItem, ServerType } from '/@/renderer/api/types';
 import packageJson from '../../../../../package.json';
 
-const browser = isElectron() ? window.electron.browser : null;
+const browser = window.__TAURI__?.window;
 const localSettings = isElectron() ? window.electron.localSettings : null;
 
 export const AppMenu = () => {
@@ -93,7 +93,7 @@ export const AppMenu = () => {
     };
 
     const handleQuit = () => {
-        browser?.quit();
+        browser?.appWindow.close();
     };
 
     return (

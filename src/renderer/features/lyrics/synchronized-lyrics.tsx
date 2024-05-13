@@ -12,8 +12,9 @@ import isElectron from 'is-electron';
 import { PlayersRef } from '/@/renderer/features/player/ref/players-ref';
 import { FullLyricsMetadata, SynchronizedLyricsArray } from '/@/renderer/api/types';
 import styled from 'styled-components';
+import { getMpvPlayer } from '/@/renderer/api/tauri';
 
-const mpvPlayer = isElectron() ? window.electron.mpvPlayer : null;
+const mpvPlayer = getMpvPlayer();
 
 const SynchronizedLyricsContainer = styled.div<{ $gap: number }>`
     display: flex;

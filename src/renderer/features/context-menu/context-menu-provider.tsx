@@ -58,6 +58,7 @@ import {
 import { usePlaybackType } from '/@/renderer/store/settings.store';
 import { Play, PlaybackType } from '/@/renderer/types';
 import { ItemDetailsModal } from '/@/renderer/features/item-details/components/item-details-modal';
+import { getMpvPlayer } from '/@/renderer/api/tauri';
 
 type ContextMenuContextProps = {
     closeContextMenu: () => void;
@@ -85,7 +86,7 @@ const JELLYFIN_IGNORED_MENU_ITEMS: ContextMenuItemType[] = ['setRating', 'shareI
 // const NAVIDROME_IGNORED_MENU_ITEMS: ContextMenuItemType[] = [];
 // const SUBSONIC_IGNORED_MENU_ITEMS: ContextMenuItemType[] = [];
 
-const mpvPlayer = isElectron() ? window.electron.mpvPlayer : null;
+const mpvPlayer = getMpvPlayer();
 const remote = isElectron() ? window.electron.remote : null;
 
 export interface ContextMenuProviderProps {

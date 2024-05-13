@@ -1,0 +1,14 @@
+diff --git a/node_modules/@tauri-apps/api/tauri.d.ts b/node_modules/@tauri-apps/api/tauri.d.ts
+index 382df7c..4bfa488 100644
+--- a/node_modules/@tauri-apps/api/tauri.d.ts
++++ b/node_modules/@tauri-apps/api/tauri.d.ts
+@@ -11,9 +11,6 @@ declare global {
+         ipc: {
+             postMessage: (args: string) => void;
+         };
+-        __TAURI__: {
+-            convertFileSrc: (src: string, protocol: string) => string;
+-        };
+     }
+ }
+ /**

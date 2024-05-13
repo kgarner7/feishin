@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { SelectItem } from '@mantine/core';
-import isElectron from 'is-electron';
 import { Select, Slider, toast } from '/@/renderer/components';
 import {
     SettingsSection,
@@ -10,8 +9,9 @@ import { useCurrentStatus, usePlayerStore } from '/@/renderer/store';
 import { usePlaybackSettings, useSettingsStoreActions } from '/@/renderer/store/settings.store';
 import { PlaybackType, PlayerStatus, PlaybackStyle, CrossfadeStyle } from '/@/renderer/types';
 import { useTranslation } from 'react-i18next';
+import { getMpvPlayer } from '/@/renderer/api/tauri';
 
-const mpvPlayer = isElectron() ? window.electron.mpvPlayer : null;
+const mpvPlayer = getMpvPlayer();
 
 const getAudioDevice = async () => {
     const devices = await navigator.mediaDevices.enumerateDevices();
@@ -50,7 +50,7 @@ export const AudioSettings = ({ hasFancyAudio }: { hasFancyAudio: boolean }) => 
                 <Select
                     data={[
                         {
-                            disabled: !isElectron(),
+                            disabled: !window.__TAURI__,
                             label: 'MPV',
                             value: PlaybackType.LOCAL,
                         },
@@ -60,7 +60,7 @@ export const AudioSettings = ({ hasFancyAudio }: { hasFancyAudio: boolean }) => 
                     disabled={status === PlayerStatus.PLAYING}
                     onChange={(e) => {
                         setSettings({ playback: { ...settings, type: e as PlaybackType } });
-                        if (isElectron() && e === PlaybackType.LOCAL) {
+                        if (window.__TAURI__ && e === PlaybackType.LOCAL) {
                             const queueData = usePlayerStore.getState().actions.getPlayerData();
                             mpvPlayer!.setQueue(queueData);
                         }
@@ -71,7 +71,7 @@ export const AudioSettings = ({ hasFancyAudio }: { hasFancyAudio: boolean }) => 
                 context: 'description',
                 postProcess: 'sentenceCase',
             }),
-            isHidden: !isElectron(),
+            isHidden: !window.__TAURI__,
             note:
                 status === PlayerStatus.PLAYING
                     ? t('common.playerMustBePaused', { postProcess: 'sentenceCase' })
@@ -92,7 +92,7 @@ export const AudioSettings = ({ hasFancyAudio }: { hasFancyAudio: boolean }) => 
                 context: 'description',
                 postProcess: 'sentenceCase',
             }),
-            isHidden: !isElectron() || settings.type !== PlaybackType.WEB,
+            isHidden: !window.__TAURI__ || settings.type !== PlaybackType.WEB,
             title: t('setting.audioDevice', { postProcess: 'sentenceCase' }),
         },
         {

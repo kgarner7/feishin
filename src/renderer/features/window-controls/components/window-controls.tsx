@@ -1,9 +1,8 @@
 import { useState } from 'react';
-import isElectron from 'is-electron';
 import { RiCheckboxBlankLine, RiCloseLine, RiSubtractLine } from 'react-icons/ri';
 import styled from 'styled-components';
 
-const browser = isElectron() ? window.electron.browser : null;
+const browser = window.__TAURI__?.window.appWindow;
 
 interface WindowControlsProps {
     style?: 'macos' | 'windows' | 'linux';
@@ -35,7 +34,7 @@ export const WindowsButton = styled.div<{ $exit?: boolean }>`
     }
 `;
 
-const close = () => browser?.exit();
+const close = () => browser?.close();
 
 const minimize = () => browser?.minimize();
 
@@ -61,7 +60,7 @@ export const WindowControls = ({ style }: WindowControlsProps) => {
 
     return (
         <>
-            {isElectron() && (
+            {browser && (
                 <>
                     {style === 'windows' && (
                         <WindowsButtonGroup>

@@ -17,7 +17,7 @@
         "package": "ts-node ./.erb/scripts/clean.js dist && npm run build && electron-builder build --publish never",
         "package:pr": "ts-node ./.erb/scripts/clean.js dist && npm run build && electron-builder build --publish never --win --mac --linux",
         "package:dev": "ts-node ./.erb/scripts/clean.js dist && npm run build && electron-builder build --publish never --dir",
-        "postinstall": "ts-node .erb/scripts/check-native-dep.js && electron-builder install-app-deps && cross-env NODE_ENV=development TS_NODE_TRANSPILE_ONLY=true webpack --config ./.erb/configs/webpack.config.renderer.dev.dll.ts",
+        "postinstall": "ts-node .erb/scripts/check-native-dep.js && electron-builder install-app-deps && cross-env NODE_ENV=development TS_NODE_TRANSPILE_ONLY=true webpack --config ./.erb/configs/webpack.config.renderer.dev.dll.ts && patch-package",
         "start": "ts-node ./.erb/scripts/check-port-in-use.js && npm run start:renderer",
         "start:main": "cross-env NODE_ENV=development electron -r ts-node/register/transpile-only ./src/main/main.ts",
         "start:preload": "cross-env NODE_ENV=development TS_NODE_TRANSPILE_ONLY=true webpack --config ./.erb/configs/webpack.config.preload.dev.ts",
@@ -28,7 +28,9 @@
         "prepare": "husky install",
         "i18next": "i18next -c src/i18n/i18next-parser.config.js",
         "prod:buildserver": "pwsh -c \"./scripts/server-build.ps1\"",
-        "prod:publishserver": "pwsh -c \"./scripts/server-publish.ps1\""
+        "prod:publishserver": "pwsh -c \"./scripts/server-publish.ps1\"",
+        "tauri": "tauri",
+        "tauri-dev": "tauri dev -- -p desktop"
     },
     "lint-staged": {
         "*.{js,jsx,ts,tsx}": [
@@ -202,6 +204,8 @@
         "@electron/rebuild": "^3.2.10",
         "@pmmmwh/react-refresh-webpack-plugin": "0.5.5",
         "@stylelint/postcss-css-in-js": "^0.38.0",
+        "@tauri-apps/api": "^1.5.5",
+        "@tauri-apps/cli": "^1.5.13",
         "@teamsupercell/typings-for-css-modules-loader": "^2.5.1",
         "@testing-library/jest-dom": "^5.16.4",
         "@testing-library/react": "^13.0.0",
@@ -258,6 +262,7 @@
         "jest": "^27.5.1",
         "lint-staged": "^12.3.7",
         "mini-css-extract-plugin": "^2.6.0",
+        "patch-package": "^8.0.0",
         "postcss-scss": "^4.0.4",
         "postcss-styled-syntax": "^0.5.0",
         "postcss-syntax": "^0.36.2",
@@ -303,6 +308,8 @@
         "@mantine/modals": "^6.0.17",
         "@mantine/notifications": "^6.0.17",
         "@mantine/utils": "^6.0.17",
+        "@rspc/client": "^0.2.0",
+        "@rspc/tauri": "^0.2.0",
         "@tanstack/react-query": "^4.32.1",
         "@tanstack/react-query-devtools": "^4.32.1",
         "@tanstack/react-query-persist-client": "^4.32.1",

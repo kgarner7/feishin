@@ -1,3 +1,4 @@
+import type TauriAPI from '@tauri-apps/api';
 import { IpcRendererEvent } from 'electron';
 import { PlayerData, PlayerState } from './store';
 import { FontData, InternetProviderLyricResponse, QueueSong } from '/@/renderer/api/types';
@@ -17,6 +18,7 @@ declare global {
         SERVER_NAME?: string;
         SERVER_TYPE?: string;
         SERVER_URL?: string;
+        __TAURI__?: typeof TauriAPI;
         electron: {
             browser: Browser;
             discordRpc: DiscordRpc;

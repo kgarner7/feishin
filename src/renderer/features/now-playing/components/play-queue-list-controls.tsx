@@ -18,8 +18,9 @@ import { PlaybackType, PlayerStatus, TableType } from '/@/renderer/types';
 import { usePlaybackType } from '/@/renderer/store/settings.store';
 import { usePlayerStore, useSetCurrentTime } from '../../../store/player.store';
 import { TableConfigDropdown } from '/@/renderer/components/virtual-table';
+import { getMpvPlayer } from '/@/renderer/api/tauri';
 
-const mpvPlayer = isElectron() ? window.electron.mpvPlayer : null;
+const mpvPlayer = getMpvPlayer();
 const remote = isElectron() ? window.electron.remote : null;
 
 interface PlayQueueListOptionsProps {

@@ -1,7 +1,6 @@
 import { lazy } from 'react';
 import { Tabs } from '/@/renderer/components';
 import { useSettingsStore, useSettingsStoreActions } from '/@/renderer/store/settings.store';
-import isElectron from 'is-electron';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
@@ -60,7 +59,7 @@ export const SettingsContent = () => {
                     <Tabs.Tab value="hotkeys">
                         {t('page.setting.hotkeysTab', { postProcess: 'sentenceCase' })}
                     </Tabs.Tab>
-                    {isElectron() && (
+                    {window.__TAURI__ && (
                         <Tabs.Tab value="window">
                             {t('page.setting.windowTab', { postProcess: 'sentenceCase' })}
                         </Tabs.Tab>
@@ -75,7 +74,7 @@ export const SettingsContent = () => {
                 <Tabs.Panel value="hotkeys">
                     <HotkeysTab />
                 </Tabs.Panel>
-                {isElectron() && (
+                {window.__TAURI__ && (
                     <Tabs.Panel value="window">
                         <ApplicationTab />
                     </Tabs.Panel>
