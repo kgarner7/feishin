@@ -36,7 +36,7 @@ export const RemoteContainer = () => {
 
     return (
         <>
-            {song && (
+            {id && (
                 <>
                     <Title order={1}>{song.name}</Title>
                     <Group align="flex-end">
