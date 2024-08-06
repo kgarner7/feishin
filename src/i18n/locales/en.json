@@ -322,6 +322,7 @@
             "moveToTop": "$t(action.moveToTop)",
             "numberSelected": "{{count}} selected",
             "play": "$t(player.play)",
+            "playAfterAlbum": "$t(player.playAfterAlbum)",
             "playSimilarSongs": "$t(player.playSimilarSongs)",
             "removeFromFavorites": "$t(action.removeFromFavorites)",
             "removeFromPlaylist": "$t(action.removeFromPlaylist)",
@@ -407,6 +408,7 @@
     "player": {
         "addLast": "add last",
         "addNext": "add next",
+        "playAfterAlbum": "add after current album",
         "favorite": "favorite",
         "mute": "mute",
         "muted": "muted",
@@ -570,6 +572,7 @@
         "playButtonBehavior_optionAddLast": "$t(player.addLast)",
         "playButtonBehavior_optionAddNext": "$t(player.addNext)",
         "playButtonBehavior_optionPlay": "$t(player.play)",
+        "playButtonBehavior_optionAddAfterAlbum": "$t(player.playAfterAlbum)",
         "playerAlbumArtResolution": "player album art resolution",
         "playerAlbumArtResolution_description": "the resolution for the large player's album art preview. larger makes it look more crisp, but may slow loading down. defaults to 0, meaning auto",
         "remotePassword": "remote control server password",

@@ -207,6 +207,45 @@ export const usePlayerStore = create<PlayerSlice>()(
                                         state.queue.shuffled = [];
                                     });
                                 }
+                            } else if (playType === Play.ALBUM) {
+                                let currentIndex = get().current.index;
+
+                                const unshuffledAlbumId = queue[currentIndex].albumId;
+
+                                do {
+                                    currentIndex += 1;
+                                } while (
+                                    currentIndex < queue.length &&
+                                    queue[currentIndex].albumId === unshuffledAlbumId
+                                );
+
+                                const defaultState = [
+                                    ...queue.slice(0, currentIndex),
+                                    ...songsToAddToQueue,
+                                    ...queue.slice(currentIndex),
+                                ];
+
+                                if (get().shuffle === PlayerShuffle.TRACK) {
+                                    const shuffledIndex = get().current.shuffledIndex;
+                                    const shuffledQueue = get().queue.shuffled;
+
+                                    // Shuffle the queue after the current track
+                                    const shuffledQueueWithNewSongs = [
+                                        ...shuffledQueue.slice(0, shuffledIndex + 1),
+                                        ...shuffle(songsToAddToQueue.map((song) => song.uniqueId)),
+                                        ...shuffledQueue.slice(shuffledIndex + 1),
+                                    ];
+
+                                    set((state) => {
+                                        state.queue.default = defaultState;
+                                        state.queue.shuffled = shuffledQueueWithNewSongs;
+                                    });
+                                } else {
+                                    set((state) => {
+                                        state.queue.default = defaultState;
+                                        state.queue.shuffled = [];
+                                    });
+                                }
                             }
 
                             return get().actions.getPlayerData();
@@ -1054,7 +1093,7 @@ export const usePlayerData = () =>
     usePlayerStore(
         (state) => state.actions.getPlayerData(),
         (a, b) => {
-            return a.current.nextIndex === b.current.nextIndex;
+            return a.current.song?.uniqueId === b.current.song?.uniqueId;
         },
     );
 

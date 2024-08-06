@@ -30,6 +30,7 @@ import {
     RiShareForwardFill,
     RiInformationFill,
     RiRadio2Fill,
+    RiAlbumFill,
 } from 'react-icons/ri';
 import { AnyLibraryItems, LibraryItem, ServerType, AnyLibraryItem } from '/@/renderer/api/types';
 import {
@@ -721,6 +722,12 @@ export const ContextMenuProvider = ({ children }: ContextMenuProviderProps) => {
                 label: t('page.contextMenu.play', { postProcess: 'sentenceCase' }),
                 leftIcon: <RiPlayFill size="1.1rem" />,
                 onClick: () => handlePlay(Play.NOW),
+            },
+            playAfterAlbum: {
+                id: 'playNextAlbum',
+                label: t('page.contextMenu.playAfterAlbum', { postProcess: 'sentenceCase' }),
+                leftIcon: <RiAlbumFill size="1.1rem" />,
+                onClick: () => handlePlay(Play.ALBUM),
             },
             playLast: {
                 id: 'playLast',

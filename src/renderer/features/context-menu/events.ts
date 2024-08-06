@@ -23,6 +23,7 @@ export type ContextMenuItemType =
     | 'play'
     | 'playLast'
     | 'playNext'
+    | 'playAfterAlbum'
     | 'addToPlaylist'
     | 'removeFromPlaylist'
     | 'addToFavorites'

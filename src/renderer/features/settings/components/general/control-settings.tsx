@@ -214,6 +214,13 @@ export const ControlSettings = () => {
                             }),
                             value: Play.LAST,
                         },
+                        {
+                            label: t('setting.playButtonBehavior', {
+                                context: 'optionAddAfterAlbum',
+                                postProcess: 'titleCase',
+                            }),
+                            value: Play.ALBUM,
+                        },
                     ]}
                     defaultValue={settings.playButtonBehavior}
                     onChange={(e) =>
