@@ -237,6 +237,7 @@ const SongPropertyMapping: ItemDetailRow<Song>[] = [
     { key: 'bitRate', label: 'common.bitrate', render: (song) => `${song.bitRate} kbps` },
     { key: 'channels', label: 'common.channel_other' },
     { key: 'size', label: 'common.size', render: (song) => formatSizeString(song.size) },
+    { key: 'bpm', label: 'common.bpm' },
     {
         label: 'common.favorite',
         render: (song) => BoolField(song.userFavorite),

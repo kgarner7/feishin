@@ -14,6 +14,7 @@ import {
     RiEditFill,
     RiDeleteBinFill,
     RiRefreshLine,
+    RiAlbumFill,
 } from 'react-icons/ri';
 import { api } from '/@/renderer/api';
 import { queryKeys } from '/@/renderer/api/query-keys';
@@ -456,6 +457,12 @@ export const PlaylistDetailSongListHeaderFilters = ({
                             onClick={() => handlePlay(Play.NEXT)}
                         >
                             {t('player.addNext', { postProcess: 'sentenceCase' })}
+                        </DropdownMenu.Item>
+                        <DropdownMenu.Item
+                            icon={<RiAlbumFill />}
+                            onClick={() => handlePlay(Play.ALBUM)}
+                        >
+                            {t('player.afterAlbum', { postProcess: 'sentenceCase' })}
                         </DropdownMenu.Item>
                         <DropdownMenu.Divider />
                         <DropdownMenu.Item

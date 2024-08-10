@@ -688,6 +688,12 @@ export const ContextMenuProvider = ({ children }: ContextMenuProviderProps) => {
                 leftIcon: <RiPlayListAddFill size="1.1rem" />,
                 onClick: handleAddToPlaylist,
             },
+            afterAlbum: {
+                id: 'playNextAlbum',
+                label: t('page.contextMenu.afterAlbum', { postProcess: 'sentenceCase' }),
+                leftIcon: <RiAlbumFill size="1.1rem" />,
+                onClick: () => handlePlay(Play.ALBUM),
+            },
             createPlaylist: {
                 id: 'createPlaylist',
                 label: t('page.contextMenu.createPlaylist', { postProcess: 'sentenceCase' }),
@@ -722,12 +728,6 @@ export const ContextMenuProvider = ({ children }: ContextMenuProviderProps) => {
                 label: t('page.contextMenu.play', { postProcess: 'sentenceCase' }),
                 leftIcon: <RiPlayFill size="1.1rem" />,
                 onClick: () => handlePlay(Play.NOW),
-            },
-            playAfterAlbum: {
-                id: 'playNextAlbum',
-                label: t('page.contextMenu.playAfterAlbum', { postProcess: 'sentenceCase' }),
-                leftIcon: <RiAlbumFill size="1.1rem" />,
-                onClick: () => handlePlay(Play.ALBUM),
             },
             playLast: {
                 id: 'playLast',

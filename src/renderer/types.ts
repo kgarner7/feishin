@@ -106,6 +106,7 @@ export enum PlayerShuffle {
 }
 
 export enum Play {
+    ALBUM = 'album',
     LAST = 'last',
     NEXT = 'next',
     NOW = 'now',

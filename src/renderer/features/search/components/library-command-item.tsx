@@ -189,6 +189,18 @@ export const LibraryCommandItem = ({
                 >
                     <RiAddCircleFill />
                 </Button>
+                <Button
+                    compact
+                    size="md"
+                    tooltip={{
+                        label: t('player.afterAlbum', { postProcess: 'sentenceCase' }),
+                        openDelay: 500,
+                    }}
+                    variant="default"
+                    onClick={(e) => handlePlay(e, id, Play.ALBUM)}
+                >
+                    <RiAlbumFill />
+                </Button>
             </ActionsContainer>
         </Item>
     );
