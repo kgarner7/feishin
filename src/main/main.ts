@@ -673,3 +673,7 @@ if (!ipcMain.eventNames().includes('open-item')) {
         });
     });
 }
+
+process.on('unhandledRejection', (reason, p) => {
+    console.error('unhandled rejection at: Promise', p, 'reason', reason);
+});
