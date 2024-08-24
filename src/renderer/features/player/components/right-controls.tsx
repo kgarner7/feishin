@@ -68,6 +68,7 @@ export const RightControls = ({ seekRef }: RightControlsProps) => {
     const { open } = useLyricsStore();
 
     const speed = useSpeed();
+    const volumeWidth = useSettingsStore((state) => state.general.volumeWidth);
 
     const updateRatingMutation = useSetRating({});
     const addToFavoritesMutation = useCreateFavorite({});
@@ -472,7 +473,7 @@ export const RightControls = ({ seekRef }: RightControlsProps) => {
                             min={0}
                             size={6}
                             value={volume}
-                            w="60px"
+                            w={volumeWidth}
                             onChange={handleVolumeSlider}
                             onWheel={handleVolumeWheel}
                         />

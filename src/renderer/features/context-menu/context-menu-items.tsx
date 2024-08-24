@@ -9,6 +9,7 @@ export const QUEUE_CONTEXT_MENU_ITEMS: SetContextMenuItems = [
     { divider: true, id: 'removeFromFavorites' },
     { children: true, disabled: false, id: 'setRating' },
     { disabled: false, id: 'deselectAll' },
+    { divider: true, id: 'shareItem' },
     { divider: true, id: 'showDetails' },
 ];
 
@@ -45,6 +46,7 @@ export const PLAYLIST_SONG_CONTEXT_MENU_ITEMS: SetContextMenuItems = [
     { id: 'addToFavorites' },
     { divider: true, id: 'removeFromFavorites' },
     { children: true, disabled: false, id: 'setRating' },
+    { divider: true, id: 'shareItem' },
     { divider: true, id: 'showDetails' },
 ];
 
@@ -58,6 +60,7 @@ export const SMART_PLAYLIST_SONG_CONTEXT_MENU_ITEMS: SetContextMenuItems = [
     { id: 'addToFavorites' },
     { divider: true, id: 'removeFromFavorites' },
     { children: true, disabled: false, id: 'setRating' },
+    { divider: true, id: 'shareItem' },
     { divider: true, id: 'showDetails' },
 ];
 
@@ -91,6 +94,7 @@ export const ARTIST_CONTEXT_MENU_ITEMS: SetContextMenuItems = [
     { id: 'addToFavorites' },
     { divider: true, id: 'removeFromFavorites' },
     { children: true, disabled: false, id: 'setRating' },
+    { divider: true, id: 'shareItem' },
     { divider: true, id: 'showDetails' },
 ];
 
@@ -99,5 +103,5 @@ export const PLAYLIST_CONTEXT_MENU_ITEMS: SetContextMenuItems = [
     { id: 'playLast' },
     { id: 'playNext' },
     { divider: true, id: 'afterAlbum' },
-    { id: 'deletePlaylist' },
+    { divider: true, id: 'shareItem' },
 ];

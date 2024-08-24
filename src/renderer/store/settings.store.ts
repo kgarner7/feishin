@@ -181,6 +181,7 @@ export interface SettingsState {
         clientId: string;
         enableIdle: boolean;
         enabled: boolean;
+        showAsListening: boolean;
         showServerImage: boolean;
         updateInterval: number;
     };
@@ -220,6 +221,7 @@ export interface SettingsState {
         themeDark: AppTheme;
         themeLight: AppTheme;
         volumeWheelStep: number;
+        volumeWidth: number;
         zoomFactor: number;
     };
     hotkeys: {
@@ -309,6 +311,7 @@ const initialState: SettingsState = {
         clientId: '1165957668758900787',
         enableIdle: false,
         enabled: false,
+        showAsListening: false,
         showServerImage: false,
         updateInterval: 15,
     },
@@ -348,6 +351,7 @@ const initialState: SettingsState = {
         themeDark: AppTheme.DEFAULT_DARK,
         themeLight: AppTheme.DEFAULT_LIGHT,
         volumeWheelStep: 5,
+        volumeWidth: 60,
         zoomFactor: 100,
     },
     hotkeys: {
