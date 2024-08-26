@@ -1225,3 +1225,22 @@ export type SimilarSongsQuery = {
 export type SimilarSongsArgs = {
     query: SimilarSongsQuery;
 } & BaseEndpointArgs;
+
+export type MoveItemQuery = {
+    endingIndex: number;
+    playlistId: string;
+    startingIndex: number;
+    trackId: string;
+};
+
+export type MoveItemArgs = {
+    query: MoveItemQuery;
+} & BaseEndpointArgs;
+
+export type DownloadQuery = {
+    id: string;
+};
+
+export type DownloadArgs = {
+    query: DownloadQuery;
+} & BaseEndpointArgs;

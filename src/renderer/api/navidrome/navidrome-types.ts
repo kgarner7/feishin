@@ -367,6 +367,12 @@ const shareItemParameters = z.object({
     resourceType: z.string(),
 });
 
+const moveItemParameters = z.object({
+    insert_before: z.string(),
+});
+
+const moveItem = z.null();
+
 export const ndType = {
     _enum: {
         albumArtistList: ndAlbumArtistListSort,
@@ -383,6 +389,7 @@ export const ndType = {
         authenticate: authenticateParameters,
         createPlaylist: createPlaylistParameters,
         genreList: genreListParameters,
+        moveItem: moveItemParameters,
         playlistList: playlistListParameters,
         removeFromPlaylist: removeFromPlaylistParameters,
         shareItem: shareItemParameters,
@@ -402,6 +409,7 @@ export const ndType = {
         error,
         genre,
         genreList,
+        moveItem,
         playlist,
         playlistList,
         playlistSong,

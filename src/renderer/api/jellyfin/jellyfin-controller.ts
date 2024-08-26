@@ -57,6 +57,8 @@ import {
     ServerInfoArgs,
     SimilarSongsArgs,
     Song,
+    MoveItemArgs,
+    DownloadArgs,
 } from '/@/renderer/api/types';
 import { jfApiClient } from '/@/renderer/api/jellyfin/jellyfin-api';
 import { jfNormalize } from './jellyfin-normalize';
@@ -1104,6 +1106,29 @@ const getSimilarSongs = async (args: SimilarSongsArgs): Promise<Song[]> => {
     }, []);
 };
 
+const movePlaylistItem = async (args: MoveItemArgs): Promise<void> => {
+    const { apiClientProps, query } = args;
+
+    const res = await jfApiClient(apiClientProps).movePlaylistItem({
+        body: null,
+        params: {
+            itemId: query.trackId,
+            newIdx: query.endingIndex.toString(),
+            playlistId: query.playlistId,
+        },
+    });
+
+    if (res.status !== 204) {
+        throw new Error('Failed to move item in playlist');
+    }
+};
+
+const getDownloadUrl = (args: DownloadArgs) => {
+    const { apiClientProps, query } = args;
+
+    return `${apiClientProps.server?.url}/items/${query.id}/download?api_key=${apiClientProps.server?.credential}`;
+};
+
 export const jfController = {
     addToPlaylist,
     authenticate,
@@ -1116,6 +1141,7 @@ export const jfController = {
     getAlbumDetail,
     getAlbumList,
     getArtistList,
+    getDownloadUrl,
     getGenreList,
     getLyrics,
     getMusicFolderList,
@@ -1129,6 +1155,7 @@ export const jfController = {
     getSongDetail,
     getSongList,
     getTopSongList,
+    movePlaylistItem,
     removeFromPlaylist,
     savePlayQueue,
     scrobble,

@@ -60,6 +60,11 @@ const FILTERS = {
     jellyfin: [
         {
             defaultOrder: SortOrder.ASC,
+            name: i18n.t('filter.id', { postProcess: 'titleCase' }),
+            value: SongListSort.ID,
+        },
+        {
+            defaultOrder: SortOrder.ASC,
             name: i18n.t('filter.album', { postProcess: 'titleCase' }),
             value: SongListSort.ALBUM,
         },
@@ -404,6 +409,9 @@ export const PlaylistDetailSongListHeaderFilters = ({
                             compact
                             fw="600"
                             size="md"
+                            tooltip={{
+                                label: t('page.playlist.reorder', { postProcess: 'sentenceCase' }),
+                            }}
                             variant="subtle"
                         >
                             {sortByLabel}
@@ -422,6 +430,7 @@ export const PlaylistDetailSongListHeaderFilters = ({
                         ))}
                     </DropdownMenu.Dropdown>
                 </DropdownMenu>
+
                 <Divider orientation="vertical" />
                 <OrderToggleButton
                     sortOrder={filters.sortOrder || SortOrder.ASC}

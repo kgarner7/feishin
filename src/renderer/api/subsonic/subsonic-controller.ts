@@ -32,6 +32,7 @@ import {
     StructuredLyric,
     SimilarSongsArgs,
     Song,
+    DownloadArgs,
 } from '/@/renderer/api/types';
 import { randomString } from '/@/renderer/utils';
 import { ServerFeatures } from '/@/renderer/api/features-types';
@@ -580,10 +581,23 @@ const getSimilarSongs = async (args: SimilarSongsArgs): Promise<Song[]> => {
     }, []);
 };
 
+const getDownloadUrl = (args: DownloadArgs) => {
+    const { apiClientProps, query } = args;
+
+    return (
+        `${apiClientProps.server?.url}/rest/download.view` +
+        `?id=${query.id}` +
+        `&${apiClientProps.server?.credential}` +
+        '&v=1.13.0' +
+        '&c=feishin'
+    );
+};
+
 export const ssController = {
     authenticate,
     createFavorite,
     getArtistInfo,
+    getDownloadUrl,
     getMusicFolderList,
     getPlayQueue,
     getPlayQueue2,

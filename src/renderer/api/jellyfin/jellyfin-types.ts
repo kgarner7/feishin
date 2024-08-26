@@ -707,6 +707,8 @@ export enum JellyfinExtensions {
     SONG_LYRICS = 'songLyrics',
 }
 
+const moveItem = z.null();
+
 export const jfType = {
     _enum: {
         albumArtistList: albumArtistListSort,
@@ -758,6 +760,7 @@ export const jfType = {
         genreList,
         getSessions,
         lyrics,
+        moveItem,
         musicFolderList,
         playlist,
         playlistList,

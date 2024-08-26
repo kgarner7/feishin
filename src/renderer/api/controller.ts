@@ -61,6 +61,8 @@ import type {
     Song,
     ServerType,
     ShareItemResponse,
+    MoveItemArgs,
+    DownloadArgs,
 } from '/@/renderer/api/types';
 import { DeletePlaylistResponse, RandomSongListArgs } from './types';
 import { ndController } from '/@/renderer/api/navidrome/navidrome-controller';
@@ -86,6 +88,7 @@ export type ControllerEndpoint = Partial<{
     getArtistDetail: () => void;
     getArtistInfo: (args: any) => void;
     getArtistList: (args: ArtistListArgs) => Promise<ArtistListResponse>;
+    getDownloadUrl: (args: DownloadArgs) => string;
     getFavoritesList: () => void;
     getFolderItemList: () => void;
     getFolderList: () => void;
@@ -105,6 +108,7 @@ export type ControllerEndpoint = Partial<{
     getStructuredLyrics: (args: StructuredLyricsArgs) => Promise<StructuredLyric[]>;
     getTopSongs: (args: TopSongListArgs) => Promise<TopSongListResponse>;
     getUserList: (args: UserListArgs) => Promise<UserListResponse>;
+    movePlaylistItem: (args: MoveItemArgs) => Promise<void>;
     removeFromPlaylist: (args: RemoveFromPlaylistArgs) => Promise<RemoveFromPlaylistResponse>;
     savePlayQueue: (args: SaveQueueArgs) => Promise<void>;
     savePlayQueue2: (args: SaveQueueArgs2) => Promise<void>;
@@ -137,6 +141,7 @@ const endpoints: ApiController = {
         getArtistDetail: undefined,
         getArtistInfo: undefined,
         getArtistList: undefined,
+        getDownloadUrl: jfController.getDownloadUrl,
         getFavoritesList: undefined,
         getFolderItemList: undefined,
         getFolderList: undefined,
@@ -156,6 +161,7 @@ const endpoints: ApiController = {
         getStructuredLyrics: undefined,
         getTopSongs: jfController.getTopSongList,
         getUserList: undefined,
+        movePlaylistItem: jfController.movePlaylistItem,
         removeFromPlaylist: jfController.removeFromPlaylist,
         savePlayQueue: jfController.savePlayQueue,
         savePlayQueue2: undefined,
@@ -180,6 +186,7 @@ const endpoints: ApiController = {
         getArtistDetail: undefined,
         getArtistInfo: undefined,
         getArtistList: undefined,
+        getDownloadUrl: ssController.getDownloadUrl,
         getFavoritesList: undefined,
         getFolderItemList: undefined,
         getFolderList: undefined,
@@ -199,6 +206,7 @@ const endpoints: ApiController = {
         getStructuredLyrics: ssController.getStructuredLyrics,
         getTopSongs: ssController.getTopSongList,
         getUserList: ndController.getUserList,
+        movePlaylistItem: ndController.movePlaylistItem,
         removeFromPlaylist: ndController.removeFromPlaylist,
         savePlayQueue: ssController.savePlayQueue2,
         savePlayQueue2: ssController.savePlayQueue2,
@@ -222,6 +230,7 @@ const endpoints: ApiController = {
         getArtistDetail: undefined,
         getArtistInfo: undefined,
         getArtistList: undefined,
+        getDownloadUrl: ssController.getDownloadUrl,
         getFavoritesList: undefined,
         getFolderItemList: undefined,
         getFolderList: undefined,
@@ -584,6 +593,24 @@ const getSimilarSongs = async (args: SimilarSongsArgs) => {
     )?.(args);
 };
 
+const movePlaylistItem = async (args: MoveItemArgs) => {
+    return (
+        apiController(
+            'movePlaylistItem',
+            args.apiClientProps.server?.type,
+        ) as ControllerEndpoint['movePlaylistItem']
+    )?.(args);
+};
+
+const getDownloadUrl = (args: DownloadArgs) => {
+    return (
+        apiController(
+            'getDownloadUrl',
+            args.apiClientProps.server?.type,
+        ) as ControllerEndpoint['getDownloadUrl']
+    )?.(args);
+};
+
 export const controller = {
     addToPlaylist,
     authenticate,
@@ -596,6 +623,7 @@ export const controller = {
     getAlbumDetail,
     getAlbumList,
     getArtistList,
+    getDownloadUrl,
     getGenreList,
     getLyrics,
     getMusicFolderList,
@@ -611,6 +639,7 @@ export const controller = {
     getStructuredLyrics,
     getTopSongList,
     getUserList,
+    movePlaylistItem,
     removeFromPlaylist,
     savePlayQueue,
     savePlayQueue2,

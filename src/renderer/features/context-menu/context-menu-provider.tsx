@@ -31,6 +31,7 @@ import {
     RiInformationFill,
     RiRadio2Fill,
     RiAlbumFill,
+    RiDownload2Line,
 } from 'react-icons/ri';
 import { AnyLibraryItems, LibraryItem, ServerType, AnyLibraryItem } from '/@/renderer/api/types';
 import {
@@ -63,6 +64,7 @@ import { Play, PlaybackType } from '/@/renderer/types';
 import { ItemDetailsModal } from '/@/renderer/features/item-details/components/item-details-modal';
 import { updateSong } from '/@/renderer/features/player/update-remote-song';
 import { controller } from '/@/renderer/api/controller';
+import { api } from '/@/renderer/api';
 
 type ContextMenuContextProps = {
     closeContextMenu: () => void;
@@ -91,6 +93,7 @@ const JELLYFIN_IGNORED_MENU_ITEMS: ContextMenuItemType[] = ['setRating', 'shareI
 // const SUBSONIC_IGNORED_MENU_ITEMS: ContextMenuItemType[] = [];
 
 const mpvPlayer = isElectron() ? window.electron.mpvPlayer : null;
+const utils = isElectron() ? window.electron.utils : null;
 
 export interface ContextMenuProviderProps {
     children: ReactNode;
@@ -686,6 +689,20 @@ export const ContextMenuProvider = ({ children }: ContextMenuProviderProps) => {
         handlePlayQueueAdd?.({ byData: [ctx.data[0], ...songs], playType: Play.NOW });
     }, [ctx, handlePlayQueueAdd]);
 
+    const handleDownload = useCallback(() => {
+        const item = ctx.data[0];
+        const url = api.controller.getDownloadUrl({
+            apiClientProps: { server },
+            query: { id: item.id },
+        });
+
+        if (utils) {
+            utils.download(url!);
+        } else {
+            window.open(url, '_blank');
+        }
+    }, [ctx.data, server]);
+
     const contextMenuItems: Record<ContextMenuItemType, ContextMenuItem> = useMemo(() => {
         return {
             addToFavorites: {
@@ -722,6 +739,13 @@ export const ContextMenuProvider = ({ children }: ContextMenuProviderProps) => {
                 label: t('page.contextMenu.deselectAll', { postProcess: 'sentenceCase' }),
                 leftIcon: <RiCloseCircleLine size="1.1rem" />,
                 onClick: handleDeselectAll,
+            },
+            download: {
+                disabled: ctx.data?.length !== 1,
+                id: 'download',
+                label: t('page.contextMenu.download', { postProcess: 'sentenceCase' }),
+                leftIcon: <RiDownload2Line size="1.1rem" />,
+                onClick: handleDownload,
             },
             moveToBottomOfQueue: {
                 id: 'moveToBottomOfQueue',
@@ -867,18 +891,19 @@ export const ContextMenuProvider = ({ children }: ContextMenuProviderProps) => {
         handleAddToPlaylist,
         openDeletePlaylistModal,
         handleDeselectAll,
+        ctx.data,
+        handleDownload,
         handleMoveToBottom,
         handleMoveToTop,
+        handleSimilar,
         handleRemoveFromFavorites,
         handleRemoveFromPlaylist,
         handleRemoveSelected,
-        ctx.data,
+        server,
+        handleShareItem,
         handleOpenItemDetails,
         handlePlay,
         handleUpdateRating,
-        handleShareItem,
-        server,
-        handleSimilar,
     ]);
 
     const mergedRef = useMergedRef(ref, clickOutsideRef);

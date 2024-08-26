@@ -8,7 +8,8 @@ export const QUEUE_CONTEXT_MENU_ITEMS: SetContextMenuItems = [
     { id: 'addToFavorites' },
     { divider: true, id: 'removeFromFavorites' },
     { children: true, disabled: false, id: 'setRating' },
-    { disabled: false, id: 'deselectAll' },
+    { disabled: false, divider: true, id: 'deselectAll' },
+    { id: 'download' },
     { divider: true, id: 'shareItem' },
     { divider: true, id: 'showDetails' },
 ];
@@ -23,6 +24,7 @@ export const SONG_CONTEXT_MENU_ITEMS: SetContextMenuItems = [
     { id: 'addToFavorites' },
     { divider: true, id: 'removeFromFavorites' },
     { children: true, disabled: false, divider: true, id: 'setRating' },
+    { id: 'download' },
     { divider: true, id: 'shareItem' },
     { divider: true, id: 'showDetails' },
 ];
@@ -46,6 +48,7 @@ export const PLAYLIST_SONG_CONTEXT_MENU_ITEMS: SetContextMenuItems = [
     { id: 'addToFavorites' },
     { divider: true, id: 'removeFromFavorites' },
     { children: true, disabled: false, id: 'setRating' },
+    { id: 'download' },
     { divider: true, id: 'shareItem' },
     { divider: true, id: 'showDetails' },
 ];
@@ -60,6 +63,7 @@ export const SMART_PLAYLIST_SONG_CONTEXT_MENU_ITEMS: SetContextMenuItems = [
     { id: 'addToFavorites' },
     { divider: true, id: 'removeFromFavorites' },
     { children: true, disabled: false, id: 'setRating' },
+    { id: 'download' },
     { divider: true, id: 'shareItem' },
     { divider: true, id: 'showDetails' },
 ];
