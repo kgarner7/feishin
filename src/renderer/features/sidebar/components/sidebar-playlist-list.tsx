@@ -21,6 +21,8 @@ import AutoSizer from 'react-virtualized-auto-sizer';
 import { FixedSizeList, ListChildComponentProps } from 'react-window';
 import { useHideScrollbar } from '/@/renderer/hooks';
 import { useCurrentServer, useGeneralSettings, useSettingsStoreActions } from '/@/renderer/store';
+import { openContextMenu } from '/@/renderer/features/context-menu';
+import { PLAYLIST_CONTEXT_MENU_ITEMS } from '/@/renderer/features/context-menu/context-menu-items';
 
 interface SidebarPlaylistListProps {
     data: ReturnType<typeof usePlaylistList>['data'];
@@ -72,7 +74,24 @@ const PlaylistRow = ({ index, data, style }: ListChildComponentProps) => {
         : undefined;
 
     return (
-        <div style={{ margin: '0.5rem 0', padding: '0 1.5rem', ...style }}>
+        <div
+            style={{ margin: '0.5rem 0', padding: '0 1.5rem', ...style }}
+            onContextMenu={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+
+                if (!data?.items?.[index].id) return;
+
+                openContextMenu({
+                    data: [data?.items?.[index]],
+                    dataNodes: undefined,
+                    menuItems: PLAYLIST_CONTEXT_MENU_ITEMS,
+                    type: LibraryItem.PLAYLIST,
+                    xPos: e.clientX + 15,
+                    yPos: e.clientY + 5,
+                });
+            }}
+        >
             <Group
                 noWrap
                 className="sidebar-playlist-item"

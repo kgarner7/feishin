@@ -24,6 +24,7 @@ import { randomString } from '/@/renderer/utils';
 import i18n from '/@/i18n/i18n';
 import { usePlayerStore } from '/@/renderer/store/player.store';
 import { mergeOverridingColumns } from '/@/renderer/store/utils';
+import type { ContextMenuItemType } from '/@/renderer/features/context-menu';
 
 const utils = isElectron() ? window.electron.utils : null;
 
@@ -196,6 +197,7 @@ export interface SettingsState {
         albumArtRes?: number | null;
         buttonSize: number;
         defaultFullPlaylist: boolean;
+        disabledContextMenu: { [k in ContextMenuItemType]?: boolean };
         doubleClickQueueAll: boolean;
         externalLinks: boolean;
         followSystemTheme: boolean;
@@ -297,6 +299,7 @@ export interface SettingsSlice extends SettingsState {
         setSettings: (data: Partial<SettingsState>) => void;
         setSidebarItems: (items: SidebarItemType[]) => void;
         setTable: (type: TableType, data: DataTableProps) => void;
+        toggleContextMenuItem: (item: ContextMenuItemType) => void;
         toggleSidebarCollapseShare: () => void;
     };
 }
@@ -328,6 +331,7 @@ const initialState: SettingsState = {
         albumArtRes: undefined,
         buttonSize: 20,
         defaultFullPlaylist: true,
+        disabledContextMenu: {},
         doubleClickQueueAll: true,
         externalLinks: true,
         followSystemTheme: false,
@@ -654,6 +658,12 @@ export const useSettingsStore = create<SettingsSlice>()(
                     setTable: (type: TableType, data: DataTableProps) => {
                         set((state) => {
                             state.tables[type] = data;
+                        });
+                    },
+                    toggleContextMenuItem: (item: ContextMenuItemType) => {
+                        set((state) => {
+                            state.general.disabledContextMenu[item] =
+                                !state.general.disabledContextMenu[item];
                         });
                     },
                     toggleSidebarCollapseShare: () => {
