@@ -46,6 +46,7 @@ export const CONFIGURABLE_CONTEXT_MENU_ITEMS: ContextMenuItemType[] = [
     'play',
     'playLast',
     'playNext',
+    'afterAlbum',
     'playSimilarSongs',
     'addToPlaylist',
     'removeFromPlaylist',
