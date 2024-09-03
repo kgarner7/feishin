@@ -288,7 +288,7 @@ export const PlaylistDetailSongListContent = ({ tableRef }: PlaylistDetailConten
                         onCellContextMenu: handleContextMenu,
                         status,
                     }}
-                    getRowId={(data) => data.data.id}
+                    getRowId={(data) => data.data.uniqueId}
                     infiniteInitialRowCount={checkPlaylistList.data?.totalRecordCount || 100}
                     pagination={isPaginationEnabled}
                     paginationAutoPageSize={isPaginationEnabled}
