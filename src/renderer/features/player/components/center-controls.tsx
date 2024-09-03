@@ -138,7 +138,9 @@ export const CenterControls = ({ playersRef, seekRef }: CenterControlsProps) => 
             if (!isElectron() || playbackType === PlaybackType.WEB) {
                 // Update twice a second for slightly better performance
                 interval = setInterval(() => {
-                    setCurrentTime(currentPlayerRef.getCurrentTime());
+                    if (currentPlayerRef) {
+                        setCurrentTime(currentPlayerRef.getCurrentTime());
+                    }
                 }, 500);
             }
         }

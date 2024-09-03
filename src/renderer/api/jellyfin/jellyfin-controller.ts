@@ -59,6 +59,8 @@ import {
     Song,
     MoveItemArgs,
     DownloadArgs,
+    TranscodingArgs,
+    Played,
 } from '/@/renderer/api/types';
 import { jfApiClient } from '/@/renderer/api/jellyfin/jellyfin-api';
 import { jfNormalize } from './jellyfin-normalize';
@@ -610,9 +612,9 @@ const createPlaylist = async (args: CreatePlaylistArgs): Promise<CreatePlaylistR
 
     const res = await jfApiClient(apiClientProps).createPlaylist({
         body: {
+            IsPublic: body.public,
             MediaType: 'Audio',
             Name: body.name,
-            Overview: body.comment || '',
             UserId: apiClientProps.server.userId,
         },
     });
@@ -636,9 +638,9 @@ const updatePlaylist = async (args: UpdatePlaylistArgs): Promise<UpdatePlaylistR
     const res = await jfApiClient(apiClientProps).updatePlaylist({
         body: {
             Genres: body.genres?.map((item) => ({ Id: item.id, Name: item.name })) || [],
+            IsPublic: body.public,
             MediaType: 'Audio',
             Name: body.name,
-            Overview: body.comment || '',
             PremiereDate: null,
             ProviderIds: {},
             Tags: [],
@@ -649,7 +651,7 @@ const updatePlaylist = async (args: UpdatePlaylistArgs): Promise<UpdatePlaylistR
         },
     });
 
-    if (res.status !== 200) {
+    if (res.status !== 204) {
         throw new Error('Failed to update playlist');
     }
 
@@ -900,6 +902,12 @@ const getRandomSongList = async (args: RandomSongListArgs): Promise<RandomSongLi
             Fields: 'Genres, DateCreated, MediaSources, ParentId',
             GenreIds: query.genre ? query.genre : undefined,
             IncludeItemTypes: 'Audio',
+            IsPlayed:
+                query.played === Played.Never
+                    ? false
+                    : query.played === Played.Played
+                      ? true
+                      : undefined,
             Limit: query.limit,
             ParentId: query.musicFolderId,
             Recursive: true,
@@ -1032,7 +1040,12 @@ const getSongDetail = async (args: SongDetailArgs): Promise<SongDetailResponse> 
     return jfNormalize.song(res.body, apiClientProps.server, '');
 };
 
-const VERSION_INFO: VersionInfo = [['10.9.0', { [ServerFeature.LYRICS_SINGLE_STRUCTURED]: [1] }]];
+const VERSION_INFO: VersionInfo = [
+    [
+        '10.9.0',
+        { [ServerFeature.LYRICS_SINGLE_STRUCTURED]: [1], [ServerFeature.PUBLIC_PLAYLIST]: [1] },
+    ],
+];
 
 const getServerInfo = async (args: ServerInfoArgs): Promise<ServerInfo> => {
     const { apiClientProps } = args;
@@ -1129,6 +1142,20 @@ const getDownloadUrl = (args: DownloadArgs) => {
     return `${apiClientProps.server?.url}/items/${query.id}/download?api_key=${apiClientProps.server?.credential}`;
 };
 
+const getTranscodingUrl = (args: TranscodingArgs) => {
+    const { base, format, bitrate } = args.query;
+    let url = base.replace('transcodingProtocol=hls', 'transcodingProtocol=http');
+    if (format) {
+        url = url.replace('audioCodec=aac', `audioCodec=${format}`);
+        url = url.replace('transcodingContainer=ts', `transcodingContainer=${format}`);
+    }
+    if (bitrate !== undefined) {
+        url += `&maxStreamingBitrate=${bitrate * 1000}`;
+    }
+
+    return url;
+};
+
 export const jfController = {
     addToPlaylist,
     authenticate,
@@ -1155,6 +1182,7 @@ export const jfController = {
     getSongDetail,
     getSongList,
     getTopSongList,
+    getTranscodingUrl,
     movePlaylistItem,
     removeFromPlaylist,
     savePlayQueue,
