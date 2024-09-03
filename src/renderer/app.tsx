@@ -4,6 +4,7 @@ import { ModuleRegistry } from '@ag-grid-community/core';
 import { InfiniteRowModelModule } from '@ag-grid-community/infinite-row-model';
 import { MantineProvider } from '@mantine/core';
 import isElectron from 'is-electron';
+import isEqual from 'lodash/isEqual';
 import { initSimpleImg } from 'react-simple-img';
 import { toast } from './components';
 import { useTheme } from './hooks';
@@ -20,7 +21,14 @@ import { ContextMenuProvider } from '/@/renderer/features/context-menu';
 import { useHandlePlayQueueAdd } from '/@/renderer/features/player/hooks/use-handle-playqueue-add';
 import { PlayQueueHandlerContext } from '/@/renderer/features/player';
 import { getMpvProperties } from '/@/renderer/features/settings/components/playback/mpv-settings';
-import { PlayerState, useCssSettings, usePlayerStore, useQueueControls } from '/@/renderer/store';
+import {
+    PlayerState,
+    useCssSettings,
+    useCurrentServer,
+    usePlayerStore,
+    usePlayerStoreActions,
+    useQueueControls,
+} from '/@/renderer/store';
 import { FontType, PlaybackType, PlayerStatus } from '/@/renderer/types';
 import '@ag-grid-community/styles/ag-grid.css';
 import { useDiscordRpc } from '/@/renderer/features/discord-rpc/use-discord-rpc';
@@ -29,6 +37,9 @@ import { useServerVersion } from '/@/renderer/hooks/use-server-version';
 import { updateSong } from '/@/renderer/features/player/update-remote-song';
 import { sanitizeCss } from '/@/renderer/utils/sanitize';
 import { setQueue } from '/@/renderer/utils/set-transcoded-queue-data';
+import { ServerType, Song } from '/@/renderer/api/types';
+import { api } from '/@/renderer/api';
+import { useEventStore, useSongsEvent } from '/@/renderer/store/event.store';
 
 ModuleRegistry.registerModules([ClientSideRowModelModule, InfiniteRowModelModule]);
 
@@ -53,6 +64,9 @@ export const App = () => {
     const remoteSettings = useRemoteSettings();
     const textStyleRef = useRef<HTMLStyleElement>();
     const cssRef = useRef<HTMLStyleElement>();
+    const server = useCurrentServer();
+    const songChange = useSongsEvent();
+    const { setData } = usePlayerStoreActions();
     useDiscordRpc();
     useServerVersion();
 
@@ -220,6 +234,50 @@ export const App = () => {
             i18n.changeLanguage(language);
         }
     }, [language]);
+
+    useEffect(() => {
+        if (server?.type !== ServerType.NAVIDROME) return () => {};
+
+        const stream = api.controller.getEventStream({
+            apiClientProps: { server },
+            query: {
+                onError: console.error,
+                onRefresh: (ids) => {
+                    const current = useEventStore.getState();
+
+                    if (!isEqual(current.ids, ids) || current.event?.event === 'songs') {
+                        api.controller
+                            .getSongList({
+                                apiClientProps: { server },
+                                query: {
+                                    ids,
+                                    limit: ids.length,
+                                    startIndex: 0,
+                                },
+                            })
+                            .then((data) => {
+                                const songs: Record<string, Song> = {};
+                                const ids: string[] = [];
+
+                                for (const song of data?.items || []) {
+                                    songs[song.id] = song;
+                                    ids.push(song.id);
+                                }
+
+                                songChange(ids, songs);
+                                setData(ids, songs);
+                                return null;
+                            })
+                            .catch(console.error);
+                    }
+                },
+            },
+        });
+
+        return () => {
+            stream?.close();
+        };
+    }, [server, setData, songChange]);
 
     return (
         <MantineProvider

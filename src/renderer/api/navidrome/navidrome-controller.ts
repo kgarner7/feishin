@@ -53,6 +53,7 @@ import {
     SimilarSongsArgs,
     Song,
     MoveItemArgs,
+    EventStreamArgs,
 } from '../types';
 import { VersionInfo, getFeatures, hasFeature } from '/@/renderer/api/utils';
 import { ServerFeature, ServerFeatures } from '/@/renderer/api/features-types';
@@ -279,6 +280,7 @@ const getSongList = async (args: SongListArgs): Promise<SongListResponse> => {
             _start: query.startIndex,
             album_artist_id: query.artistIds,
             album_id: query.albumIds,
+            id: query.ids,
             title: query.searchTerm,
             ...query._custom?.navidrome,
         },
@@ -713,6 +715,26 @@ const movePlaylistItem = async (args: MoveItemArgs): Promise<void> => {
     }
 };
 
+const getEventStream = ({ query, apiClientProps }: EventStreamArgs): EventSource | null => {
+    const { server } = apiClientProps;
+    if (!server) {
+        return null;
+    }
+
+    const url = `${server.url}/api/events?jwt=${server.ndCredential}`;
+    const stream = new EventSource(url);
+    stream.onerror = query.onError;
+    stream.addEventListener('keepAlive', () => {});
+    stream.addEventListener('refreshResource', (message) => {
+        const data = JSON.parse(message.data);
+        if (data.song) {
+            query.onRefresh(data.song);
+        }
+    });
+
+    return stream;
+};
+
 export const ndController = {
     addToPlaylist,
     authenticate,
@@ -722,6 +744,7 @@ export const ndController = {
     getAlbumArtistList,
     getAlbumDetail,
     getAlbumList,
+    getEventStream,
     getGenreList,
     getPlayQueue,
     getPlayQueue2,

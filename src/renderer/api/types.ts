@@ -491,6 +491,7 @@ export type SongListQuery = {
     };
     albumIds?: string[];
     artistIds?: string[];
+    ids?: string[];
     imageSize?: number;
     limit?: number;
     musicFolderId?: string;
@@ -1261,4 +1262,13 @@ export type TranscodingQuery = {
 
 export type TranscodingArgs = {
     query: TranscodingQuery;
+} & BaseEndpointArgs;
+
+export type EventStreamQuery = {
+    onError: (err: Event) => void;
+    onRefresh: (ids: string[]) => void;
+};
+
+export type EventStreamArgs = {
+    query: EventStreamQuery;
 } & BaseEndpointArgs;

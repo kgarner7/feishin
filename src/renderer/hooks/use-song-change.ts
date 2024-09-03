@@ -62,6 +62,11 @@ export const useTableChange = (
                         }
                         break;
                     }
+                    case 'songs': {
+                        node.setData(event.songs[node.data.id]);
+                        rowNodes.push(node);
+                        break;
+                    }
                 }
             });
 

@@ -264,6 +264,7 @@ const songListParameters = paginationParameters.extend({
     album_id: z.array(z.string()).optional(),
     artist_id: z.array(z.string()).optional(),
     genre_id: z.string().optional(),
+    id: z.array(z.string()).optional(),
     path: z.string().optional(),
     starred: z.boolean().optional(),
     title: z.string().optional(),

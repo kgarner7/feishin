@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { devtools, subscribeWithSelector } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
+import { Song } from '/@/renderer/api/types';
 
 export type FavoriteEvent = {
     event: 'favorite';
@@ -17,7 +18,12 @@ export type RatingEvent = {
     rating: number | null;
 };
 
-export type UserEvent = FavoriteEvent | PlayEvent | RatingEvent;
+export type RemoteUpdate = {
+    event: 'songs';
+    songs: Record<string, Song>;
+};
+
+export type UserEvent = FavoriteEvent | PlayEvent | RatingEvent | RemoteUpdate;
 
 export interface EventState {
     event: UserEvent | null;
@@ -29,6 +35,7 @@ export interface EventSlice extends EventState {
         favorite: (ids: string[], favorite: boolean) => void;
         play: (ids: string[]) => void;
         rate: (ids: string[], rating: number | null) => void;
+        songs: (ids: string[], songs: Record<string, Song>) => void;
     };
 }
 
@@ -55,6 +62,12 @@ export const useEventStore = create<EventSlice>()(
                             state.ids = ids;
                         });
                     },
+                    songs(ids, songs) {
+                        set((state) => {
+                            state.event = { event: 'songs', songs };
+                            state.ids = ids;
+                        });
+                    },
                 },
                 event: null,
                 ids: [],
@@ -69,3 +82,5 @@ export const useFavoriteEvent = () => useEventStore((state) => state.actions.fav
 export const usePlayEvent = () => useEventStore((state) => state.actions.play);
 
 export const useRatingEvent = () => useEventStore((state) => state.actions.rate);
+
+export const useSongsEvent = () => useEventStore((state) => state.actions.songs);

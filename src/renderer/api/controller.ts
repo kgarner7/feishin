@@ -64,6 +64,7 @@ import type {
     MoveItemArgs,
     DownloadArgs,
     TranscodingArgs,
+    EventStreamArgs,
 } from '/@/renderer/api/types';
 import { DeletePlaylistResponse, RandomSongListArgs } from './types';
 import { ndController } from '/@/renderer/api/navidrome/navidrome-controller';
@@ -90,6 +91,7 @@ export type ControllerEndpoint = Partial<{
     getArtistInfo: (args: any) => void;
     getArtistList: (args: ArtistListArgs) => Promise<ArtistListResponse>;
     getDownloadUrl: (args: DownloadArgs) => string;
+    getEventStream: (args: EventStreamArgs) => EventSource | null;
     getFavoritesList: () => void;
     getFolderItemList: () => void;
     getFolderList: () => void;
@@ -190,6 +192,7 @@ const endpoints: ApiController = {
         getArtistInfo: undefined,
         getArtistList: undefined,
         getDownloadUrl: ssController.getDownloadUrl,
+        getEventStream: ndController.getEventStream,
         getFavoritesList: undefined,
         getFolderItemList: undefined,
         getFolderList: undefined,
@@ -625,6 +628,15 @@ const getTranscodingUrl = (args: TranscodingArgs) => {
     )?.(args);
 };
 
+const getEventStream = (args: EventStreamArgs) => {
+    return (
+        apiController(
+            'getEventStream',
+            args.apiClientProps.server?.type,
+        ) as ControllerEndpoint['getEventStream']
+    )?.(args);
+};
+
 export const controller = {
     addToPlaylist,
     authenticate,
@@ -638,6 +650,7 @@ export const controller = {
     getAlbumList,
     getArtistList,
     getDownloadUrl,
+    getEventStream,
     getGenreList,
     getLyrics,
     getMusicFolderList,
