@@ -6,7 +6,7 @@ import { create } from 'zustand';
 import { devtools, persist, subscribeWithSelector } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
 import { shallow } from 'zustand/shallow';
-import { QueueSong, Song } from '/@/renderer/api/types';
+import { QueueSong } from '/@/renderer/api/types';
 import { PlayerStatus, PlayerRepeat, PlayerShuffle, Play } from '/@/renderer/types';
 
 export interface PlayerState {
@@ -86,7 +86,6 @@ export interface PlayerSlice extends PlayerState {
         setCurrentSpeed: (speed: number) => void;
         setCurrentTime: (time: number, seek?: boolean) => void;
         setCurrentTrack: (uniqueId: string) => PlayerData;
-        setData: (ids: string[], songs: Record<string, Song>) => void;
         setFallback: (fallback: boolean | null) => boolean;
         setFavorite: (ids: string[], favorite: boolean) => string[];
         setMuted: (muted: boolean) => void;
@@ -853,36 +852,6 @@ export const usePlayerStore = create<PlayerSlice>()(
                             }
 
                             return get().actions.getPlayerData();
-                        },
-                        setData(ids, songs) {
-                            const { default: queue } = get().queue;
-                            const idSet = new Set(ids);
-
-                            for (const [idx, item] of queue.entries()) {
-                                if (idSet.has(item.id)) {
-                                    set((state) => {
-                                        state.queue.default[idx] = songs[item.id];
-                                    });
-                                }
-                            }
-
-                            const currentSongId = get().current.song?.id;
-                            if (currentSongId && idSet.has(currentSongId)) {
-                                set((state) => {
-                                    if (state.current.song) {
-                                        state.current.song = songs[currentSongId];
-                                    }
-                                });
-                            }
-
-                            const previousSongId = get().queue.previousNode?.id;
-                            if (previousSongId && idSet.has(previousSongId)) {
-                                set((state) => {
-                                    if (state.queue.previousNode) {
-                                        state.queue.previousNode = songs[previousSongId];
-                                    }
-                                });
-                            }
                         },
                         setFallback: (fallback) => {
                             set((state) => {
