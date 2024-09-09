@@ -222,6 +222,13 @@ export const ControlSettings = () => {
                             }),
                             value: Play.ALBUM,
                         },
+                        {
+                            label: t('setting.playButtonBehavior', {
+                                context: 'optionPlayShuffled',
+                                postProcess: 'titleCase',
+                            }),
+                            value: Play.SHUFFLE,
+                        },
                     ]}
                     defaultValue={settings.playButtonBehavior}
                     onChange={(e) =>
