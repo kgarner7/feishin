@@ -317,6 +317,7 @@ export interface SettingsState {
         exitToTray: boolean;
         minimizeToTray: boolean;
         startMinimized: boolean;
+        tray: boolean;
         windowBarStyle: Platform;
     };
 }
@@ -655,6 +656,7 @@ const initialState: SettingsState = {
         exitToTray: false,
         minimizeToTray: false,
         startMinimized: false,
+        tray: true,
         windowBarStyle: platformDefaultWindowBarStyle,
     },
 };
