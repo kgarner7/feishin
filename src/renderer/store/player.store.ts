@@ -18,7 +18,6 @@ export interface PlayerState {
         seek: boolean;
         shuffledIndex: number;
         song?: QueueSong;
-        speed: number;
         status: PlayerStatus;
         time: number;
     };
@@ -32,6 +31,7 @@ export interface PlayerState {
     };
     repeat: PlayerRepeat;
     shuffle: PlayerShuffle;
+    speed: number;
     volume: number;
 }
 
@@ -844,7 +844,7 @@ export const usePlayerStore = create<PlayerSlice>()(
                         },
                         setCurrentSpeed: (speed) => {
                             set((state) => {
-                                state.current.speed = speed;
+                                state.speed = speed;
                             });
                         },
                         setCurrentTime: (time, seek = false) => {
@@ -1050,7 +1050,6 @@ export const usePlayerStore = create<PlayerSlice>()(
                         seek: false,
                         shuffledIndex: 0,
                         song: {} as QueueSong,
-                        speed: 1.0,
                         status: PlayerStatus.PAUSED,
                         time: 0,
                     },
@@ -1065,6 +1064,7 @@ export const usePlayerStore = create<PlayerSlice>()(
                     },
                     repeat: PlayerRepeat.NONE,
                     shuffle: PlayerShuffle.NONE,
+                    speed: 1.0,
                     transcode: {
                         enabled: false,
                     },
@@ -1169,7 +1169,7 @@ export const useVolume = () => usePlayerStore((state) => state.volume);
 
 export const useMuted = () => usePlayerStore((state) => state.muted);
 
-export const useSpeed = () => usePlayerStore((state) => state.current.speed);
+export const useSpeed = () => usePlayerStore((state) => state.speed);
 
 export const usePlayerFallback = () => usePlayerStore((state) => state.fallback);
 
