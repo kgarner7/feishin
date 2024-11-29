@@ -27,6 +27,16 @@
     </a>
   </p>
 
+---
+
+## MAINTENANCE NOTICE
+
+Feishin is currently undergoing a major rewrite. New feature requests will not be accepted. The rewrite is being actively developed at the [audioling](https://github.com/audioling/audioling) repository.
+
+Follow the repository or join the discord/matrix server for updates.
+
+---
+
 Rewrite of [Sonixd](https://github.com/jeffvli/sonixd).
 
 ## Features
@@ -49,7 +59,7 @@ Rewrite of [Sonixd](https://github.com/jeffvli/sonixd).
 
 Download the [latest desktop client](https://github.com/jeffvli/feishin/releases). The desktop client is the recommended way to use Feishin. It supports both the MPV and web player backends, as well as includes built-in fetching for lyrics.
 
-#### MacOS Notes
+#### macOS Notes
 
 If you're using a device running macOS 12 (Monterey) or higher, [check here](https://github.com/jeffvli/feishin/issues/104#issuecomment-1553914730) for instructions on how to remove the app from quarantine.
 
@@ -74,24 +84,23 @@ docker run --name feishin -p 9180:9180 feishin
 
 To install via Docker Compose use the following snippit. This also works on Portainer.
 
-```
-version: '3'
+```yaml
 services:
-  feishin:
-    container_name: feishin
-    image: 'ghcr.io/jeffvli/feishin:latest'
-    environment:
-      - SERVER_NAME=jellyfin # pre defined server name
-      - SERVER_LOCK=true # When true AND name/type/url are set, only username/password can be toggled
-      - SERVER_TYPE=jellyfin # navidrome also works
-      - SERVER_URL= # http://address:port
-      - PUID=1000
-      - PGID=1000
-      - UMASK=002
-      - TZ=America/Los_Angeles
-    ports:
-      - 9180:9180
-    restart: unless-stopped
+    feishin:
+        container_name: feishin
+        image: 'ghcr.io/jeffvli/feishin:latest'
+        environment:
+            - SERVER_NAME=jellyfin # pre defined server name
+            - SERVER_LOCK=true # When true AND name/type/url are set, only username/password can be toggled
+            - SERVER_TYPE=jellyfin # navidrome also works
+            - SERVER_URL= # http://address:port
+            - PUID=1000
+            - PGID=1000
+            - UMASK=002
+            - TZ=America/Los_Angeles
+        ports:
+            - 9180:9180
+        restart: unless-stopped
 ```
 
 ### Configuration
@@ -119,8 +128,16 @@ Feishin supports any music server that implements a [Navidrome](https://www.navi
 
 -   [Navidrome](https://github.com/navidrome/navidrome)
 -   [Jellyfin](https://github.com/jellyfin/jellyfin)
--   [Funkwhale](https://funkwhale.audio/) - TBD
--   Subsonic-compatible servers - TBD
+-   Subsonic-compatible servers
+    -   [Airsonic-Advanced](https://github.com/airsonic-advanced/airsonic-advanced)
+    -   [Ampache](https://ampache.org)
+    -   [Astiga](https://asti.ga/)
+    -   [Funkwhale](https://www.funkwhale.audio/)
+    -   [Gonic](https://github.com/sentriz/gonic)
+    -   [LMS](https://github.com/epoupon/lms)
+    -   [Nextcloud Music](https://apps.nextcloud.com/apps/music)
+    -   [Supysonic](https://github.com/spl0k/supysonic)
+    -   More (?)
 
 ### I have the issue "The SUID sandbox helper binary was found, but is not configured correctly" on Linux
 

@@ -20,7 +20,8 @@
         "openIn": {
             "lastfm": "在 Last.fm 中打开",
             "musicbrainz": "在 MusicBrainz 中打开"
-        }
+        },
+        "moveToNext": "移至下一首"
     },
     "common": {
         "increase": "增高",
@@ -386,7 +387,9 @@
         "translationApiKey": "翻译api密钥",
         "translationApiKey_description": "翻译api密钥（仅支持全球服务节点）",
         "translationTargetLanguage": "目标翻译语言",
-        "translationTargetLanguage_description": "目标翻译语言"
+        "translationTargetLanguage_description": "目标翻译语言",
+        "lastfmApiKey": "{{lastfm}} API 密钥",
+        "lastfmApiKey_description": "{{lastfm}} 的 API 密钥。封面艺术图所需"
     },
     "error": {
         "remotePortWarning": "重启服务器使新端口生效",
@@ -554,7 +557,8 @@
             "shareItem": "分享项目",
             "playSimilarSongs": "$t(player.playSimilarSongs)",
             "download": "下载",
-            "playShuffled": "$t(player.shuffle)"
+            "playShuffled": "$t(player.shuffle)",
+            "moveToNext": "$t(action.moveToNext)"
         },
         "trackList": {
             "title": "$t(entity.track_other)",

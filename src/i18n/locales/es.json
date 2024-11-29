@@ -255,7 +255,9 @@
         "translationApiKey": "clave api de traducción",
         "translationApiKey_description": "Clave API para la traducción (solo para el punto final del servicio global)",
         "translationTargetLanguage": "idioma final de la traducción",
-        "translationTargetLanguage_description": "lengua de destino de la traducción"
+        "translationTargetLanguage_description": "lengua de destino de la traducción",
+        "lastfmApiKey_description": "la clave API para {{lastfm}}. Requerida para la portada",
+        "lastfmApiKey": "Clave API para {{lastfm}}"
     },
     "action": {
         "editPlaylist": "editar $t(entity.playlist_one)",
@@ -278,7 +280,8 @@
         "openIn": {
             "lastfm": "Abrir en Last.fm",
             "musicbrainz": "Abrir en MusicBrainz"
-        }
+        },
+        "moveToNext": "pasar al siguiente"
     },
     "common": {
         "backward": "hacia atrás",
@@ -490,7 +493,8 @@
             "showDetails": "Obtener información",
             "playSimilarSongs": "$t(player.playSimilarSongs)",
             "download": "descargar",
-            "playShuffled": "$t(player.shuffle)"
+            "playShuffled": "$t(player.shuffle)",
+            "moveToNext": "$t(action.moveToNext)"
         },
         "home": {
             "mostPlayed": "más reproducidos",
