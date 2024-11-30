@@ -98,9 +98,11 @@ const scaleImageUrl = (imageSize: number, url?: string | null) => {
 };
 
 const ImageWithPlaceholder = ({
+    blur,
+    style,
     useAspectRatio,
     ...props
-}: HTMLMotionProps<'img'> & { useAspectRatio: boolean }) => {
+}: HTMLMotionProps<'img'> & { blur?: boolean; useAspectRatio: boolean }) => {
     if (!props.src) {
         return (
             <Center
@@ -122,16 +124,30 @@ const ImageWithPlaceholder = ({
     return (
         <Image
             $useAspectRatio={useAspectRatio}
+            style={{
+                ...style,
+                filter: blur
+                    ? `blur(${Math.max(window.innerHeight, window.innerWidth) / 40}px)`
+                    : undefined,
+            }}
             {...props}
         />
     );
 };
+
+type ImageImfo = [string | undefined, boolean | undefined];
+interface ImageState {
+    bottomImage: ImageImfo;
+    current: 0 | 1;
+    topImage: ImageImfo;
+}
 
 export const FullScreenPlayerImage = () => {
     const mainImageRef = useRef<HTMLImageElement | null>(null);
     const [mainImageDimensions, setMainImageDimensions] = useState({ idealSize: 1 });
 
     const albumArtRes = useSettingsStore((store) => store.general.albumArtRes);
+    const blurExplicit = useSettingsStore((store) => store.general.blurExplicit);
 
     const { queue } = usePlayerData();
     const { useImageAspectRatio } = useFullScreenPlayerStore();
@@ -142,10 +158,16 @@ export const FullScreenPlayerImage = () => {
         srcLoaded: true,
     });
     const imageKey = `image-${background}`;
-    const [imageState, setImageState] = useSetState({
-        bottomImage: scaleImageUrl(mainImageDimensions.idealSize, queue.next?.imageUrl),
+    const [imageState, setImageState] = useSetState<ImageState>({
+        bottomImage: [
+            scaleImageUrl(mainImageDimensions.idealSize, queue.next?.imageUrl),
+            queue.next?.explicit,
+        ],
         current: 0,
-        topImage: scaleImageUrl(mainImageDimensions.idealSize, queue.current?.imageUrl),
+        topImage: [
+            scaleImageUrl(mainImageDimensions.idealSize, queue.current?.imageUrl),
+            queue.current?.explicit,
+        ],
     });
 
     const updateImageSize = useCallback(() => {
@@ -157,9 +179,15 @@ export const FullScreenPlayerImage = () => {
             });
 
             setImageState({
-                bottomImage: scaleImageUrl(mainImageDimensions.idealSize, queue.next?.imageUrl),
+                bottomImage: [
+                    scaleImageUrl(mainImageDimensions.idealSize, queue.next?.imageUrl),
+                    queue.next?.explicit,
+                ],
                 current: 0,
-                topImage: scaleImageUrl(mainImageDimensions.idealSize, queue.current?.imageUrl),
+                topImage: [
+                    scaleImageUrl(mainImageDimensions.idealSize, queue.current?.imageUrl),
+                    queue.current?.explicit,
+                ],
             });
         }
     }, [mainImageDimensions.idealSize, queue, setImageState, albumArtRes]);
@@ -175,14 +203,14 @@ export const FullScreenPlayerImage = () => {
                 const isTop = imageState.current === 0;
                 const queue = state[1] as PlayerData['queue'];
 
-                const currentImageUrl = scaleImageUrl(
-                    mainImageDimensions.idealSize,
-                    queue.current?.imageUrl,
-                );
-                const nextImageUrl = scaleImageUrl(
-                    mainImageDimensions.idealSize,
-                    queue.next?.imageUrl,
-                );
+                const currentImageUrl: ImageImfo = [
+                    scaleImageUrl(mainImageDimensions.idealSize, queue.current?.imageUrl),
+                    queue.current?.explicit,
+                ];
+                const nextImageUrl: ImageImfo = [
+                    scaleImageUrl(mainImageDimensions.idealSize, queue.next?.imageUrl),
+                    queue.next?.explicit,
+                ];
 
                 setImageState({
                     bottomImage: isTop ? currentImageUrl : nextImageUrl,
@@ -215,13 +243,14 @@ export const FullScreenPlayerImage = () => {
                         <ImageWithPlaceholder
                             key={imageKey}
                             animate="open"
+                            blur={blurExplicit && imageState.topImage[1]}
                             className="full-screen-player-image"
                             custom={{ isOpen: imageState.current === 0 }}
                             draggable={false}
                             exit="closed"
                             initial="closed"
                             placeholder="var(--placeholder-bg)"
-                            src={imageState.topImage || ''}
+                            src={imageState.topImage[0] || ''}
                             useAspectRatio={useImageAspectRatio}
                             variants={imageVariants}
                         />
@@ -231,13 +260,14 @@ export const FullScreenPlayerImage = () => {
                         <ImageWithPlaceholder
                             key={imageKey}
                             animate="open"
+                            blur={blurExplicit && imageState.bottomImage[1]}
                             className="full-screen-player-image"
                             custom={{ isOpen: imageState.current === 1 }}
                             draggable={false}
                             exit="closed"
                             initial="closed"
                             placeholder="var(--placeholder-bg)"
-                            src={imageState.bottomImage || ''}
+                            src={imageState.bottomImage[0] || ''}
                             useAspectRatio={useImageAspectRatio}
                             variants={imageVariants}
                         />

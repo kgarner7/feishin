@@ -14,6 +14,7 @@ interface LibraryHeaderProps {
     background: string;
     blur?: number;
     children?: ReactNode;
+    explicit?: boolean;
     imagePlaceholderUrl?: string | null;
     imageUrl?: string | null;
     item: { route: string; type: LibraryItem };
@@ -27,6 +28,7 @@ export const LibraryHeader = forwardRef(
             imagePlaceholderUrl,
             background,
             blur,
+            explicit,
             title,
             item,
             children,
@@ -35,7 +37,7 @@ export const LibraryHeader = forwardRef(
     ) => {
         const { t } = useTranslation();
         const [isImageError, setIsImageError] = useState<boolean | null>(false);
-        const { albumBackground } = useGeneralSettings();
+        const { albumBackground, blurExplicit } = useGeneralSettings();
 
         const onImageError = () => {
             setIsImageError(true);
@@ -76,7 +78,9 @@ export const LibraryHeader = forwardRef(
                     {imageUrl && !isImageError ? (
                         <img
                             alt="cover"
-                            className={styles.image}
+                            className={
+                                styles.image + (blurExplicit && explicit ? ' exp-large' : undefined)
+                            }
                             placeholder={imagePlaceholderUrl || 'var(--placeholder-bg)'}
                             src={imageUrl}
                             style={{ height: '' }}

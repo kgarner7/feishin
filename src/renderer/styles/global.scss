@@ -110,6 +110,18 @@ button {
     animation: fadeOut 0.2s forwards;
 }
 
+.explicit {
+    filter: blur(3px);
+}
+
+.exp-large {
+    filter: blur(12px);
+}
+
+.exp-xl {
+    filter: blur(20px) !important;
+}
+
 @font-face {
     font-family: 'Archivo';
     src: url('../fonts/Archivo-VariableFont_wdth,wght.ttf') format('truetype-variations');

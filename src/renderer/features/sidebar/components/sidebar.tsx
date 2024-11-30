@@ -74,8 +74,9 @@ export const Sidebar = () => {
     const sidebar = useSidebarStore();
     const { setSideBar } = useAppStoreActions();
     const { windowBarStyle } = useWindowSettings();
-    const { sidebarPlaylistList } = useGeneralSettings();
-    const imageUrl = useCurrentSong()?.imageUrl;
+    const { blurExplicit, sidebarPlaylistList } = useGeneralSettings();
+    const currentSong = useCurrentSong();
+    const imageUrl = currentSong?.imageUrl;
     const server = useCurrentServer();
 
     const translatedSidebarItemMap = useMemo(
@@ -250,6 +251,11 @@ export const Sidebar = () => {
                             >
                                 {upsizedImageUrl ? (
                                     <SidebarImage
+                                        className={
+                                            blurExplicit && currentSong?.explicit
+                                                ? 'exp-xl'
+                                                : undefined
+                                        }
                                         loading="eager"
                                         src={upsizedImageUrl}
                                     />

@@ -9,6 +9,7 @@ import { CardRows } from '/@/renderer/components/card';
 import { Skeleton } from '/@/renderer/components/skeleton';
 import { GridCardControls } from '/@/renderer/components/virtual-grid/grid-card/grid-card-controls';
 import { CardRow, PlayQueueAddOptions, Play, CardRoute } from '/@/renderer/types';
+import { useGeneralSettings } from '/@/renderer/store';
 
 interface BaseGridCardProps {
     columnIndex: number;
@@ -125,6 +126,7 @@ export const PosterCard = ({
     controls,
     isHidden,
 }: BaseGridCardProps) => {
+    const { blurExplicit } = useGeneralSettings();
     const navigate = useNavigate();
 
     if (data) {
@@ -167,6 +169,7 @@ export const PosterCard = ({
                     <ImageContainer $isFavorite={data?.userFavorite}>
                         {data?.imageUrl ? (
                             <Image
+                                className={blurExplicit && data.explicit ? 'exp-large' : undefined}
                                 importance="auto"
                                 placeholder={data?.imagePlaceholderUrl || 'var(--card-default-bg)'}
                                 src={data?.imageUrl}

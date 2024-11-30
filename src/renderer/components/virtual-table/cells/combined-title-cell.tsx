@@ -13,6 +13,7 @@ import { AppRoute } from '/@/renderer/router/routes';
 import { Skeleton } from '/@/renderer/components/skeleton';
 import { SEPARATOR_STRING } from '/@/renderer/api/utils';
 import { ListCoverControls } from '/@/renderer/components/virtual-table/cells/combined-title-cell-controls';
+import { useGeneralSettings } from '/@/renderer/store';
 
 const CellContainer = styled(motion.div)<{ height: number }>`
     display: grid;
@@ -67,6 +68,8 @@ export const CombinedTitleCell = ({
     context,
     data,
 }: ICellRendererParams) => {
+    const { blurExplicit } = useGeneralSettings();
+
     const artists = useMemo(() => {
         if (!value) return null;
         return value.artists?.length ? value.artists : value.albumArtists;
@@ -99,6 +102,7 @@ export const CombinedTitleCell = ({
                 {value.imageUrl ? (
                     <StyledImage
                         alt="cover"
+                        className={blurExplicit && data.explicit ? 'explicit' : ''}
                         height={(node.rowHeight || 40) - 10}
                         placeholder={value.imagePlaceholderUrl || 'var(--placeholder-bg)'}
                         src={value.imageUrl}

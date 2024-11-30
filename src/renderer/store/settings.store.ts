@@ -223,6 +223,7 @@ export interface SettingsState {
         albumBackground: boolean;
         albumBackgroundBlur: number;
         artistItems: SortableItem<ArtistItem>[];
+        blurExplicit: boolean;
         buttonSize: number;
         disabledContextMenu: { [k in ContextMenuItemType]?: boolean };
         doubleClickQueueAll: boolean;
@@ -373,6 +374,7 @@ const initialState: SettingsState = {
         albumBackground: false,
         albumBackgroundBlur: 6,
         artistItems,
+        blurExplicit: false,
         buttonSize: 20,
         disabledContextMenu: {},
         doubleClickQueueAll: true,

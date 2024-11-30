@@ -15,6 +15,7 @@ import {
     useFullScreenPlayerStore,
     useSidebarStore,
     useHotkeySettings,
+    useGeneralSettings,
 } from '/@/renderer/store';
 import { fadeIn } from '/@/renderer/styles';
 import { LibraryItem } from '/@/renderer/api/types';
@@ -104,6 +105,7 @@ export const LeftControls = () => {
     const title = currentSong?.name;
     const artists = currentSong?.artists;
     const { bindings } = useHotkeySettings();
+    const { blurExplicit } = useGeneralSettings();
 
     const isSongDefined = Boolean(currentSong?.id);
 
@@ -159,6 +161,11 @@ export const LeftControls = () => {
                                 >
                                     {currentSong?.imageUrl ? (
                                         <PlayerbarImage
+                                            className={
+                                                blurExplicit && currentSong?.explicit
+                                                    ? 'explicit'
+                                                    : undefined
+                                            }
                                             loading="eager"
                                             src={currentSong?.imageUrl}
                                         />

@@ -14,7 +14,7 @@ import { Badge } from '/@/renderer/components/badge';
 import { AppRoute } from '/@/renderer/router/routes';
 import { usePlayQueueAdd } from '/@/renderer/features/player/hooks/use-playqueue-add';
 import { Play } from '/@/renderer/types';
-import { usePlayButtonBehavior } from '/@/renderer/store';
+import { useGeneralSettings, usePlayButtonBehavior } from '/@/renderer/store';
 
 const Carousel = styled(motion.div)`
     position: relative;
@@ -116,6 +116,7 @@ export const FeatureCarousel = ({ data }: FeatureCarouselProps) => {
     const [itemIndex, setItemIndex] = useState(0);
     const [direction, setDirection] = useState(0);
     const playType = usePlayButtonBehavior();
+    const { blurExplicit } = useGeneralSettings();
 
     const currentItem = data?.[itemIndex];
 
@@ -162,6 +163,11 @@ export const FeatureCarousel = ({ data }: FeatureCarouselProps) => {
                         <Grid>
                             <ImageColumn>
                                 <Image
+                                    className={
+                                        blurExplicit && data[itemIndex]?.explicit
+                                            ? 'exp-large'
+                                            : undefined
+                                    }
                                     height={225}
                                     placeholder="var(--card-default-bg)"
                                     radius="md"

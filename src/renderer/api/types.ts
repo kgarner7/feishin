@@ -158,6 +158,7 @@ export type Album = {
     comment: string | null;
     createdAt: string;
     duration: number | null;
+    explicit: boolean;
     genres: Genre[];
     id: string;
     imagePlaceholderUrl: string | null;
@@ -203,6 +204,7 @@ export type Song = {
     discNumber: number;
     discSubtitle: string | null;
     duration: number;
+    explicit: boolean;
     gain: GainInfo | null;
     genres: Genre[];
     id: string;

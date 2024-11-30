@@ -700,7 +700,9 @@
         "windowBarStyle": "window bar style",
         "windowBarStyle_description": "select the style of the window bar",
         "zoom": "zoom percentage",
-        "zoom_description": "sets the zoom percentage for the application"
+        "zoom_description": "sets the zoom percentage for the application",
+        "blurExplicit": "Blur explicit albums/tracks",
+        "blurExplicit_description": "blur explicit album/track images if set"
     },
     "table": {
         "column": {

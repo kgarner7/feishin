@@ -139,6 +139,8 @@ export const DefaultCard = ({
 }: BaseGridCardProps) => {
     const navigate = useNavigate();
 
+    console.log(data);
+
     if (data) {
         const path = generatePath(
             controls.route.route,
@@ -180,6 +182,7 @@ export const DefaultCard = ({
                     <ImageContainer $isFavorite={data?.userFavorite}>
                         {data?.imageUrl ? (
                             <Image
+                                className={data?.explicit && 'exp-large'}
                                 importance="auto"
                                 placeholder={data?.imagePlaceholderUrl || 'var(--placeholder-bg)'}
                                 src={data?.imageUrl}

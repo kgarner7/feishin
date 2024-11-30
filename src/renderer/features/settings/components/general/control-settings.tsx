@@ -529,6 +529,25 @@ export const ControlSettings = () => {
             isHidden: false,
             title: t('setting.playerbarOpenDrawer', { postProcess: 'sentenceCase' }),
         },
+        {
+            control: (
+                <Switch
+                    aria-label={t('seting.blurExplicit', { postProcess: 'sentenceCase' })}
+                    defaultChecked={settings.blurExplicit}
+                    onChange={(e) => {
+                        setSettings({
+                            general: { ...settings, blurExplicit: e.currentTarget.checked },
+                        });
+                    }}
+                />
+            ),
+            description: t('setting.blurExplicit', {
+                context: 'description',
+                postProcess: 'sentenceCase',
+            }),
+            isHidden: false,
+            title: t('setting.blurExplicit', { postProcess: 'sentenceCase' }),
+        },
     ];
 
     return <SettingsSection options={controlOptions} />;
