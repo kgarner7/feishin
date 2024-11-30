@@ -79,7 +79,7 @@ export const LibraryHeader = forwardRef(
                         <img
                             alt="cover"
                             className={
-                                styles.image + (blurExplicit && explicit ? ' exp-large' : undefined)
+                                styles.image + (blurExplicit && explicit ? ' exp-large' : '')
                             }
                             placeholder={imagePlaceholderUrl || 'var(--placeholder-bg)'}
                             src={imageUrl}
