@@ -139,8 +139,6 @@ export const DefaultCard = ({
 }: BaseGridCardProps) => {
     const navigate = useNavigate();
 
-    console.log(data);
-
     if (data) {
         const path = generatePath(
             controls.route.route,
