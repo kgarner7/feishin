@@ -1,5 +1,4 @@
 import { ReactNode } from 'react';
-import { ServerFeatures } from '/@/renderer/api/features-types';
 import {
     Album,
     AlbumArtist,
@@ -74,20 +73,6 @@ export const toServerType = (value?: string): ServerType | null => {
         default:
             return null;
     }
-};
-
-export type ServerListItem = {
-    credential: string;
-    features?: ServerFeatures;
-    id: string;
-    name: string;
-    ndCredential?: string;
-    savePassword?: boolean;
-    type: ServerType;
-    url: string;
-    userId: string | null;
-    username: string;
-    version?: string;
 };
 
 export enum PlayerStatus {

@@ -15,7 +15,6 @@ import {
     GenreListSort,
     AlbumListSort,
     sortAlbumList,
-    QueueSong,
     SortOrder,
 } from '/@/renderer/api/types';
 import { randomString } from '/@/renderer/utils';
@@ -580,34 +579,19 @@ export const SubsonicController: ControllerEndpoint = {
         };
     },
     getPlayQueue: async ({ apiClientProps }) => {
-        const res = await ssApiClient(apiClientProps).getPlayQueue();
+        const res = await ssApiClient(apiClientProps).getPlayQueue2();
 
         if (res.status !== 200) {
             throw new Error('Failed to get random songs');
         }
 
-        const { changed, changedBy, current, entry, position, username } = res.body.playQueue;
-
-        let currentIndex = 0;
-        let entries: QueueSong[] = [];
-
-        if (current !== undefined) {
-            entries = entry.map((song, currIndx) => {
-                if (song.id === current) {
-                    currentIndex = currIndx;
-                }
-
-                return ssNormalize.song(song, apiClientProps.server, '');
-            });
-        } else {
-            entries = entry.map((song) => ssNormalize.song(song, apiClientProps.server, ''));
-        }
+        const { changed, changedBy, entry, queueIndex, position, username } = res.body.playQueue2;
 
         return {
             changed,
             changedBy,
-            currentIndex,
-            entry: entries,
+            currentIndex: queueIndex ?? 0,
+            entry: entry.map((song) => ssNormalize.song(song, apiClientProps.server, '')),
             position,
             username,
         };
@@ -1250,21 +1234,6 @@ export const SubsonicController: ControllerEndpoint = {
         return null;
     },
     savePlayQueue: async ({ query, apiClientProps }) => {
-        const res = await ssApiClient(apiClientProps).savePlayQueue({
-            query: {
-                current: query.current,
-                id: query.songs,
-                position: query.positionMs,
-            },
-        });
-
-        if (res.status !== 200) {
-            throw new Error('Failed to save play queue');
-        }
-    },
-    savePlayQueue2: async (args) => {
-        const { query, apiClientProps } = args;
-
         const res = await ssApiClient(apiClientProps).savePlayQueue2({
             body: {
                 id: query.songs,

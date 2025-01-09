@@ -63,8 +63,11 @@ export type ServerListItem = {
     credential: string;
     features?: ServerFeatures;
     id: string;
+    localFile: boolean;
     name: string;
     ndCredential?: string;
+    prependPrefix?: string;
+    removePrefix?: string;
     savePassword?: boolean;
     type: ServerType;
     url: string;

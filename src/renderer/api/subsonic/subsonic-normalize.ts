@@ -48,7 +48,17 @@ const normalizeSong = (
             size: size || 300,
         }) || null;
 
-    const streamUrl = `${server?.url}/rest/stream.view?id=${item.id}&v=1.13.0&c=feishin_${deviceId}&${server?.credential}`;
+    let streamUrl: string;
+
+    if (server?.localFile) {
+        const toRemove = server.removePrefix ?? '';
+        if (!item.path.startsWith(toRemove)) {
+            console.error(`Attempting to remove prefix ${toRemove} that doesn't match`);
+        }
+        streamUrl = `file://${server.prependPrefix ?? ''}${item.path.substring(toRemove.length)}`;
+    } else {
+        streamUrl = `${server?.url}/rest/stream.view?id=${item.id}&v=1.13.0&c=feishin_${deviceId}&${server?.credential}`;
+    }
 
     return {
         album: item.album || '',

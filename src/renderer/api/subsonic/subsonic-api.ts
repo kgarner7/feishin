@@ -105,6 +105,13 @@ export const contract = c.router({
             200: ssType._response.playQueue,
         },
     },
+    getPlayQueue2: {
+        method: 'GET',
+        path: 'getPlayQueue2.view',
+        responses: {
+            200: ssType._response.playQueue2,
+        },
+    },
     getPlaylist: {
         method: 'GET',
         path: 'getPlaylist.view',

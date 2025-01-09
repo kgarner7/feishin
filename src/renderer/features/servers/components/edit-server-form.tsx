@@ -42,14 +42,19 @@ export const EditServerForm = ({ isUpdate, password, server, onCancel }: EditSer
     const form = useForm({
         initialValues: {
             legacyAuth: false,
+            localFile: server?.localFile || false,
             name: server?.name,
             password: password || '',
+            prependPrefix: server?.prependPrefix,
+            removePrefix: server?.removePrefix,
             savePassword: server.savePassword || false,
             type: server?.type,
             url: server?.url,
             username: server?.username,
         },
     });
+
+    const [localFile, setLocalFile] = useState(server?.localFile || false);
 
     const isSubsonic = form.values.type === ServerType.SUBSONIC;
     const isNavidrome = form.values.type === ServerType.NAVIDROME;
@@ -81,10 +86,13 @@ export const EditServerForm = ({ isUpdate, password, server, onCancel }: EditSer
                 });
             }
 
-            const serverItem = {
+            const serverItem: Omit<ServerListItem, 'id'> = {
                 credential: data.credential,
+                localFile: values.localFile,
                 name: values.name,
                 ndCredential: data.ndCredential,
+                prependPrefix: values.prependPrefix,
+                removePrefix: values.removePrefix,
                 savePassword: values.savePassword,
                 type: values.type,
                 url: values.url,
@@ -173,6 +181,43 @@ export const EditServerForm = ({ isUpdate, password, server, onCancel }: EditSer
                         })}
                     />
                 )}
+                <Checkbox
+                    label={t('form.addServer.input', {
+                        context: 'localFile',
+                        postProcess: 'titleCase',
+                    })}
+                    {...form.getInputProps('localFile', {
+                        type: 'checkbox',
+                    })}
+                    onChange={(e) => {
+                        form.setFieldValue('localFile', e.currentTarget.checked);
+                        setLocalFile(e.currentTarget.checked);
+                    }}
+                />
+                {localFile && (
+                    <>
+                        <TextInput
+                            label={t('form.addServer.input', {
+                                context: 'removePrefix',
+                                postProcess: 'titleCase',
+                            })}
+                            rightSection={
+                                form.isDirty('removePrefix') && <ModifiedFieldIndicator />
+                            }
+                            {...form.getInputProps('removePrefix')}
+                        />
+                        <TextInput
+                            label={t('form.addServer.input', {
+                                context: 'prependPrefix',
+                                postProcess: 'titleCase',
+                            })}
+                            rightSection={
+                                form.isDirty('prependPrefix') && <ModifiedFieldIndicator />
+                            }
+                            {...form.getInputProps('prependPrefix')}
+                        />
+                    </>
+                )}
                 {isSubsonic && (
                     <Checkbox
                         label={t('form.addServer.input', {
@@ -184,6 +229,7 @@ export const EditServerForm = ({ isUpdate, password, server, onCancel }: EditSer
                         })}
                     />
                 )}
+
                 <Group position="right">
                     <Button
                         variant="subtle"

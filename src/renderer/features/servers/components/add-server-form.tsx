@@ -6,7 +6,7 @@ import { useFocusTrap } from '@mantine/hooks';
 import { closeAllModals } from '@mantine/modals';
 import isElectron from 'is-electron';
 import { nanoid } from 'nanoid/non-secure';
-import { AuthenticationResponse } from '/@/renderer/api/types';
+import { AuthenticationResponse, ServerListItem } from '/@/renderer/api/types';
 import { useAuthStoreActions } from '/@/renderer/store';
 import { ServerType, toServerType } from '/@/renderer/types';
 import { api } from '/@/renderer/api';
@@ -33,8 +33,11 @@ export const AddServerForm = ({ onCancel }: AddServerFormProps) => {
     const form = useForm({
         initialValues: {
             legacyAuth: false,
+            localFile: false,
             name: (localSettings ? localSettings.env.SERVER_NAME : window.SERVER_NAME) ?? '',
             password: '',
+            prependPrefix: undefined,
+            removePrefix: undefined,
             savePassword: false,
             type:
                 (localSettings
@@ -44,6 +47,8 @@ export const AddServerForm = ({ onCancel }: AddServerFormProps) => {
             username: '',
         },
     });
+
+    const [localFile, setLocalFile] = useState(false);
 
     // server lock for web is only true if lock is true *and* all other properties are set
     const serverLock =
@@ -83,11 +88,14 @@ export const AddServerForm = ({ onCancel }: AddServerFormProps) => {
                 });
             }
 
-            const serverItem = {
+            const serverItem: ServerListItem = {
                 credential: data.credential,
                 id: nanoid(),
+                localFile: values.localFile,
                 name: values.name,
                 ndCredential: data.ndCredential,
+                prependPrefix: values.prependPrefix,
+                removePrefix: values.removePrefix,
                 type: values.type as ServerType,
                 url: values.url.replace(/\/$/, ''),
                 userId: data.userId,
@@ -165,6 +173,37 @@ export const AddServerForm = ({ onCancel }: AddServerFormProps) => {
                     })}
                     {...form.getInputProps('password')}
                 />
+                <Checkbox
+                    label={t('form.addServer.input', {
+                        context: 'localFile',
+                        postProcess: 'titleCase',
+                    })}
+                    {...form.getInputProps('localFile', {
+                        type: 'checkbox',
+                    })}
+                    onChange={(e) => {
+                        form.setFieldValue('localFile', e.currentTarget.checked);
+                        setLocalFile(e.currentTarget.checked);
+                    }}
+                />
+                {localFile && (
+                    <>
+                        <TextInput
+                            label={t('form.addServer.input', {
+                                context: 'removePrefix',
+                                postProcess: 'titleCase',
+                            })}
+                            {...form.getInputProps('removePrefix')}
+                        />
+                        <TextInput
+                            label={t('form.addServer.input', {
+                                context: 'prependPrefix',
+                                postProcess: 'titleCase',
+                            })}
+                            {...form.getInputProps('prependPrefix')}
+                        />
+                    </>
+                )}
                 {localSettings && form.values.type === ServerType.NAVIDROME && (
                     <Checkbox
                         label={t('form.addServer.input', {

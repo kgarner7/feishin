@@ -1,9 +1,8 @@
 import { MutableRefObject, useCallback } from 'react';
-import { LibraryItem } from '/@/renderer/api/types';
+import { LibraryItem, ServerListItem } from '/@/renderer/api/types';
 import { VirtualInfiniteGridRef } from '/@/renderer/components/virtual-grid';
 import { useCreateFavorite } from '/@/renderer/features/shared/mutations/create-favorite-mutation';
 import { useDeleteFavorite } from '/@/renderer/features/shared/mutations/delete-favorite-mutation';
-import { ServerListItem } from '/@/renderer/types';
 
 interface HandleFavoriteProps {
     gridRef: MutableRefObject<VirtualInfiniteGridRef | null>;
