@@ -10,6 +10,7 @@ import {
     ServerType,
     Playlist,
     Genre,
+    RelatedArtist,
 } from '/@/renderer/api/types';
 
 const getCoverArtUrl = (args: {
@@ -34,6 +35,68 @@ const getCoverArtUrl = (args: {
     );
 };
 
+const getArtists = (
+    item:
+        | z.infer<typeof ssType._response.song>
+        | z.infer<typeof ssType._response.album>
+        | z.infer<typeof ssType._response.albumListEntry>,
+) => {
+    const albumArtists: RelatedArtist[] = item.albumArtists
+        ? item.albumArtists.map((item) => ({
+              id: item.id.toString(),
+              imageUrl: null,
+              name: item.name,
+          }))
+        : [
+              {
+                  id: item.artistId?.toString() || '',
+                  imageUrl: null,
+                  name: item.artist || '',
+              },
+          ];
+
+    const artists: RelatedArtist[] = item.artists
+        ? item.artists.map((item) => ({
+              id: item.id.toString(),
+              imageUrl: null,
+              name: item.name,
+          }))
+        : [
+              {
+                  id: item.artistId?.toString() || '',
+                  imageUrl: null,
+                  name: item.artist || '',
+              },
+          ];
+
+    return { albumArtists, artists };
+};
+
+const getGenres = (
+    item:
+        | z.infer<typeof ssType._response.song>
+        | z.infer<typeof ssType._response.album>
+        | z.infer<typeof ssType._response.albumListEntry>,
+): Genre[] => {
+    return item.genres
+        ? item.genres.map((genre) => ({
+              id: genre.name,
+              imageUrl: null,
+              itemType: LibraryItem.GENRE,
+              name: genre.name,
+          }))
+        : item.genre
+          ? [
+                {
+                    id: item.genre,
+                    imageUrl: null,
+                    itemType: LibraryItem.GENRE,
+                    name: item.genre,
+                },
+            ]
+          : [];
+};
+
 const normalizeSong = (
     item: z.infer<typeof ssType._response.song>,
     server: ServerListItem | null,
@@ -51,22 +114,9 @@ const normalizeSong = (
 
     return {
         album: item.album || '',
-        albumArtists: [
-            {
-                id: item.artistId?.toString() || '',
-                imageUrl: null,
-                name: item.artist || '',
-            },
-        ],
         albumId: item.albumId?.toString() || '',
         artistName: item.artist || '',
-        artists: [
-            {
-                id: item.artistId?.toString() || '',
-                imageUrl: null,
-                name: item.artist || '',
-            },
-        ],
+        ...getArtists(item),
         bitRate: item.bitRate || 0,
         bpm: item.bpm || null,
         channels: null,
@@ -84,16 +134,7 @@ const normalizeSong = (
                       track: item.replayGain.trackGain,
                   }
                 : null,
-        genres: item.genre
-            ? [
-                  {
-                      id: item.genre,
-                      imageUrl: null,
-                      itemType: LibraryItem.GENRE,
-                      name: item.genre,
-                  },
-              ]
-            : [],
+        genres: getGenres(item),
         id: item.id.toString(),
         imagePlaceholderUrl: null,
         imageUrl,
@@ -176,26 +217,12 @@ const normalizeAlbum = (
 
     return {
         albumArtist: item.artist,
-        albumArtists: item.artistId
-            ? [{ id: item.artistId.toString(), imageUrl: null, name: item.artist }]
-            : [],
-        artists: item.artistId
-            ? [{ id: item.artistId.toString(), imageUrl: null, name: item.artist }]
-            : [],
+        ...getArtists(item),
         backdropImageUrl: null,
         comment: null,
         createdAt: item.created,
         duration: item.duration * 1000,
-        genres: item.genre
-            ? [
-                  {
-                      id: item.genre,
-                      imageUrl: null,
-                      itemType: LibraryItem.GENRE,
-                      name: item.genre,
-                  },
-              ]
-            : [],
+        genres: getGenres(item),
         id: item.id.toString(),
         imagePlaceholderUrl: null,
         imageUrl,

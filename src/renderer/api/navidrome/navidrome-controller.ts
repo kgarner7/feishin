@@ -15,6 +15,7 @@ import {
     genreListSortMap,
     Song,
     ControllerEndpoint,
+    ServerListItem,
 } from '../types';
 import { VersionInfo, getFeatures, hasFeature } from '/@/renderer/api/utils';
 import { ServerFeature, ServerFeatures } from '/@/renderer/api/features-types';
@@ -24,9 +25,18 @@ import { ssNormalize } from '/@/renderer/api/subsonic/subsonic-normalize';
 import { SubsonicController } from '/@/renderer/api/subsonic/subsonic-controller';
 
 const VERSION_INFO: VersionInfo = [
+    ['0.55.0', { [ServerFeature.BRF]: [1] }],
     ['0.49.3', { [ServerFeature.SHARING_ALBUM_SONG]: [1] }],
     ['0.48.0', { [ServerFeature.PLAYLISTS_SMART]: [1] }],
 ];
+
+const excludeMissing = (server: ServerListItem | null) => {
+    if (hasFeature(server, ServerFeature.BRF)) {
+        return { missing: false };
+    }
+
+    return undefined;
+};
 
 export const NavidromeController: ControllerEndpoint = {
     addToPlaylist: async (args) => {
@@ -159,6 +169,7 @@ export const NavidromeController: ControllerEndpoint = {
                 _start: query.startIndex,
                 name: query.searchTerm,
                 ...query._custom?.navidrome,
+                role: hasFeature(apiClientProps.server, ServerFeature.BRF) ? 'albumartist' : '',
             },
         });
 
@@ -231,6 +242,7 @@ export const NavidromeController: ControllerEndpoint = {
                 name: query.searchTerm,
                 ...query._custom?.navidrome,
                 starred: query.favorite,
+                ...excludeMissing(apiClientProps.server),
             },
         });
 
@@ -351,7 +363,7 @@ export const NavidromeController: ControllerEndpoint = {
         }
 
         return {
-            items: res.body.data.map((item) => ndNormalize.song(item, apiClientProps.server, '')),
+            items: res.body.data.map((item) => ndNormalize.song(item, apiClientProps.server)),
             startIndex: query?.startIndex || 0,
             totalRecordCount: Number(res.body.headers.get('x-total-count') || 0),
         };
@@ -390,6 +402,7 @@ export const NavidromeController: ControllerEndpoint = {
         }
 
         const features: ServerFeatures = {
+            brf: !!navidromeFeatures[ServerFeature.BRF],
             lyricsMultipleStructured: !!navidromeFeatures[SubsonicExtensions.SONG_LYRICS],
             playlistsSmart: !!navidromeFeatures[ServerFeature.PLAYLISTS_SMART],
             publicPlaylist: true,
@@ -416,7 +429,7 @@ export const NavidromeController: ControllerEndpoint = {
         if (res.status === 200 && res.body.similarSongs?.song) {
             const similar = res.body.similarSongs.song.reduce<Song[]>((acc, song) => {
                 if (song.id !== query.songId) {
-                    acc.push(ssNormalize.song(song, apiClientProps.server, ''));
+                    acc.push(ssNormalize.song(song, apiClientProps.server));
                 }
 
                 return acc;
@@ -443,7 +456,7 @@ export const NavidromeController: ControllerEndpoint = {
 
         return fallback.body.data.reduce<Song[]>((acc, song) => {
             if (song.id !== query.songId) {
-                acc.push(ndNormalize.song(song, apiClientProps.server, ''));
+                acc.push(ndNormalize.song(song, apiClientProps.server));
             }
 
             return acc;
@@ -462,7 +475,7 @@ export const NavidromeController: ControllerEndpoint = {
             throw new Error('Failed to get song detail');
         }
 
-        return ndNormalize.song(res.body.data, apiClientProps.server, '');
+        return ndNormalize.song(res.body.data, apiClientProps.server);
     },
     getSongList: async (args) => {
         const { query, apiClientProps } = args;
@@ -479,6 +492,7 @@ export const NavidromeController: ControllerEndpoint = {
                 starred: query.favorite,
                 title: query.searchTerm,
                 ...query._custom?.navidrome,
+                ...excludeMissing(apiClientProps.server),
             },
         });
 
@@ -488,7 +502,7 @@ export const NavidromeController: ControllerEndpoint = {
 
         return {
             items: res.body.data.map((song) =>
-                ndNormalize.song(song, apiClientProps.server, '', query.imageSize),
+                ndNormalize.song(song, apiClientProps.server, query.imageSize),
             ),
             startIndex: query?.startIndex || 0,
             totalRecordCount: Number(res.body.headers.get('x-total-count') || 0),
