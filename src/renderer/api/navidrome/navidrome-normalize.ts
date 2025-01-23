@@ -78,6 +78,18 @@ const normalizeSong = (
         size: imageSize || 100,
     });
 
+    let streamUrl: string;
+
+    if (server?.localFile) {
+        const toRemove = server.removePrefix ?? '';
+        if (!item.path.startsWith(toRemove)) {
+            console.error(`Attempting to remove prefix ${toRemove} that doesn't match`);
+        }
+        streamUrl = `file://${server.prependPrefix ?? ''}${item.path.substring(toRemove.length)}`;
+    } else {
+        streamUrl = `${server?.url}/rest/stream.view?id=${id}&v=1.13.0&c=feishin_${deviceId}&${server?.credential}`;
+    }
+
     const imagePlaceholderUrl = null;
     return {
         album: item.album,
@@ -128,7 +140,7 @@ const normalizeSong = (
         serverId: server?.id || 'unknown',
         serverType: ServerType.NAVIDROME,
         size: item.size,
-        streamUrl: `${server?.url}/rest/stream.view?id=${id}&v=1.13.0&c=feishin_${deviceId}&${server?.credential}`,
+        streamUrl,
         trackNumber: item.trackNumber,
         uniqueId: nanoid(),
         updatedAt: item.updatedAt,
