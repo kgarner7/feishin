@@ -379,6 +379,10 @@ export const NavidromeController: ControllerEndpoint = {
             throw new Error('Failed to ping server');
         }
 
+        if (ping.body.serverVersion?.includes('pr-2709')) {
+            ping.body.serverVersion = '0.55.0';
+        }
+
         const navidromeFeatures: Record<string, number[]> = getFeatures(
             VERSION_INFO,
             ping.body.serverVersion!,
