@@ -39,13 +39,13 @@ jobs:
                       npm run package:pr
                   on_retry_command: npm cache clean --force
 
-            - uses: actions/upload-artifact@v3
+            - uses: actions/upload-artifact@v4
               with:
                   name: windows-binaries
                   path: |
                       release/build/*.exe
 
-            - uses: actions/upload-artifact@v3
+            - uses: actions/upload-artifact@v4
               with:
                   name: linux-binaries
                   path: |
@@ -53,7 +53,7 @@ jobs:
                       release/build/*.deb
                       release/build/*.rpm
 
-            - uses: actions/upload-artifact@v3
+            - uses: actions/upload-artifact@v4
               with:
                   name: macos-binaries
                   path: |
