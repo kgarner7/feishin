@@ -66,11 +66,18 @@ const genreItem = z.object({
     name: z.string(),
 });
 
+const simpleArtist = z.object({
+    id: z.string(),
+    name: z.string(),
+});
+
 const song = z.object({
     album: z.string().optional(),
+    albumArtists: z.array(simpleArtist),
     albumId: id.optional(),
     artist: z.string().optional(),
     artistId: id.optional(),
+    artists: z.array(simpleArtist),
     averageRating: z.number().optional(),
     bitRate: z.number().optional(),
     bpm: z.number().optional(),
@@ -101,12 +108,15 @@ const song = z.object({
 
 const album = z.object({
     album: z.string(),
+    albumArtists: z.array(simpleArtist),
     artist: z.string(),
     artistId: id,
+    artists: z.array(simpleArtist),
     coverArt: z.string(),
     created: z.string(),
     duration: z.number(),
     genre: z.string().optional(),
+    genres: z.array(genreItem).optional(),
     id,
     isCompilation: z.boolean().optional(),
     isDir: z.boolean(),

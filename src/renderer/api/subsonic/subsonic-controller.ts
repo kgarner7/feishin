@@ -73,6 +73,7 @@ export const SubsonicController: ControllerEndpoint = {
         } else {
             const salt = randomString(12);
             const hash = md5(body.password + salt);
+
             credential = `u=${encodeURIComponent(body.username)}&s=${encodeURIComponent(salt)}&t=${encodeURIComponent(hash)}`;
             credentialParams = {
                 s: salt,
@@ -522,7 +523,7 @@ export const SubsonicController: ControllerEndpoint = {
             `?id=${query.id}` +
             `&${apiClientProps.server?.credential}` +
             '&v=1.13.0' +
-            '&c=feishin'
+            '&c=Feishin'
         );
     },
     getGenreList: async ({ query, apiClientProps }) => {
@@ -690,9 +691,8 @@ export const SubsonicController: ControllerEndpoint = {
         }
 
         let results =
-            res.body.playlist.entry?.map((song) =>
-                ssNormalize.song(song, apiClientProps.server, ''),
-            ) || [];
+            res.body.playlist.entry?.map((song) => ssNormalize.song(song, apiClientProps.server)) ||
+            [];
 
         if (query.sortBy && query.sortOrder) {
             results = sortSongList(results, query.sortBy, query.sortOrder);
@@ -724,7 +724,7 @@ export const SubsonicController: ControllerEndpoint = {
         const results = res.body.randomSongs?.song || [];
 
         return {
-            items: results.map((song) => ssNormalize.song(song, apiClientProps.server, '')),
+            items: results.map((song) => ssNormalize.song(song, apiClientProps.server)),
             startIndex: 0,
             totalRecordCount: res.body.randomSongs?.song?.length || 0,
         };
@@ -783,7 +783,7 @@ export const SubsonicController: ControllerEndpoint = {
 
         return res.body.similarSongs.song.reduce<Song[]>((acc, song) => {
             if (song.id !== query.songId) {
-                acc.push(ssNormalize.song(song, apiClientProps.server, ''));
+                acc.push(ssNormalize.song(song, apiClientProps.server));
             }
 
             return acc;
@@ -802,7 +802,7 @@ export const SubsonicController: ControllerEndpoint = {
             throw new Error('Failed to get song detail');
         }
 
-        return ssNormalize.song(res.body.song, apiClientProps.server, '');
+        return ssNormalize.song(res.body.song, apiClientProps.server);
     },
     getSongList: async ({ query, apiClientProps }) => {
         const fromAlbumPromises = [];
@@ -829,7 +829,7 @@ export const SubsonicController: ControllerEndpoint = {
             return {
                 items:
                     res.body.searchResult3?.song?.map((song) =>
-                        ssNormalize.song(song, apiClientProps.server, ''),
+                        ssNormalize.song(song, apiClientProps.server),
                     ) || [],
                 startIndex: query.startIndex,
                 totalRecordCount: null,
@@ -853,8 +853,7 @@ export const SubsonicController: ControllerEndpoint = {
             const results = res.body.songsByGenre?.song || [];
 
             return {
-                items:
-                    results.map((song) => ssNormalize.song(song, apiClientProps.server, '')) || [],
+                items: results.map((song) => ssNormalize.song(song, apiClientProps.server)) || [],
                 startIndex: 0,
                 totalRecordCount: null,
             };
@@ -873,7 +872,7 @@ export const SubsonicController: ControllerEndpoint = {
 
             const results =
                 (res.body.starred?.song || []).map((song) =>
-                    ssNormalize.song(song, apiClientProps.server, ''),
+                    ssNormalize.song(song, apiClientProps.server),
                 ) || [];
 
             return {
@@ -943,7 +942,7 @@ export const SubsonicController: ControllerEndpoint = {
             }
 
             return {
-                items: results.map((song) => ssNormalize.song(song, apiClientProps.server, '')),
+                items: results.map((song) => ssNormalize.song(song, apiClientProps.server)),
                 startIndex: 0,
                 totalRecordCount: results.length,
             };
@@ -968,7 +967,7 @@ export const SubsonicController: ControllerEndpoint = {
         return {
             items:
                 res.body.searchResult3?.song?.map((song) =>
-                    ssNormalize.song(song, apiClientProps.server, ''),
+                    ssNormalize.song(song, apiClientProps.server),
                 ) || [],
             startIndex: 0,
             totalRecordCount: null,
@@ -1201,7 +1200,7 @@ export const SubsonicController: ControllerEndpoint = {
         return {
             items:
                 res.body.topSongs?.song?.map((song) =>
-                    ssNormalize.song(song, apiClientProps.server, ''),
+                    ssNormalize.song(song, apiClientProps.server),
                 ) || [],
             startIndex: 0,
             totalRecordCount: res.body.topSongs?.song?.length || 0,
@@ -1289,7 +1288,7 @@ export const SubsonicController: ControllerEndpoint = {
                 ssNormalize.album(album, apiClientProps.server),
             ),
             songs: (res.body.searchResult3?.song || []).map((song) =>
-                ssNormalize.song(song, apiClientProps.server, ''),
+                ssNormalize.song(song, apiClientProps.server),
             ),
         };
     },
