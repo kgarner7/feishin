@@ -116,6 +116,10 @@ const normalizeSong = (
 
     let streamUrl: string;
 
+    if (item.libraryPath) {
+        item.path = `${item.libraryPath}/${item.path}`;
+    }
+
     if (server?.localFile) {
         const toRemove = server.removePrefix ?? '';
         if (!item.path.startsWith(toRemove)) {
