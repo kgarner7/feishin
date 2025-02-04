@@ -177,6 +177,7 @@ const normalizeSong = (
         lastPlayedAt: null,
         lyrics: null,
         name: item.Name,
+        participants: null,
         path: (item.MediaSources && item.MediaSources[0]?.Path) || null,
         peak: null,
         playCount: (item.UserData && item.UserData.PlayCount) || 0,
@@ -237,6 +238,7 @@ const normalizeAlbum = (
         })),
         id: item.Id,
         imagePlaceholderUrl: null,
+        participants: null,
         imageUrl: getAlbumCoverArtUrl({
             baseUrl: server?.url || '',
             item,

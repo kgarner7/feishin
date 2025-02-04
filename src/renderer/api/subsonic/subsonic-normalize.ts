@@ -69,7 +69,27 @@ const getArtists = (
               },
           ];
 
-    return { albumArtists, artists };
+    let participants: Record<string, RelatedArtist[]> | null = null;
+
+    if (item.contributors) {
+        participants = {};
+
+        for (const contributor of item.contributors) {
+            const artist = {
+                id: contributor.artist.id?.toString() || '',
+                imageUrl: null,
+                name: contributor.artist.name || '',
+            };
+
+            if (contributor.role in participants) {
+                participants[contributor.role].push(artist);
+            } else {
+                participants[contributor.role] = [artist];
+            }
+        }
+    }
+
+    return { albumArtists, artists, participants };
 };
 
 const getGenres = (

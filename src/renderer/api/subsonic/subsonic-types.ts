@@ -71,6 +71,11 @@ const simpleArtist = z.object({
     name: z.string(),
 });
 
+const contributor = z.object({
+    artist: simpleArtist,
+    role: z.string(),
+});
+
 const song = z.object({
     album: z.string().optional(),
     albumArtists: z.array(simpleArtist),
@@ -82,6 +87,7 @@ const song = z.object({
     bitRate: z.number().optional(),
     bpm: z.number().optional(),
     contentType: z.string(),
+    contributors: z.array(contributor).optional(),
     coverArt: z.string().optional(),
     created: z.string(),
     discNumber: z.number(),
@@ -112,6 +118,7 @@ const album = z.object({
     artist: z.string(),
     artistId: id,
     artists: z.array(simpleArtist),
+    contributors: z.array(contributor).optional(),
     coverArt: z.string(),
     created: z.string(),
     duration: z.number(),

@@ -63,20 +63,28 @@ const getArtists = (
 ) => {
     let albumArtists: RelatedArtist[] | undefined;
     let artists: RelatedArtist[] | undefined;
+    let participants: Record<string, RelatedArtist[]> | null = null;
 
     if (item.participants) {
-        if ('albumartist' in item.participants) {
-            albumArtists = item.participants.albumartist.map((item) => ({
+        participants = {};
+        for (const [role, list] of Object.entries(item.participants)) {
+            const roleList = list.map((item) => ({
                 imageUrl: null,
                 ...item,
             }));
-        }
-
-        if ('artist' in item.participants) {
-            artists = item.participants.artist.map((item) => ({
-                imageUrl: null,
-                ...item,
-            }));
+            switch (role) {
+                case 'albumartist': {
+                    albumArtists = roleList;
+                    break;
+                }
+                case 'artist': {
+                    artists = roleList;
+                    break;
+                }
+                default: {
+                    participants[role] = roleList;
+                }
+            }
         }
     }
 
@@ -88,7 +96,7 @@ const getArtists = (
         artists = [{ id: item.artistId, imageUrl: null, name: item.artist }];
     }
 
-    return { albumArtists, artists };
+    return { albumArtists, artists, participants };
 };
 
 const normalizeSong = (
