@@ -107,6 +107,7 @@ const albumArtistListParameters = paginationParameters.extend({
 const participant = z.object({
     id: z.string(),
     name: z.string(),
+    subRole: z.string().optional(),
 });
 
 const participants = z.record(z.string(), z.array(participant));

@@ -74,6 +74,7 @@ const simpleArtist = z.object({
 const contributor = z.object({
     artist: simpleArtist,
     role: z.string(),
+    subRole: z.string().optional(),
 });
 
 const song = z.object({

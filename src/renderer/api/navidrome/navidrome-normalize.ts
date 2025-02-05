@@ -68,21 +68,41 @@ const getArtists = (
     if (item.participants) {
         participants = {};
         for (const [role, list] of Object.entries(item.participants)) {
-            const roleList = list.map((item) => ({
-                imageUrl: null,
-                ...item,
-            }));
-            switch (role) {
-                case 'albumartist': {
+            if (role === 'albumartist' || role === 'artist') {
+                const roleList = list.map((item) => ({
+                    id: item.id,
+                    imageUrl: null,
+                    name: item.name,
+                }));
+
+                if (role === 'albumartist') {
                     albumArtists = roleList;
-                    break;
-                }
-                case 'artist': {
+                } else {
                     artists = roleList;
-                    break;
                 }
-                default: {
-                    participants[role] = roleList;
+            } else {
+                const subRoles = new Map<string | undefined, RelatedArtist[]>();
+
+                for (const artist of list) {
+                    const item: RelatedArtist = {
+                        id: artist.id,
+                        imageUrl: null,
+                        name: artist.name,
+                    };
+
+                    if (subRoles.has(artist.subRole)) {
+                        subRoles.get(artist.subRole)!.push(item);
+                    } else {
+                        subRoles.set(artist.subRole, [item]);
+                    }
+                }
+
+                for (const [subRole, items] of subRoles.entries()) {
+                    if (subRole) {
+                        participants[`${role} (${subRole})`] = items;
+                    } else {
+                        participants[role] = items;
+                    }
                 }
             }
         }
@@ -203,7 +223,7 @@ const normalizeAlbum = (
         backdropImageUrl: imageBackdropUrl,
         comment: item.comment || null,
         createdAt: item.createdAt.split('T')[0],
-        duration: item.duration * 1000 || null,
+        duration: item.duration !== undefined ? item.duration * 1000 : null,
         genres: (item.genres || []).map((genre) => ({
             id: genre.id,
             imageUrl: null,

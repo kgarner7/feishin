@@ -81,10 +81,14 @@ const getArtists = (
                 name: contributor.artist.name || '',
             };
 
-            if (contributor.role in participants) {
-                participants[contributor.role].push(artist);
+            const role = contributor.subRole
+                ? `${contributor.role} (${contributor.subRole})`
+                : contributor.role;
+
+            if (role in participants) {
+                participants[role].push(artist);
             } else {
-                participants[contributor.role] = [artist];
+                participants[role] = [artist];
             }
         }
     }
