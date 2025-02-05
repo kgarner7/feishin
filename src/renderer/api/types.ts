@@ -192,10 +192,6 @@ export type GainInfo = {
     track?: number;
 };
 
-export type Participant = RelatedArtist & {
-    role: string;
-};
-
 export type Song = {
     album: string | null;
     albumArtists: RelatedArtist[];
