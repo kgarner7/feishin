@@ -192,6 +192,7 @@ const normalizeSong = (
         serverType: ServerType.SUBSONIC,
         size: item.size,
         streamUrl,
+        tags: null,
         trackNumber: item.track || 1,
         uniqueId: nanoid(),
         updatedAt: '',
@@ -279,6 +280,7 @@ const normalizeAlbum = (
             (item as z.infer<typeof ssType._response.album>).song?.map((song) =>
                 normalizeSong(song, server),
             ) || [],
+        tags: item.tags || null,
         uniqueId: nanoid(),
         updatedAt: item.created,
         userFavorite: item.starred || false,

@@ -181,6 +181,8 @@ export type Album = {
     size: number | null;
     songCount: number | null;
     songs?: Song[];
+
+    tags: Record<string, string[]> | null;
     uniqueId: string;
     updatedAt: string;
     userFavorite: boolean;
@@ -229,6 +231,7 @@ export type Song = {
     serverType: ServerType;
     size: number;
     streamUrl: string;
+    tags: Record<string, string[]> | null;
     trackNumber: number;
     uniqueId: string;
     updatedAt: string;

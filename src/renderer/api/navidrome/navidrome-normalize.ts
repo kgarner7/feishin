@@ -208,6 +208,7 @@ const normalizeSong = (
         serverType: ServerType.NAVIDROME,
         size: item.size,
         streamUrl,
+        tags: item.tags || null,
         trackNumber: item.trackNumber,
         uniqueId: nanoid(),
         updatedAt: item.updatedAt,
@@ -254,6 +255,7 @@ const normalizeAlbum = (
         isCompilation: item.compilation,
         itemType: LibraryItem.ALBUM,
         lastPlayedAt: normalizePlayDate(item),
+
         mbzId: item.mbzAlbumId || null,
         name: item.name,
         originalDate: item.originalDate
@@ -272,6 +274,7 @@ const normalizeAlbum = (
         size: item.size,
         songCount: item.songCount,
         songs: item.songs ? item.songs.map((song) => normalizeSong(song, server)) : undefined,
+        tags: item.tags || null,
         uniqueId: nanoid(),
         updatedAt: item.updatedAt,
         userFavorite: item.starred,
