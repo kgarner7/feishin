@@ -345,6 +345,11 @@ const moveItemParameters = z.object({
 
 const moveItem = z.null();
 
+const instantMizParameters = z.object({
+    count: z.number().max(50).optional(),
+    id: z.string(),
+});
+
 export const ndType = {
     _enum: {
         albumArtistList: NDAlbumArtistListSort,
@@ -361,6 +366,7 @@ export const ndType = {
         authenticate: authenticateParameters,
         createPlaylist: createPlaylistParameters,
         genreList: genreListParameters,
+        instantMix: instantMizParameters,
         moveItem: moveItemParameters,
         playlistList: playlistListParameters,
         removeFromPlaylist: removeFromPlaylistParameters,

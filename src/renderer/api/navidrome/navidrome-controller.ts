@@ -21,7 +21,6 @@ import { VersionInfo, getFeatures, hasFeature } from '/@/renderer/api/utils';
 import { ServerFeature, ServerFeatures } from '/@/renderer/api/features-types';
 import { SubsonicExtensions } from '/@/renderer/api/subsonic/subsonic-types';
 import { NDSongListSort } from '/@/renderer/api/navidrome.types';
-import { ssNormalize } from '/@/renderer/api/subsonic/subsonic-normalize';
 import { SubsonicController } from '/@/renderer/api/subsonic/subsonic-controller';
 
 const VERSION_INFO: VersionInfo = [
@@ -440,22 +439,16 @@ export const NavidromeController: ControllerEndpoint = {
     getSimilarSongs: async (args) => {
         const { apiClientProps, query } = args;
 
-        // Prefer getSimilarSongs (which queries last.fm) where available
-        // otherwise find other tracks by the same album artist
-        const res = await ssApiClient({
-            ...apiClientProps,
-            silent: true,
-        }).getSimilarSongs({
+        const res = await ndApiClient(apiClientProps).instantMix({
             query: {
-                count: query.count,
                 id: query.songId,
             },
         });
 
-        if (res.status === 200 && res.body.similarSongs?.song) {
-            const similar = res.body.similarSongs.song.reduce<Song[]>((acc, song) => {
+        if (res.status === 200 && res.body) {
+            const similar = res.body.data.reduce<Song[]>((acc, song) => {
                 if (song.id !== query.songId) {
-                    acc.push(ssNormalize.song(song, apiClientProps.server));
+                    acc.push(ndNormalize.song(song, apiClientProps.server));
                 }
 
                 return acc;

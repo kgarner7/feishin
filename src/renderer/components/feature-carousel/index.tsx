@@ -62,9 +62,9 @@ const BackgroundImage = styled.img`
     width: 150%;
     height: 150%;
     user-select: none;
-    filter: blur(24px);
     object-fit: var(--image-fit);
     object-position: 0 30%;
+    filter: blur(24px);
 `;
 
 const BackgroundImageOverlay = styled.div`

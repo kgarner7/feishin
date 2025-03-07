@@ -30,7 +30,6 @@ const SynchronizedLyricsContainer = styled.div<{ $gap: number }>`
     padding: 10vh 0 50vh;
     overflow: scroll;
     word-break: break-word;
-    transform: translateY(-2rem);
 
     -webkit-mask-image: linear-gradient(
         180deg,
@@ -47,6 +46,7 @@ const SynchronizedLyricsContainer = styled.div<{ $gap: number }>`
         rgb(0 0 0 / 100%) 85%,
         transparent 95%
     );
+    transform: translateY(-2rem);
 
     @media screen and (orientation: portrait) {
         padding: 5vh 0;

@@ -6,8 +6,8 @@ import { Sidebar } from '/@/renderer/features/sidebar/components/sidebar';
 import { useSidebarStore } from '/@/renderer/store';
 
 const SidebarContainer = styled.aside`
-    z-index: 5;
     position: relative;
+    z-index: 5;
     grid-area: sidebar;
     background: var(--sidebar-bg);
     border-right: var(--sidebar-border);
