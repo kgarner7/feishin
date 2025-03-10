@@ -300,7 +300,7 @@ const normalizeAlbumArtist = (
     }
 
     return {
-        albumCount: item.albumCount,
+        albumCount: item.stats?.albumartist.albumCount || item.albumCount,
         backgroundImageUrl: null,
         biography: item.biography || null,
         duration: null,
@@ -325,7 +325,7 @@ const normalizeAlbumArtist = (
                 imageUrl: artist?.artistImageUrl || null,
                 name: artist.name,
             })) || null,
-        songCount: item.songCount,
+        songCount: item.stats?.albumartist.songCount || item.songCount,
         userFavorite: item.starred,
         userRating: item.rating,
     };

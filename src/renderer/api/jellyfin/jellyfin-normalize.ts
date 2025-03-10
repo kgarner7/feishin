@@ -259,7 +259,7 @@ const normalizeAlbum = (
         size: null,
         songCount: item?.ChildCount || null,
         songs: item.Songs?.map((song) => normalizeSong(song, server, '', imageSize)),
-        tags: item.tags || null,
+        tags: null,
         uniqueId: nanoid(),
         updatedAt: item?.DateLastMediaAdded || item.DateCreated,
         userFavorite: item.UserData?.IsFavorite || false,
