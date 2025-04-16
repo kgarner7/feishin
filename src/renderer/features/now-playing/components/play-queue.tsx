@@ -50,6 +50,7 @@ export const PlayQueue = forwardRef(({ type }: QueueProps, ref: Ref<any>) => {
     const tableRef = useRef<AgGridReactType | null>(null);
     const mergedRef = useMergedRef(ref, tableRef);
     const queue = useDefaultQueue();
+    const [priorLength, setPriorLength] = useState(queue.length);
     const { reorderQueue, setCurrentTrack } = useQueueControls();
     const currentSong = useCurrentSong();
     const previousSong = usePreviousSong();
@@ -219,6 +220,18 @@ export const PlayQueue = forwardRef(({ type }: QueueProps, ref: Ref<any>) => {
             }
         }
     }, [currentSong, previousSong, tableConfig.followCurrentSong, status]);
+
+    useEffect(() => {
+        // Redraw the queue when adding/removing items, as the row count might be wrong
+        if (tableRef?.current && queue.length !== priorLength) {
+            const { api } = tableRef?.current || {};
+            setPriorLength(queue.length);
+
+            if (api) {
+                api.redrawRows();
+            }
+        }
+    }, [priorLength, queue.length]);
 
     // As a separate rule, update the current row when focus changes. This is
     // to prevent queue scrolling when the application loses and then gains focus.
