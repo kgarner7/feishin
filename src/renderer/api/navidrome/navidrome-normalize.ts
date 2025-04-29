@@ -328,7 +328,10 @@ const normalizeAlbumArtist = (
                 imageUrl: artist?.artistImageUrl || null,
                 name: artist.name,
             })) || null,
-        songCount: item.stats?.albumartist?.songCount || item.songCount,
+        songCount: Math.max(
+            item.stats?.albumartist?.songCount || item.songCount,
+            item.stats?.artist?.songCount || 0,
+        ),
         userFavorite: item.starred,
         userRating: item.rating,
     };
