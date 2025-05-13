@@ -523,7 +523,7 @@ export const NavidromeController: ControllerEndpoint = {
                 _order: 'ASC',
                 _sort: NDSongListSort.RANDOM,
                 _start: 0,
-                album_artist_id: query.albumArtistIds,
+                artists_id: query.albumArtistIds,
             },
         });
 
@@ -563,9 +563,9 @@ export const NavidromeController: ControllerEndpoint = {
                 _order: sortOrderMap.navidrome[query.sortOrder],
                 _sort: songListSortMap.navidrome[query.sortBy],
                 _start: query.startIndex,
-                album_artist_id: query.albumArtistIds,
                 album_id: query.albumIds,
                 artist_id: query.artistIds,
+                artists_id: query.albumArtistIds,
                 genre_id: query.genreIds,
                 starred: query.favorite,
                 title: query.searchTerm,
