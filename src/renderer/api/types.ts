@@ -181,7 +181,6 @@ export type Album = {
     size: number | null;
     songCount: number | null;
     songs?: Song[];
-
     tags: Record<string, string[]> | null;
     uniqueId: string;
     updatedAt: string;
@@ -472,6 +471,11 @@ export type AlbumDetailResponse = Album | null | undefined;
 export type AlbumDetailQuery = { id: string };
 
 export type AlbumDetailArgs = { query: AlbumDetailQuery } & BaseEndpointArgs;
+
+export type AlbumInfo = {
+    imageUrl: string | null;
+    notes: string | null;
+};
 
 // Song List
 export type SongListResponse = BasePaginatedResponse<Song[]> | null | undefined;
@@ -1274,6 +1278,25 @@ export type TranscodingArgs = {
     query: TranscodingQuery;
 } & BaseEndpointArgs;
 
+export type TagQuery = {
+    folder?: string;
+    type: LibraryItem.ALBUM | LibraryItem.SONG;
+};
+
+export type TagArgs = {
+    query: TagQuery;
+} & BaseEndpointArgs;
+
+export type Tag = {
+    name: string;
+    options: string[];
+};
+
+export type TagResponses = {
+    boolTags?: string[];
+    enumTags?: Tag[];
+};
+
 export type ControllerEndpoint = {
     addToPlaylist: (args: AddToPlaylistArgs) => Promise<AddToPlaylistResponse>;
     authenticate: (
@@ -1288,6 +1311,7 @@ export type ControllerEndpoint = {
     getAlbumArtistList: (args: AlbumArtistListArgs) => Promise<AlbumArtistListResponse>;
     getAlbumArtistListCount: (args: AlbumArtistListArgs) => Promise<number>;
     getAlbumDetail: (args: AlbumDetailArgs) => Promise<AlbumDetailResponse>;
+    getAlbumInfo?: (args: AlbumDetailArgs) => Promise<AlbumInfo>;
     getAlbumList: (args: AlbumListArgs) => Promise<AlbumListResponse>;
     getAlbumListCount: (args: AlbumListArgs) => Promise<number>;
     // getArtistInfo?: (args: any) => void;
@@ -1310,6 +1334,7 @@ export type ControllerEndpoint = {
     getSongList: (args: SongListArgs) => Promise<SongListResponse>;
     getSongListCount: (args: SongListArgs) => Promise<number>;
     getStructuredLyrics?: (args: StructuredLyricsArgs) => Promise<StructuredLyric[]>;
+    getTags?: (args: TagArgs) => Promise<TagResponses>;
     getTopSongs: (args: TopSongListArgs) => Promise<TopSongListResponse>;
     getTranscodingUrl: (args: TranscodingArgs) => string;
     getUserList?: (args: UserListArgs) => Promise<UserListResponse>;

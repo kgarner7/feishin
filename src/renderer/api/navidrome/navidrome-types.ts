@@ -359,6 +359,16 @@ const instantMizParameters = z.object({
     id: z.string(),
 });
 
+const tag = z.object({
+    albumCount: z.number().optional(),
+    id: z.string(),
+    songCount: z.number().optional(),
+    tagName: z.string(),
+    tagValue: z.string(),
+});
+
+const tags = z.array(tag);
+
 export const ndType = {
     _enum: {
         albumArtistList: NDAlbumArtistListSort,
@@ -406,6 +416,7 @@ export const ndType = {
         shareItem,
         song,
         songList,
+        tags,
         updatePlaylist,
         user,
         userList,

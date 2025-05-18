@@ -559,8 +559,24 @@ const getAlbumList2 = z.object({
     }),
 });
 
+const albumInfoParameters = z.object({
+    id: z.string(),
+});
+
+const albumInfo = z.object({
+    albumInfo: z.object({
+        largeImageUrl: z.string().optional(),
+        lastFmUrl: z.string().optional(),
+        mediumImageUrl: z.string().optional(),
+        musicBrainzId: z.string().optional(),
+        notes: z.string().optional(),
+        smallImageUrl: z.string().optional(),
+    }),
+});
+
 export const ssType = {
     _parameters: {
+        albumInfo: albumInfoParameters,
         albumList: albumListParameters,
         artistInfo: artistInfoParameters,
         authenticate: authenticateParameters,
@@ -594,6 +610,7 @@ export const ssType = {
         album,
         albumArtist,
         albumArtistList,
+        albumInfo,
         albumList,
         albumListEntry,
         artistInfo,

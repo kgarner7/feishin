@@ -93,6 +93,9 @@ export const controller: GeneralController = {
     getAlbumDetail(args) {
         return apiController('getAlbumDetail', args.apiClientProps.server?.type)?.(args);
     },
+    getAlbumInfo(args) {
+        return apiController('getAlbumInfo', args.apiClientProps.server?.type)?.(args);
+    },
     getAlbumList(args) {
         return apiController('getAlbumList', args.apiClientProps.server?.type)?.(args);
     },
@@ -155,6 +158,9 @@ export const controller: GeneralController = {
     },
     getStructuredLyrics(args) {
         return apiController('getStructuredLyrics', args.apiClientProps.server?.type)?.(args);
+    },
+    getTags(args) {
+        return apiController('getTags', args.apiClientProps.server?.type)?.(args);
     },
     getTopSongs(args) {
         return apiController('getTopSongs', args.apiClientProps.server?.type)?.(args);

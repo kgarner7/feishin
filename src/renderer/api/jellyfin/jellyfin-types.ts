@@ -389,6 +389,12 @@ const genericItem = z.object({
     Name: z.string(),
 });
 
+const participant = z.object({
+    Id: z.string(),
+    Name: z.string(),
+    Type: z.string().optional(),
+});
+
 const songDetailParameters = baseParameters;
 
 const song = z.object({
@@ -417,12 +423,14 @@ const song = z.object({
     Name: z.string(),
     NormalizationGain: z.number().optional(),
     ParentIndexNumber: z.number(),
+    People: participant.array().optional(),
     PlaylistItemId: z.string().optional(),
     PremiereDate: z.string().optional(),
     ProductionYear: z.number(),
     RunTimeTicks: z.number(),
     ServerId: z.string(),
     SortName: z.string(),
+    Tags: z.string().array().optional(),
     Type: z.string(),
     UserData: userData.optional(),
 });
@@ -477,12 +485,14 @@ const album = z.object({
     Name: z.string(),
     ParentLogoImageTag: z.string(),
     ParentLogoItemId: z.string(),
+    People: participant.array().optional(),
     PremiereDate: z.string().optional(),
     ProductionYear: z.number(),
     ProviderIds: providerIds.optional(),
     RunTimeTicks: z.number(),
     ServerId: z.string(),
     Songs: z.array(song).optional(), // This is not a native Jellyfin property -- this is used for combined album detail
+    Tags: z.string().array().optional(),
     Type: z.string(),
     UserData: userData.optional(),
 });
@@ -713,6 +723,18 @@ export enum JellyfinExtensions {
 
 const moveItem = z.null();
 
+const filterListParameters = z.object({
+    IncludeItemTypes: z.string().optional(),
+    ParentId: z.string().optional(),
+    UserId: z.string().optional(),
+});
+
+const filters = z.object({
+    Genres: z.string().array().optional(),
+    Tags: z.string().array().optional(),
+    Years: z.number().array().optional(),
+});
+
 export const jfType = {
     _enum: {
         albumArtistList: albumArtistListSort,
@@ -734,6 +756,7 @@ export const jfType = {
         createPlaylist: createPlaylistParameters,
         deletePlaylist: deletePlaylistParameters,
         favorite: favoriteParameters,
+        filterList: filterListParameters,
         genreList: genreListParameters,
         getQueue: getQueueParameters,
         musicFolderList: musicFolderListParameters,
@@ -760,6 +783,7 @@ export const jfType = {
         deletePlaylist,
         error,
         favorite,
+        filters,
         genre,
         genreList,
         getSessions,
