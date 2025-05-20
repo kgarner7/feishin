@@ -16,6 +16,7 @@ import {
     Song,
     ControllerEndpoint,
     ServerListItem,
+    LibraryItem,
 } from '../types';
 import { VersionInfo, getFeatures, hasFeature } from '/@/renderer/api/utils';
 import { ServerFeature, ServerFeatures } from '/@/renderer/api/features-types';
@@ -616,13 +617,17 @@ export const NavidromeController: ControllerEndpoint = {
         }).then((result) => result!.totalRecordCount!),
     getStructuredLyrics: SubsonicController.getStructuredLyrics,
     getTags: async (args) => {
-        const { apiClientProps } = args;
+        const { apiClientProps, query } = args;
 
         if (!hasFeature(apiClientProps.server, ServerFeature.TAGS)) {
             return { boolTags: undefined, enumTags: undefined };
         }
 
-        const res = await ndApiClient(apiClientProps).getTags();
+        const res = await ndApiClient(apiClientProps).getTags({
+            query: {
+                song: query.type === LibraryItem.ALBUM ? false : undefined,
+            },
+        });
 
         if (res.status !== 200) {
             throw new Error('failed to get tags');

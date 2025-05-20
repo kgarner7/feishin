@@ -367,6 +367,10 @@ const tag = z.object({
     tagValue: z.string(),
 });
 
+const tagListParameters = z.object({
+    song: z.boolean().optional(),
+});
+
 const tags = z.array(tag);
 
 export const ndType = {
@@ -391,6 +395,7 @@ export const ndType = {
         removeFromPlaylist: removeFromPlaylistParameters,
         shareItem: shareItemParameters,
         songList: songListParameters,
+        tagList: tagListParameters,
         updatePlaylist: updatePlaylistParameters,
         userList: userListParameters,
     },

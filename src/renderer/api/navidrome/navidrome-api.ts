@@ -149,6 +149,7 @@ export const contract = c.router({
     getTags: {
         method: 'GET',
         path: 'tag',
+        query: ndType._parameters.tagList,
         responses: {
             200: resultWithHeaders(ndType._response.tags),
             500: resultWithHeaders(ndType._response.error),
