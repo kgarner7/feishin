@@ -1,24 +1,25 @@
+import chunk from 'lodash/chunk';
+import { z } from 'zod';
+
+import { jfApiClient } from '/@/renderer/api/jellyfin/jellyfin-api';
+import { JFSongListSort, JFSortOrder } from '/@/shared/api/jellyfin.types';
+import { jfNormalize } from '/@/shared/api/jellyfin/jellyfin-normalize';
+import { jfType } from '/@/shared/api/jellyfin/jellyfin-types';
+import { getFeatures, hasFeature, VersionInfo } from '/@/shared/api/utils';
 import {
     albumArtistListSortMap,
-    sortOrderMap,
     albumListSortMap,
-    songListSortMap,
-    playlistListSortMap,
-    genreListSortMap,
-    Song,
-    Played,
     ControllerEndpoint,
-    QueueSong,
+    genreListSortMap,
     LibraryItem,
-} from '/@/renderer/api/types';
-import { jfApiClient } from '/@/renderer/api/jellyfin/jellyfin-api';
-import { jfNormalize } from './jellyfin-normalize';
-import { jfType } from '/@/renderer/api/jellyfin/jellyfin-types';
-import { z } from 'zod';
-import { JFSongListSort, JFSortOrder } from '/@/renderer/api/jellyfin.types';
-import { ServerFeature } from '/@/renderer/api/features-types';
-import { VersionInfo, getFeatures, hasFeature } from '/@/renderer/api/utils';
-import chunk from 'lodash/chunk';
+    Played,
+    playlistListSortMap,
+    QueueSong,
+    Song,
+    songListSortMap,
+    sortOrderMap,
+} from '/@/shared/types/domain-types';
+import { ServerFeature } from '/@/shared/types/features-types';
 
 const formatCommaDelimitedString = (value: string[]) => {
     return value.join(',');
@@ -42,7 +43,7 @@ const VERSION_INFO: VersionInfo = [
 
 export const JellyfinController: ControllerEndpoint = {
     addToPlaylist: async (args) => {
-        const { query, body, apiClientProps } = args;
+        const { apiClientProps, body, query } = args;
 
         if (!apiClientProps.server?.userId) {
             throw new Error('No userId found');
@@ -90,7 +91,7 @@ export const JellyfinController: ControllerEndpoint = {
         };
     },
     createFavorite: async (args) => {
-        const { query, apiClientProps } = args;
+        const { apiClientProps, query } = args;
 
         if (!apiClientProps.server?.userId) {
             throw new Error('No userId found');
@@ -109,7 +110,7 @@ export const JellyfinController: ControllerEndpoint = {
         return null;
     },
     createPlaylist: async (args) => {
-        const { body, apiClientProps } = args;
+        const { apiClientProps, body } = args;
 
         if (!apiClientProps.server?.userId) {
             throw new Error('No userId found');
@@ -133,7 +134,7 @@ export const JellyfinController: ControllerEndpoint = {
         };
     },
     deleteFavorite: async (args) => {
-        const { query, apiClientProps } = args;
+        const { apiClientProps, query } = args;
 
         if (!apiClientProps.server?.userId) {
             throw new Error('No userId found');
@@ -152,7 +153,7 @@ export const JellyfinController: ControllerEndpoint = {
         return null;
     },
     deletePlaylist: async (args) => {
-        const { query, apiClientProps } = args;
+        const { apiClientProps, query } = args;
 
         const res = await jfApiClient(apiClientProps).deletePlaylist({
             params: {
@@ -167,7 +168,7 @@ export const JellyfinController: ControllerEndpoint = {
         return null;
     },
     getAlbumArtistDetail: async (args) => {
-        const { query, apiClientProps } = args;
+        const { apiClientProps, query } = args;
 
         if (!apiClientProps.server?.userId) {
             throw new Error('No userId found');
@@ -202,7 +203,7 @@ export const JellyfinController: ControllerEndpoint = {
         );
     },
     getAlbumArtistList: async (args) => {
-        const { query, apiClientProps } = args;
+        const { apiClientProps, query } = args;
 
         const res = await jfApiClient(apiClientProps).getAlbumArtistList({
             query: {
@@ -237,7 +238,7 @@ export const JellyfinController: ControllerEndpoint = {
             query: { ...query, limit: 1, startIndex: 0 },
         }).then((result) => result!.totalRecordCount!),
     getAlbumDetail: async (args) => {
-        const { query, apiClientProps } = args;
+        const { apiClientProps, query } = args;
 
         if (!apiClientProps.server?.userId) {
             throw new Error('No userId found');
@@ -275,13 +276,13 @@ export const JellyfinController: ControllerEndpoint = {
         );
     },
     getAlbumList: async (args) => {
-        const { query, apiClientProps } = args;
+        const { apiClientProps, query } = args;
 
         if (!apiClientProps.server?.userId) {
             throw new Error('No userId found');
         }
 
-        const yearsGroup = [];
+        const yearsGroup: string[] = [];
         if (query.minYear && query.maxYear) {
             for (let i = Number(query.minYear); i <= Number(query.maxYear); i += 1) {
                 yearsGroup.push(String(i));
@@ -335,7 +336,7 @@ export const JellyfinController: ControllerEndpoint = {
             query: { ...query, limit: 1, startIndex: 0 },
         }).then((result) => result!.totalRecordCount!),
     getArtistList: async (args) => {
-        const { query, apiClientProps } = args;
+        const { apiClientProps, query } = args;
 
         const res = await jfApiClient(apiClientProps).getArtistList({
             query: {
@@ -405,7 +406,7 @@ export const JellyfinController: ControllerEndpoint = {
         };
     },
     getLyrics: async (args) => {
-        const { query, apiClientProps } = args;
+        const { apiClientProps, query } = args;
 
         if (!apiClientProps.server?.userId) {
             throw new Error('No userId found');
@@ -453,6 +454,100 @@ export const JellyfinController: ControllerEndpoint = {
             totalRecordCount: musicFolders?.length || 0,
         };
     },
+    getPlaylistDetail: async (args) => {
+        const { apiClientProps, query } = args;
+
+        if (!apiClientProps.server?.userId) {
+            throw new Error('No userId found');
+        }
+
+        const res = await jfApiClient(apiClientProps).getPlaylistDetail({
+            params: {
+                id: query.id,
+                userId: apiClientProps.server?.userId,
+            },
+            query: {
+                Fields: 'Genres, DateCreated, MediaSources, ChildCount, ParentId',
+                Ids: query.id,
+            },
+        });
+
+        if (res.status !== 200) {
+            throw new Error('Failed to get playlist detail');
+        }
+
+        return jfNormalize.playlist(res.body, apiClientProps.server);
+    },
+    getPlaylistList: async (args) => {
+        const { apiClientProps, query } = args;
+
+        if (!apiClientProps.server?.userId) {
+            throw new Error('No userId found');
+        }
+
+        const res = await jfApiClient(apiClientProps).getPlaylistList({
+            params: {
+                userId: apiClientProps.server?.userId,
+            },
+            query: {
+                Fields: 'ChildCount, Genres, DateCreated, ParentId, Overview',
+                IncludeItemTypes: 'Playlist',
+                Limit: query.limit,
+                Recursive: true,
+                SearchTerm: query.searchTerm,
+                SortBy: playlistListSortMap.jellyfin[query.sortBy],
+                SortOrder: sortOrderMap.jellyfin[query.sortOrder],
+                StartIndex: query.startIndex,
+            },
+        });
+
+        if (res.status !== 200) {
+            throw new Error('Failed to get playlist list');
+        }
+
+        return {
+            items: res.body.Items.map((item) => jfNormalize.playlist(item, apiClientProps.server)),
+            startIndex: 0,
+            totalRecordCount: res.body.TotalRecordCount,
+        };
+    },
+    getPlaylistListCount: async ({ apiClientProps, query }) =>
+        JellyfinController.getPlaylistList({
+            apiClientProps,
+            query: { ...query, limit: 1, startIndex: 0 },
+        }).then((result) => result!.totalRecordCount!),
+    getPlaylistSongList: async (args) => {
+        const { apiClientProps, query } = args;
+
+        if (!apiClientProps.server?.userId) {
+            throw new Error('No userId found');
+        }
+
+        const res = await jfApiClient(apiClientProps).getPlaylistSongList({
+            params: {
+                id: query.id,
+            },
+            query: {
+                Fields: 'Genres, DateCreated, MediaSources, UserData, ParentId, People, Tags',
+                IncludeItemTypes: 'Audio',
+                Limit: query.limit,
+                SortBy: query.sortBy ? songListSortMap.jellyfin[query.sortBy] : undefined,
+                SortOrder: query.sortOrder ? sortOrderMap.jellyfin[query.sortOrder] : undefined,
+                StartIndex: query.startIndex,
+                UserId: apiClientProps.server?.userId,
+            },
+        });
+
+        if (res.status !== 200) {
+            throw new Error('Failed to get playlist song list');
+        }
+
+        return {
+            items: res.body.Items.map((item) => jfNormalize.song(item, apiClientProps.server, '')),
+            startIndex: query.startIndex,
+            totalRecordCount: res.body.TotalRecordCount,
+        };
+    },
     getPlayQueue: async (args) => {
         const { apiClientProps } = args;
 
@@ -498,108 +593,14 @@ export const JellyfinController: ControllerEndpoint = {
             username: UserName,
         };
     },
-    getPlaylistDetail: async (args) => {
-        const { query, apiClientProps } = args;
-
-        if (!apiClientProps.server?.userId) {
-            throw new Error('No userId found');
-        }
-
-        const res = await jfApiClient(apiClientProps).getPlaylistDetail({
-            params: {
-                id: query.id,
-                userId: apiClientProps.server?.userId,
-            },
-            query: {
-                Fields: 'Genres, DateCreated, MediaSources, ChildCount, ParentId',
-                Ids: query.id,
-            },
-        });
-
-        if (res.status !== 200) {
-            throw new Error('Failed to get playlist detail');
-        }
-
-        return jfNormalize.playlist(res.body, apiClientProps.server);
-    },
-    getPlaylistList: async (args) => {
-        const { query, apiClientProps } = args;
-
-        if (!apiClientProps.server?.userId) {
-            throw new Error('No userId found');
-        }
-
-        const res = await jfApiClient(apiClientProps).getPlaylistList({
-            params: {
-                userId: apiClientProps.server?.userId,
-            },
-            query: {
-                Fields: 'ChildCount, Genres, DateCreated, ParentId, Overview',
-                IncludeItemTypes: 'Playlist',
-                Limit: query.limit,
-                Recursive: true,
-                SearchTerm: query.searchTerm,
-                SortBy: playlistListSortMap.jellyfin[query.sortBy],
-                SortOrder: sortOrderMap.jellyfin[query.sortOrder],
-                StartIndex: query.startIndex,
-            },
-        });
-
-        if (res.status !== 200) {
-            throw new Error('Failed to get playlist list');
-        }
-
-        return {
-            items: res.body.Items.map((item) => jfNormalize.playlist(item, apiClientProps.server)),
-            startIndex: 0,
-            totalRecordCount: res.body.TotalRecordCount,
-        };
-    },
-    getPlaylistListCount: async ({ apiClientProps, query }) =>
-        JellyfinController.getPlaylistList({
-            apiClientProps,
-            query: { ...query, limit: 1, startIndex: 0 },
-        }).then((result) => result!.totalRecordCount!),
-    getPlaylistSongList: async (args) => {
-        const { query, apiClientProps } = args;
-
-        if (!apiClientProps.server?.userId) {
-            throw new Error('No userId found');
-        }
-
-        const res = await jfApiClient(apiClientProps).getPlaylistSongList({
-            params: {
-                id: query.id,
-            },
-            query: {
-                Fields: 'Genres, DateCreated, MediaSources, UserData, ParentId, People, Tags',
-                IncludeItemTypes: 'Audio',
-                Limit: query.limit,
-                SortBy: query.sortBy ? songListSortMap.jellyfin[query.sortBy] : undefined,
-                SortOrder: query.sortOrder ? sortOrderMap.jellyfin[query.sortOrder] : undefined,
-                StartIndex: query.startIndex,
-                UserId: apiClientProps.server?.userId,
-            },
-        });
-
-        if (res.status !== 200) {
-            throw new Error('Failed to get playlist song list');
-        }
-
-        return {
-            items: res.body.Items.map((item) => jfNormalize.song(item, apiClientProps.server, '')),
-            startIndex: query.startIndex,
-            totalRecordCount: res.body.TotalRecordCount,
-        };
-    },
     getRandomSongList: async (args) => {
-        const { query, apiClientProps } = args;
+        const { apiClientProps, query } = args;
 
         if (!apiClientProps.server?.userId) {
             throw new Error('No userId found');
         }
 
-        const yearsGroup = [];
+        const yearsGroup: string[] = [];
         if (query.minYear && query.maxYear) {
             for (let i = Number(query.minYear); i <= Number(query.maxYear); i += 1) {
                 yearsGroup.push(String(i));
@@ -714,7 +715,7 @@ export const JellyfinController: ControllerEndpoint = {
         }, []);
     },
     getSongDetail: async (args) => {
-        const { query, apiClientProps } = args;
+        const { apiClientProps, query } = args;
 
         const res = await jfApiClient(apiClientProps).getSongDetail({
             params: {
@@ -730,13 +731,13 @@ export const JellyfinController: ControllerEndpoint = {
         return jfNormalize.song(res.body, apiClientProps.server, '');
     },
     getSongList: async (args) => {
-        const { query, apiClientProps } = args;
+        const { apiClientProps, query } = args;
 
         if (!apiClientProps.server?.userId) {
             throw new Error('No userId found');
         }
 
-        const yearsGroup = [];
+        const yearsGroup: string[] = [];
         if (query.minYear && query.maxYear) {
             for (let i = Number(query.minYear); i <= Number(query.maxYear); i += 1) {
                 yearsGroup.push(String(i));
@@ -910,7 +911,7 @@ export const JellyfinController: ControllerEndpoint = {
         };
     },
     getTranscodingUrl: (args) => {
-        const { base, format, bitrate } = args.query;
+        const { base, bitrate, format } = args.query;
         let url = base.replace('transcodingProtocol=hls', 'transcodingProtocol=http');
         if (format) {
             url = url.replace('audioCodec=aac', `audioCodec=${format}`);
@@ -938,7 +939,7 @@ export const JellyfinController: ControllerEndpoint = {
         }
     },
     removeFromPlaylist: async (args) => {
-        const { query, apiClientProps } = args;
+        const { apiClientProps, query } = args;
 
         const chunks = chunk(query.songId, MAX_ITEMS_PER_PLAYLIST_ADD);
 
@@ -960,7 +961,7 @@ export const JellyfinController: ControllerEndpoint = {
         return null;
     },
     savePlayQueue: async (args) => {
-        const { query, apiClientProps } = args;
+        const { apiClientProps, query } = args;
 
         if (!query.current || query.positionMs === undefined) {
             throw new Error('Must have one item in teh queue');
@@ -984,7 +985,7 @@ export const JellyfinController: ControllerEndpoint = {
         }
     },
     scrobble: async (args) => {
-        const { query, apiClientProps } = args;
+        const { apiClientProps, query } = args;
 
         const position = query.position && Math.round(query.position);
 
@@ -1048,7 +1049,7 @@ export const JellyfinController: ControllerEndpoint = {
         return null;
     },
     search: async (args) => {
-        const { query, apiClientProps } = args;
+        const { apiClientProps, query } = args;
 
         if (!apiClientProps.server?.userId) {
             throw new Error('No userId found');
@@ -1141,7 +1142,7 @@ export const JellyfinController: ControllerEndpoint = {
         };
     },
     updatePlaylist: async (args) => {
-        const { query, body, apiClientProps } = args;
+        const { apiClientProps, body, query } = args;
 
         if (!apiClientProps.server?.userId) {
             throw new Error('No userId found');

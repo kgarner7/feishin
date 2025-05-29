@@ -1,7 +1,10 @@
-import { MouseEvent, ReactNode, Ref, forwardRef } from 'react';
-import { Button, type ButtonProps as MantineButtonProps } from '@mantine/core';
-import { Tooltip } from '/@/renderer/components/tooltip';
+import { Button, type ButtonProps as MantineButtonProps, Tooltip } from '@mantine/core';
+import { forwardRef, MouseEvent, ReactNode, Ref } from 'react';
 import styled from 'styled-components';
+
+export interface ButtonProps extends StyledButtonProps {
+    tooltip: string;
+}
 
 interface StyledButtonProps extends MantineButtonProps {
     $active?: boolean;
@@ -9,10 +12,6 @@ interface StyledButtonProps extends MantineButtonProps {
     onClick?: (e: MouseEvent<HTMLButtonElement, MouseEvent>) => void;
     onMouseDown?: (e: MouseEvent<HTMLButtonElement, MouseEvent>) => void;
     ref: Ref<HTMLButtonElement>;
-}
-
-export interface ButtonProps extends StyledButtonProps {
-    tooltip?: string;
 }
 
 const StyledButton = styled(Button)<StyledButtonProps>`
@@ -35,36 +34,20 @@ const StyledButton = styled(Button)<StyledButtonProps>`
     }
 `;
 
-export const RemoteButton = forwardRef<HTMLButtonElement, ButtonProps>(
-    ({ children, tooltip, ...props }: ButtonProps, ref) => {
-        const button = (
-            <StyledButton
-                fullWidth
-                size="xl"
-                variant="default"
-                {...props}
-                ref={ref}
+export const RemoteButton = forwardRef<HTMLButtonElement, any>(
+    ({ children, tooltip, ...props }: any, ref) => {
+        return (
+            <Tooltip
+                label={tooltip}
+                withinPortal
             >
-                {children}
-            </StyledButton>
-        );
-        if (tooltip) {
-            return (
-                <Tooltip
-                    withinPortal
-                    events={{ focus: true, hover: true, touch: true }}
-                    label={tooltip}
+                <StyledButton
+                    {...props}
+                    ref={ref}
                 >
-                    {button}
-                </Tooltip>
-            );
-        }
-        return button;
+                    {children}
+                </StyledButton>
+            </Tooltip>
+        );
     },
 );
-
-RemoteButton.defaultProps = {
-    $active: false,
-    onClick: undefined,
-    onMouseDown: undefined,
-};

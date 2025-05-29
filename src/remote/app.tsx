@@ -1,9 +1,10 @@
-import { useEffect } from 'react';
 import { MantineProvider } from '@mantine/core';
+import { useEffect } from 'react';
+
 import './styles/global.scss';
-import { useIsDark, useReconnect } from '/@/remote/store';
+
 import { Shell } from '/@/remote/components/shell';
-import { AppTheme } from '/@/renderer/themes/types';
+import { useIsDark, useReconnect } from '/@/remote/store';
 
 export const App = () => {
     const isDark = useIsDark();
@@ -13,15 +14,8 @@ export const App = () => {
         reconnect();
     }, [reconnect]);
 
-    useEffect(() => {
-        const targetTheme: AppTheme = isDark ? AppTheme.DEFAULT_DARK : AppTheme.DEFAULT_LIGHT;
-        document.body.setAttribute('data-theme', targetTheme);
-    }, [isDark]);
-
     return (
         <MantineProvider
-            withGlobalStyles
-            withNormalizeCSS
             theme={{
                 colorScheme: isDark ? 'dark' : 'light',
                 components: {
@@ -83,6 +77,8 @@ export const App = () => {
                     xs: '0rem',
                 },
             }}
+            withGlobalStyles
+            withNormalizeCSS
         >
             <Shell />
         </MantineProvider>

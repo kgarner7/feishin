@@ -1,24 +1,20 @@
-import { Flex, Stack, Group, Center } from '@mantine/core';
+import { Center, Flex, Group, Stack } from '@mantine/core';
 import { useSetState } from '@mantine/hooks';
 import { AnimatePresence, HTMLMotionProps, motion, Variants } from 'framer-motion';
-import { useEffect, useRef, useLayoutEffect, useState, useCallback, Fragment } from 'react';
+import { Fragment, useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { RiAlbumFill } from 'react-icons/ri';
 import { generatePath } from 'react-router';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-import { QueueSong } from '/@/renderer/api/types';
+
 import { Badge, Text, TextTitle } from '/@/renderer/components';
 import { useFastAverageColor } from '/@/renderer/hooks';
 import { AppRoute } from '/@/renderer/router/routes';
-import {
-    PlayerData,
-    useFullScreenPlayerStore,
-    usePlayerData,
-    usePlayerStore,
-} from '/@/renderer/store';
+import { useFullScreenPlayerStore, usePlayerData, usePlayerStore } from '/@/renderer/store';
 import { useSettingsStore } from '/@/renderer/store/settings.store';
+import { PlayerData, QueueSong } from '/@/shared/types/domain-types';
 
-const Image = styled(motion.img)<{ $useAspectRatio: boolean }>`
+const Image = styled(motion.img)<any>`
     position: absolute;
     max-width: 100%;
     height: 100%;
@@ -40,7 +36,7 @@ const ImageContainer = styled(motion.div)`
 `;
 
 interface TransparentMetadataContainer {
-    opacity: number;
+    opacity?: number;
 }
 
 const MetadataContainer = styled(Stack)<TransparentMetadataContainer>`
@@ -90,7 +86,7 @@ const imageVariants: Variants = {
     },
 };
 
-const scaleImageUrl = (imageSize: number, url?: string | null) => {
+const scaleImageUrl = (imageSize: number, url?: null | string) => {
     return url
         ?.replace(/&size=\d+/, `&size=${imageSize}`)
         .replace(/\?width=\d+/, `?width=${imageSize}`)
@@ -102,7 +98,7 @@ const ImageWithPlaceholder = ({
     style,
     useAspectRatio,
     ...props
-}: HTMLMotionProps<'img'> & { blur?: boolean; useAspectRatio: boolean }) => {
+}: HTMLMotionProps<'img'> & { blur?: boolean; placeholder?: string; useAspectRatio: boolean }) => {
     if (!props.src) {
         return (
             <Center
@@ -241,7 +237,6 @@ export const FullScreenPlayerImage = () => {
                 >
                     {imageState.current === 0 && (
                         <ImageWithPlaceholder
-                            key={imageKey}
                             animate="open"
                             blur={blurExplicit && imageState.topImage[1]}
                             className="full-screen-player-image"
@@ -249,6 +244,7 @@ export const FullScreenPlayerImage = () => {
                             draggable={false}
                             exit="closed"
                             initial="closed"
+                            key={imageKey}
                             placeholder="var(--placeholder-bg)"
                             src={imageState.topImage[0] || ''}
                             useAspectRatio={useImageAspectRatio}
@@ -258,7 +254,6 @@ export const FullScreenPlayerImage = () => {
 
                     {imageState.current === 1 && (
                         <ImageWithPlaceholder
-                            key={imageKey}
                             animate="open"
                             blur={blurExplicit && imageState.bottomImage[1]}
                             className="full-screen-player-image"
@@ -266,6 +261,7 @@ export const FullScreenPlayerImage = () => {
                             draggable={false}
                             exit="closed"
                             initial="closed"
+                            key={imageKey}
                             placeholder="var(--placeholder-bg)"
                             src={imageState.bottomImage[0] || ''}
                             useAspectRatio={useImageAspectRatio}
@@ -310,8 +306,8 @@ export const FullScreenPlayerImage = () => {
                     {currentSong?.album}{' '}
                 </TextTitle>
                 <TextTitle
-                    key="fs-artists"
                     align="center"
+                    key="fs-artists"
                     order={3}
                     style={{
                         textShadow: 'var(--fullscreen-player-text-shadow)',

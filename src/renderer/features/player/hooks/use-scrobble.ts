@@ -1,9 +1,10 @@
-import { useEffect, useCallback, useState, useRef } from 'react';
-import { QueueSong, ServerType } from '/@/renderer/api/types';
+import { useCallback, useEffect, useRef, useState } from 'react';
+
 import { useSendScrobble } from '/@/renderer/features/player/mutations/scrobble-mutation';
 import { usePlayerStore } from '/@/renderer/store';
 import { usePlaybackSettings } from '/@/renderer/store/settings.store';
-import { PlayerStatus } from '/@/renderer/types';
+import { QueueSong, ServerType } from '/@/shared/types/domain-types';
+import { PlayerStatus } from '/@/shared/types/types';
 
 /*
  Scrobble Conditions (match any):
@@ -62,7 +63,7 @@ export const useScrobble = () => {
         (currentTime: number) => {
             if (!isScrobbleEnabled) return;
 
-            const { song: currentSong, index } = usePlayerStore.getState().current;
+            const currentSong = usePlayerStore.getState().current.song;
 
             if (!currentSong?.id || currentSong?.serverType !== ServerType.JELLYFIN) return;
 
@@ -74,7 +75,6 @@ export const useScrobble = () => {
                     event: 'timeupdate',
                     id: currentSong.id,
                     position,
-                    queueIndex: currentSong?.serverType === ServerType.JELLYFIN ? index : undefined,
                     submission: false,
                 },
                 serverId: currentSong?.serverId,
@@ -83,12 +83,12 @@ export const useScrobble = () => {
         [isScrobbleEnabled, sendScrobble],
     );
 
-    const progressIntervalId = useRef<ReturnType<typeof setInterval> | null>(null);
-    const songChangeTimeoutId = useRef<ReturnType<typeof setTimeout> | null>(null);
+    const progressIntervalId = useRef<null | ReturnType<typeof setInterval>>(null);
+    const songChangeTimeoutId = useRef<null | ReturnType<typeof setTimeout>>(null);
     const handleScrobbleFromSongChange = useCallback(
         (
-            current: (QueueSong | number | undefined)[],
-            previous: (QueueSong | number | undefined)[],
+            current: (number | QueueSong | undefined)[],
+            previous: (number | QueueSong | undefined)[],
         ) => {
             if (!isScrobbleEnabled) return;
 
@@ -123,7 +123,6 @@ export const useScrobble = () => {
                         query: {
                             id: previousSong.id,
                             position,
-                            queueIndex: previous[2] as number | undefined,
                             submission: true,
                         },
                         serverId: previousSong?.serverId,
@@ -149,7 +148,6 @@ export const useScrobble = () => {
                             event: 'start',
                             id: currentSong.id,
                             position: 0,
-                            queueIndex: current[2] as number | undefined,
                             submission: false,
                         },
                         serverId: currentSong?.serverId,
@@ -182,12 +180,12 @@ export const useScrobble = () => {
 
     const handleScrobbleFromStatusChange = useCallback(
         (
-            current: (PlayerStatus | number | undefined)[],
-            previous: (PlayerStatus | number | undefined)[],
+            current: (number | PlayerStatus | undefined)[],
+            previous: (number | PlayerStatus | undefined)[],
         ) => {
             if (!isScrobbleEnabled) return;
 
-            const { song: currentSong, index } = usePlayerStore.getState().current;
+            const currentSong = usePlayerStore.getState().current.song;
 
             if (!currentSong?.id) return;
 
@@ -196,7 +194,6 @@ export const useScrobble = () => {
                     ? usePlayerStore.getState().current.time * 1e7
                     : undefined;
 
-            const queueIndex = currentSong?.serverType === ServerType.JELLYFIN ? index : undefined;
             const currentStatus = current[0] as PlayerStatus;
             const currentTimeSec = current[1] as number;
 
@@ -207,7 +204,6 @@ export const useScrobble = () => {
                         event: 'unpause',
                         id: currentSong.id,
                         position,
-                        queueIndex,
                         submission: false,
                     },
                     serverId: currentSong?.serverId,
@@ -233,7 +229,6 @@ export const useScrobble = () => {
                         event: 'pause',
                         id: currentSong.id,
                         position,
-                        queueIndex,
                         submission: false,
                     },
                     serverId: currentSong?.serverId,
@@ -261,7 +256,6 @@ export const useScrobble = () => {
                     sendScrobble.mutate({
                         query: {
                             id: currentSong.id,
-                            queueIndex,
                             submission: true,
                         },
                         serverId: currentSong?.serverId,
@@ -288,7 +282,7 @@ export const useScrobble = () => {
         (currentTime: number) => {
             if (!isScrobbleEnabled) return;
 
-            const { song: currentSong, index } = usePlayerStore.getState().current;
+            const currentSong = usePlayerStore.getState().current.song;
 
             if (!currentSong?.id) return;
 
@@ -302,14 +296,11 @@ export const useScrobble = () => {
                 songDurationMs: currentSong.duration,
             });
 
-            const queueIndex = currentSong.serverType === ServerType.JELLYFIN ? index : undefined;
-
             if (!isCurrentSongScrobbled && shouldSubmitScrobble) {
                 sendScrobble.mutate({
                     query: {
                         id: currentSong.id,
                         position,
-                        queueIndex,
                         submission: true,
                     },
                     serverId: currentSong?.serverId,
@@ -322,7 +313,6 @@ export const useScrobble = () => {
                         event: 'start',
                         id: currentSong.id,
                         position: 0,
-                        queueIndex,
                         submission: false,
                     },
                     serverId: currentSong?.serverId,

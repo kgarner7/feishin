@@ -1,19 +1,28 @@
-import { MutableRefObject, useCallback, useEffect, useRef } from 'react';
 import { Flex, Group } from '@mantine/core';
 import { useHotkeys, useMediaQuery } from '@mantine/hooks';
 import isElectron from 'is-electron';
+import { MutableRefObject, useCallback, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { HiOutlineQueueList } from 'react-icons/hi2';
 import { MdOutlineLyrics } from 'react-icons/md';
 import {
-    RiVolumeUpFill,
+    RiDownloadCloud2Fill,
+    RiHeartFill,
+    RiHeartLine,
+    RiUploadCloud2Fill,
     RiVolumeDownFill,
     RiVolumeMuteFill,
-    RiHeartLine,
-    RiHeartFill,
-    RiUploadCloud2Fill,
-    RiDownloadCloud2Fill,
+    RiVolumeUpFill,
 } from 'react-icons/ri';
+
+import { api } from '/@/renderer/api';
+import { DropdownMenu, Rating, toast } from '/@/renderer/components';
+import { Slider } from '/@/renderer/components/slider';
+import { PlayerButton } from '/@/renderer/features/player/components/player-button';
+import { PlayerbarSlider } from '/@/renderer/features/player/components/playerbar-slider';
+import { usePlayQueueAdd } from '/@/renderer/features/player/hooks/use-playqueue-add';
+import { useRightControls } from '/@/renderer/features/player/hooks/use-right-controls';
+import { useCreateFavorite, useDeleteFavorite, useSetRating } from '/@/renderer/features/shared';
 import {
     useAppStoreActions,
     useCurrentServer,
@@ -28,19 +37,11 @@ import {
     useSpeed,
     useVolume,
 } from '/@/renderer/store';
-import { useRightControls } from '../hooks/use-right-controls';
-import { PlayerButton } from './player-button';
-import { LibraryItem, QueueSong, ServerType, Song } from '/@/renderer/api/types';
-import { useCreateFavorite, useDeleteFavorite, useSetRating } from '/@/renderer/features/shared';
-import { DropdownMenu, Rating, toast } from '/@/renderer/components';
-import { PlayerbarSlider } from '/@/renderer/features/player/components/playerbar-slider';
-import { api } from '/@/renderer/api';
-import { usePlayQueueAdd } from '/@/renderer/features/player/hooks/use-playqueue-add';
-import { Play } from '/@/renderer/types';
-import { Slider } from '/@/renderer/components/slider';
+import { LibraryItem, QueueSong, ServerType, Song } from '/@/shared/types/domain-types';
+import { Play } from '/@/shared/types/types';
 
-const ipc = isElectron() ? window.electron.ipc : null;
-const remote = isElectron() ? window.electron.remote : null;
+const ipc = isElectron() ? window.api.ipc : null;
+const remote = isElectron() ? window.api.remote : null;
 
 interface RightControlsProps {
     seekRef: MutableRefObject<((position: number) => void) | undefined>;
@@ -54,16 +55,16 @@ export const RightControls = ({ seekRef }: RightControlsProps) => {
     const server = useCurrentServer();
     const currentSong = useCurrentSong();
     const previousSong = usePreviousSong();
-    const { setSideBar, setLyrics } = useAppStoreActions();
+    const { setLyrics, setSideBar } = useAppStoreActions();
     const { rightExpanded: isQueueExpanded } = useSidebarStore();
     const { bindings } = useHotkeySettings();
     const {
-        handleVolumeSlider,
-        handleVolumeWheel,
         handleMute,
-        handleVolumeDown,
-        handleVolumeUp,
         handleSpeed,
+        handleVolumeDown,
+        handleVolumeSlider,
+        handleVolumeUp,
+        handleVolumeWheel,
     } = useRightControls();
     const { open } = useLyricsStore();
 
@@ -322,23 +323,23 @@ export const RightControls = ({ seekRef }: RightControlsProps) => {
             <Group h="calc(100% / 3)">
                 {showRating && (
                     <Rating
+                        onChange={handleUpdateRating}
                         size="sm"
                         value={currentSong?.userRating || 0}
-                        onChange={handleUpdateRating}
                     />
                 )}
             </Group>
             <Group
-                noWrap
                 align="center"
+                noWrap
                 spacing="xs"
             >
                 <DropdownMenu
-                    withArrow
                     arrowOffset={12}
                     offset={0}
                     position="top-end"
                     width={425}
+                    withArrow
                 >
                     <DropdownMenu.Target>
                         <PlayerButton
@@ -362,6 +363,8 @@ export const RightControls = ({ seekRef }: RightControlsProps) => {
                             ]}
                             max={1.5}
                             min={0.5}
+                            onChange={handleSpeed}
+                            onDoubleClick={() => handleSpeed(1)}
                             step={0.01}
                             styles={{
                                 markLabel: {
@@ -372,8 +375,6 @@ export const RightControls = ({ seekRef }: RightControlsProps) => {
                                 },
                             }}
                             value={speed}
-                            onChange={handleSpeed}
-                            onDoubleClick={() => handleSpeed(1)}
                         />
                     </DropdownMenu.Dropdown>
                 </DropdownMenu>
@@ -388,6 +389,7 @@ export const RightControls = ({ seekRef }: RightControlsProps) => {
                             <RiHeartLine size="1.1rem" />
                         )
                     }
+                    onClick={() => handleToggleFavorite(currentSong)}
                     sx={{
                         svg: {
                             fill: !currentSong?.userFavorite
@@ -402,50 +404,49 @@ export const RightControls = ({ seekRef }: RightControlsProps) => {
                         openDelay: 500,
                     }}
                     variant="secondary"
-                    onClick={() => handleToggleFavorite(currentSong)}
                 />
                 <PlayerButton
                     icon={<HiOutlineQueueList size="1.1rem" />}
+                    onClick={handleToggleQueue}
                     tooltip={{ label: 'View queue', openDelay: 500 }}
                     variant="secondary"
-                    onClick={handleToggleQueue}
                 />
                 {server && (
                     <>
                         <PlayerButton
                             icon={<RiUploadCloud2Fill size="1.1rem" />}
+                            onClick={handleSaveQueue}
                             tooltip={{ label: 'Save queue', openDelay: 500 }}
                             variant="secondary"
-                            onClick={handleSaveQueue}
                         />
                         <PlayerButton
                             icon={<RiDownloadCloud2Fill size="1.1rem" />}
+                            onClick={handleRestoreQueue}
                             tooltip={{ label: 'Restore queue', openDelay: 500 }}
                             variant="secondary"
-                            onClick={handleRestoreQueue}
                         />
                     </>
                 )}
                 {!isMinWidth ? (
                     <PlayerButton
                         icon={<HiOutlineQueueList size="1.1rem" />}
+                        onClick={handleToggleQueue}
                         tooltip={{
                             label: t('player.viewQueue', { postProcess: 'titleCase' }),
                             openDelay: 500,
                         }}
                         variant="secondary"
-                        onClick={handleToggleQueue}
                     />
                 ) : null}
                 {!isMinWidth ? (
                     <PlayerButton
                         icon={<MdOutlineLyrics size="1.1rem" />}
+                        onClick={handleToggleLyrics}
                         tooltip={{
                             label: t('player.show_lyrics', { postProcess: 'titleCase' }),
                             openDelay: 500,
                         }}
                         variant="secondary"
-                        onClick={handleToggleLyrics}
                     />
                 ) : null}
                 <Group
@@ -462,23 +463,23 @@ export const RightControls = ({ seekRef }: RightControlsProps) => {
                                 <RiVolumeDownFill size="1.2rem" />
                             )
                         }
+                        onClick={handleMute}
+                        onWheel={handleVolumeWheel}
                         tooltip={{
                             label: muted ? t('player.muted', { postProcess: 'titleCase' }) : volume,
                             openDelay: 500,
                         }}
                         variant="secondary"
-                        onClick={handleMute}
-                        onWheel={handleVolumeWheel}
                     />
                     {!isMinWidth ? (
                         <PlayerbarSlider
                             max={100}
                             min={0}
+                            onChange={handleVolumeSlider}
+                            onWheel={handleVolumeWheel}
                             size={6}
                             value={volume}
                             w={volumeWidth}
-                            onChange={handleVolumeSlider}
-                            onWheel={handleVolumeWheel}
                         />
                     ) : null}
                 </Group>

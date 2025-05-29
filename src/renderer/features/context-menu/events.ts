@@ -1,6 +1,35 @@
 import { GridOptions, RowNode } from '@ag-grid-community/core';
 import { createUseExternalEvents } from '@mantine/utils';
-import { LibraryItem } from '/@/renderer/api/types';
+
+import { LibraryItem } from '/@/shared/types/domain-types';
+
+export type ContextMenuEvents = {
+    closeContextMenu: () => void;
+    openContextMenu: (args: OpenContextMenuProps) => void;
+};
+
+export type ContextMenuItemType =
+    | 'addToFavorites'
+    | 'addToPlaylist'
+    | 'afterAlbum'
+    | 'createPlaylist'
+    | 'deletePlaylist'
+    | 'deselectAll'
+    | 'download'
+    | 'moveToBottomOfQueue'
+    | 'moveToNextOfQueue'
+    | 'moveToTopOfQueue'
+    | 'play'
+    | 'playLast'
+    | 'playNext'
+    | 'playShuffled'
+    | 'playSimilarSongs'
+    | 'removeFromFavorites'
+    | 'removeFromPlaylist'
+    | 'removeFromQueue'
+    | 'setRating'
+    | 'shareItem'
+    | 'showDetails';
 
 export type OpenContextMenuProps = {
     context?: any;
@@ -13,34 +42,6 @@ export type OpenContextMenuProps = {
     xPos: number;
     yPos: number;
 };
-
-export type ContextMenuEvents = {
-    closeContextMenu: () => void;
-    openContextMenu: (args: OpenContextMenuProps) => void;
-};
-
-export type ContextMenuItemType =
-    | 'play'
-    | 'playLast'
-    | 'playNext'
-    | 'afterAlbum'
-    | 'playShuffled'
-    | 'addToPlaylist'
-    | 'removeFromPlaylist'
-    | 'addToFavorites'
-    | 'removeFromFavorites'
-    | 'setRating'
-    | 'shareItem'
-    | 'deletePlaylist'
-    | 'createPlaylist'
-    | 'moveToNextOfQueue'
-    | 'moveToBottomOfQueue'
-    | 'moveToTopOfQueue'
-    | 'removeFromQueue'
-    | 'deselectAll'
-    | 'showDetails'
-    | 'playSimilarSongs'
-    | 'download';
 
 export const CONFIGURABLE_CONTEXT_MENU_ITEMS: ContextMenuItemType[] = [
     'moveToBottomOfQueue',

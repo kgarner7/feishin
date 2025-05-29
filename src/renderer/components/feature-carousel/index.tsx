@@ -1,20 +1,22 @@
-import type { MouseEvent } from 'react';
-import { useState } from 'react';
-import { Group, Image, Stack } from '@mantine/core';
 import type { Variants } from 'framer-motion';
+import type { MouseEvent } from 'react';
+
+import { Group, Image, Stack } from '@mantine/core';
 import { AnimatePresence, motion } from 'framer-motion';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { RiArrowLeftSLine, RiArrowRightSLine } from 'react-icons/ri';
-import { Link, generatePath } from 'react-router-dom';
+import { generatePath, Link } from 'react-router-dom';
 import styled from 'styled-components';
-import { Album, LibraryItem } from '/@/renderer/api/types';
+
+import { Badge } from '/@/renderer/components/badge';
 import { Button } from '/@/renderer/components/button';
 import { TextTitle } from '/@/renderer/components/text-title';
-import { Badge } from '/@/renderer/components/badge';
-import { AppRoute } from '/@/renderer/router/routes';
 import { usePlayQueueAdd } from '/@/renderer/features/player/hooks/use-playqueue-add';
-import { Play } from '/@/renderer/types';
+import { AppRoute } from '/@/renderer/router/routes';
 import { useGeneralSettings, usePlayButtonBehavior } from '/@/renderer/store';
+import { Album, LibraryItem } from '/@/shared/types/domain-types';
+import { Play } from '/@/shared/types/types';
 
 const Carousel = styled(motion.div)`
     position: relative;
@@ -153,11 +155,11 @@ export const FeatureCarousel = ({ data }: FeatureCarouselProps) => {
             >
                 {data && (
                     <Carousel
-                        key={`image-${itemIndex}`}
                         animate="animate"
                         custom={direction}
                         exit="exit"
                         initial="initial"
+                        key={`image-${itemIndex}`}
                         variants={variants}
                     >
                         <Grid>
@@ -224,9 +226,6 @@ export const FeatureCarousel = ({ data }: FeatureCarouselProps) => {
                                     </Group>
                                     <Group position="apart">
                                         <Button
-                                            size="lg"
-                                            style={{ borderRadius: '5rem' }}
-                                            variant="outline"
                                             onClick={(e) => {
                                                 e.preventDefault();
                                                 e.stopPropagation();
@@ -240,6 +239,9 @@ export const FeatureCarousel = ({ data }: FeatureCarouselProps) => {
                                                     playType,
                                                 });
                                             }}
+                                            size="lg"
+                                            style={{ borderRadius: '5rem' }}
+                                            variant="outline"
                                         >
                                             {t(
                                                 playType === Play.NOW
@@ -252,18 +254,18 @@ export const FeatureCarousel = ({ data }: FeatureCarouselProps) => {
                                         </Button>
                                         <Group spacing="sm">
                                             <Button
+                                                onClick={handlePrevious}
                                                 radius="lg"
                                                 size="sm"
                                                 variant="outline"
-                                                onClick={handlePrevious}
                                             >
                                                 <RiArrowLeftSLine size="2rem" />
                                             </Button>
                                             <Button
+                                                onClick={handleNext}
                                                 radius="lg"
                                                 size="sm"
                                                 variant="outline"
-                                                onClick={handleNext}
                                             >
                                                 <RiArrowRightSLine size="2rem" />
                                             </Button>

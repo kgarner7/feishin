@@ -1,16 +1,17 @@
-import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { throttle } from 'lodash';
+import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Outlet, useLocation } from 'react-router';
 import styled from 'styled-components';
+
+import { Spinner } from '/@/renderer/components';
+import { FullScreenOverlay } from '/@/renderer/layouts/default-layout/full-screen-overlay';
+import { LeftSidebar } from '/@/renderer/layouts/default-layout/left-sidebar';
+import { LyricsOverlay } from '/@/renderer/layouts/default-layout/lyrics-overlay';
+import { RightSidebar } from '/@/renderer/layouts/default-layout/right-sidebar';
 import { AppRoute } from '/@/renderer/router/routes';
 import { useAppStoreActions, useSidebarStore } from '/@/renderer/store';
 import { useGeneralSettings } from '/@/renderer/store/settings.store';
-import { constrainSidebarWidth, constrainRightSidebarWidth } from '/@/renderer/utils';
-import { LeftSidebar } from '/@/renderer/layouts/default-layout/left-sidebar';
-import { FullScreenOverlay } from '/@/renderer/layouts/default-layout/full-screen-overlay';
-import { RightSidebar } from '/@/renderer/layouts/default-layout/right-sidebar';
-import { Spinner } from '/@/renderer/components';
-import { LyricsOverlay } from '/@/renderer/layouts/default-layout/lyrics-overlay';
+import { constrainRightSidebarWidth, constrainSidebarWidth } from '/@/renderer/utils';
 
 const SideDrawerQueue = lazy(() =>
     import('/@/renderer/layouts/default-layout/side-drawer-queue').then((module) => ({
@@ -42,9 +43,9 @@ const MainContentContainer = styled.div<{
 
 export const MainContent = ({ shell }: { shell?: boolean }) => {
     const location = useLocation();
-    const { collapsed, leftWidth, rightWidth, rightExpanded } = useSidebarStore();
+    const { collapsed, leftWidth, rightExpanded, rightWidth } = useSidebarStore();
     const { setSideBar } = useAppStoreActions();
-    const { sideQueueType, showQueueDrawerButton } = useGeneralSettings();
+    const { showQueueDrawerButton, sideQueueType } = useGeneralSettings();
     const [isResizing, setIsResizing] = useState(false);
     const [isResizingRight, setIsResizingRight] = useState(false);
 
@@ -116,8 +117,8 @@ export const MainContent = ({ shell }: { shell?: boolean }) => {
                     />
                     <LyricsOverlay />
                     <RightSidebar
-                        ref={rightSidebarRef}
                         isResizing={isResizingRight}
+                        ref={rightSidebarRef}
                         startResizing={startResizing}
                     />
                 </>

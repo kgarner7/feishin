@@ -4,12 +4,20 @@ import { generatePath, useNavigate } from 'react-router-dom';
 import { SimpleImg } from 'react-simple-img';
 import { ListChildComponentProps } from 'react-window';
 import styled from 'styled-components';
-import { Album, AlbumArtist, Artist, LibraryItem, Playlist, Song } from '/@/renderer/api/types';
+
 import { CardRows } from '/@/renderer/components/card';
 import { Skeleton } from '/@/renderer/components/skeleton';
 import { GridCardControls } from '/@/renderer/components/virtual-grid/grid-card/grid-card-controls';
-import { CardRow, PlayQueueAddOptions, Play, CardRoute } from '/@/renderer/types';
 import { useGeneralSettings } from '/@/renderer/store';
+import {
+    Album,
+    AlbumArtist,
+    Artist,
+    LibraryItem,
+    Playlist,
+    Song,
+} from '/@/shared/types/domain-types';
+import { CardRoute, CardRow, Play, PlayQueueAddOptions } from '/@/shared/types/types';
 
 interface BaseGridCardProps {
     columnIndex: number;
@@ -120,18 +128,18 @@ const DetailContainer = styled.div`
 `;
 
 export const PosterCard = ({
-    listChildProps,
-    data,
     columnIndex,
     controls,
+    data,
     isHidden,
+    listChildProps,
 }: BaseGridCardProps) => {
     const { blurExplicit } = useGeneralSettings();
     const navigate = useNavigate();
 
     if (data) {
         const path = generatePath(
-            controls.route.route,
+            controls.route.route as string,
             controls.route.slugs?.reduce((acc, slug) => {
                 return {
                     ...acc,
@@ -146,10 +154,10 @@ export const PosterCard = ({
             case LibraryItem.ALBUM:
                 Placeholder = RiAlbumFill;
                 break;
-            case LibraryItem.ARTIST:
+            case LibraryItem.ALBUM_ARTIST:
                 Placeholder = RiUserVoiceFill;
                 break;
-            case LibraryItem.ALBUM_ARTIST:
+            case LibraryItem.ARTIST:
                 Placeholder = RiUserVoiceFill;
                 break;
             case LibraryItem.PLAYLIST:
@@ -162,8 +170,8 @@ export const PosterCard = ({
 
         return (
             <PosterCardContainer
-                key={`card-${columnIndex}-${listChildProps.index}`}
                 $itemGap={controls.itemGap}
+                key={`card-${columnIndex}-${listChildProps.index}`}
             >
                 <LinkContainer onClick={() => navigate(path)}>
                     <ImageContainer $isFavorite={data?.userFavorite}>
@@ -210,13 +218,13 @@ export const PosterCard = ({
 
     return (
         <PosterCardContainer
-            key={`card-${columnIndex}-${listChildProps.index}`}
             $isHidden={isHidden}
             $itemGap={controls.itemGap}
+            key={`card-${columnIndex}-${listChildProps.index}`}
         >
             <Skeleton
-                visible
                 radius="sm"
+                visible
             >
                 <ImageContainer />
             </Skeleton>
@@ -224,10 +232,10 @@ export const PosterCard = ({
                 <Stack spacing="sm">
                     {(controls?.cardRows || []).map((row, index) => (
                         <Skeleton
-                            key={`${index}-${columnIndex}-${row.arrayProperty}`}
-                            visible
                             height={14}
+                            key={`${index}-${columnIndex}-${row.arrayProperty}`}
                             radius="sm"
+                            visible
                         />
                     ))}
                 </Stack>

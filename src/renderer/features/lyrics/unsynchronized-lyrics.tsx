@@ -1,12 +1,13 @@
 import { useMemo } from 'react';
 import styled from 'styled-components';
+
 import { LyricLine } from '/@/renderer/features/lyrics/lyric-line';
-import { FullLyricsMetadata } from '/@/renderer/api/types';
 import { useLyricsSettings } from '/@/renderer/store';
+import { FullLyricsMetadata } from '/@/shared/types/domain-types';
 
 export interface UnsynchronizedLyricsProps extends Omit<FullLyricsMetadata, 'lyrics'> {
     lyrics: string;
-    translatedLyrics?: string | null;
+    translatedLyrics?: null | string;
 }
 
 const UnsynchronizedLyricsContainer = styled.div<{ $gap: number }>`

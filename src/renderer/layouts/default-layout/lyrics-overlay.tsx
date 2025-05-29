@@ -1,9 +1,10 @@
+import { motion, useDragControls, Variants } from 'framer-motion';
 import { useMemo, useRef, useState } from 'react';
-import { Variants, motion, useDragControls } from 'framer-motion';
-import { Lyrics } from '/@/renderer/features/lyrics/lyrics';
 import styled from 'styled-components';
-import { Platform } from '/@/renderer/types';
+
+import { Lyrics } from '/@/renderer/features/lyrics/lyrics';
 import { useLyricsStore } from '/@/renderer/store';
+import { Platform } from '/@/shared/types/types';
 
 const LyricsContainer = styled(motion.div)`
     position: absolute;
@@ -65,24 +66,24 @@ export const LyricsOverlay = () => {
                 ref={constraintsRef}
             >
                 <LyricsDrawer
-                    key="lyric-drawer"
-                    ref={lyricRef}
-                    dragListener
                     animate="open"
                     drag="x"
                     dragConstraints={constraintsRef}
                     dragControls={dragControls}
                     dragElastic={0}
+                    dragListener
                     dragMomentum={false}
                     exit="closed"
                     id="drawer-lyric"
                     initial="closed"
-                    variants={variants}
+                    key="lyric-drawer"
                     onDragEnd={() => {
                         // bodge to save the current position, so that on resize
                         // window does not snap back to 0
                         setX(lyricRef.current!.getBoundingClientRect().x);
                     }}
+                    ref={lyricRef}
+                    variants={variants}
                 >
                     <Lyrics />
                 </LyricsDrawer>

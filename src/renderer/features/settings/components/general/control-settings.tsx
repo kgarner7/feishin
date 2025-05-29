@@ -1,7 +1,9 @@
 import { Group } from '@mantine/core';
 import { t } from 'i18next';
 import isElectron from 'is-electron';
-import { Select, Tooltip, NumberInput, Switch, Slider } from '/@/renderer/components';
+import { useTranslation } from 'react-i18next';
+
+import { NumberInput, Select, Slider, Switch, Tooltip } from '/@/renderer/components';
 import { SettingsSection } from '/@/renderer/features/settings/components/settings-section';
 import {
     GenreTarget,
@@ -9,10 +11,9 @@ import {
     useGeneralSettings,
     useSettingsStoreActions,
 } from '/@/renderer/store/settings.store';
-import { Play } from '/@/renderer/types';
-import { useTranslation } from 'react-i18next';
+import { Play } from '/@/shared/types/types';
 
-const localSettings = isElectron() ? window.electron.localSettings : null;
+const localSettings = isElectron() ? window.api.localSettings : null;
 
 const SIDE_QUEUE_OPTIONS = [
     {
@@ -43,8 +44,6 @@ export const ControlSettings = () => {
                     defaultValue={settings.buttonSize}
                     max={30}
                     min={15}
-                    rightSection="px"
-                    width={75}
                     onBlur={(e) => {
                         if (!e) return;
                         const newVal = e.currentTarget.value
@@ -57,6 +56,8 @@ export const ControlSettings = () => {
                             },
                         });
                     }}
+                    rightSection="px"
+                    width={75}
                 />
             ),
             description: t('setting.buttonSize', {
@@ -71,10 +72,6 @@ export const ControlSettings = () => {
                 <NumberInput
                     defaultValue={settings.albumArtRes || undefined}
                     max={2500}
-                    placeholder="0"
-                    rightSection="px"
-                    value={settings.albumArtRes ?? 0}
-                    width={75}
                     onBlur={(e) => {
                         const newVal =
                             e.currentTarget.value !== '0'
@@ -82,6 +79,10 @@ export const ControlSettings = () => {
                                 : null;
                         setSettings({ general: { ...settings, albumArtRes: newVal } });
                     }}
+                    placeholder="0"
+                    rightSection="px"
+                    value={settings.albumArtRes ?? 0}
+                    width={75}
                 />
             ),
             description: t('setting.playerAlbumArtResolution', {
@@ -145,7 +146,6 @@ export const ControlSettings = () => {
                         <NumberInput
                             defaultValue={settings.skipButtons.skipBackwardSeconds}
                             min={0}
-                            width={75}
                             onBlur={(e) =>
                                 setSettings({
                                     general: {
@@ -159,13 +159,13 @@ export const ControlSettings = () => {
                                     },
                                 })
                             }
+                            width={75}
                         />
                     </Tooltip>
                     <Tooltip label={t('common.forward', { postProcess: 'titleCase' })}>
                         <NumberInput
                             defaultValue={settings.skipButtons.skipForwardSeconds}
                             min={0}
-                            width={75}
                             onBlur={(e) =>
                                 setSettings({
                                     general: {
@@ -179,6 +179,7 @@ export const ControlSettings = () => {
                                     },
                                 })
                             }
+                            width={75}
                         />
                     </Tooltip>
                 </Group>
@@ -319,7 +320,6 @@ export const ControlSettings = () => {
                     defaultValue={settings.volumeWheelStep}
                     max={20}
                     min={1}
-                    w={100}
                     onChangeEnd={(e) => {
                         setSettings({
                             general: {
@@ -328,6 +328,7 @@ export const ControlSettings = () => {
                             },
                         });
                     }}
+                    w={100}
                 />
             ),
             description: t('setting.volumeWheelStep', {
@@ -343,14 +344,14 @@ export const ControlSettings = () => {
                     defaultValue={settings.volumeWidth}
                     max={180}
                     min={30}
-                    placeholder="0"
-                    rightSection="px"
-                    width={75}
                     onBlur={(e) => {
                         setSettings({
                             general: { ...settings, volumeWidth: Number(e.currentTarget.value) },
                         });
                     }}
+                    placeholder="0"
+                    rightSection="px"
+                    width={75}
                 />
             ),
             description: t('setting.volumeWidth', {
@@ -488,8 +489,6 @@ export const ControlSettings = () => {
                     label={(e) => `${e} rem`}
                     max={6}
                     min={0}
-                    step={0.5}
-                    w={100}
                     onChangeEnd={(e) => {
                         setSettings({
                             general: {
@@ -498,6 +497,8 @@ export const ControlSettings = () => {
                             },
                         });
                     }}
+                    step={0.5}
+                    w={100}
                 />
             ),
             description: t('setting.albumBackgroundBlur', {
