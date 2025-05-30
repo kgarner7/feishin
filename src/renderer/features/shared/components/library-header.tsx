@@ -115,6 +115,7 @@ export const LibraryHeader = forwardRef(
                             }
                             onError={onImageError}
                             // placeholder={imagePlaceholderUrl || 'var(--placeholder-bg)'}
+                            src={imageUrl}
                             style={{ height: '' }}
                         />
                     ) : (
