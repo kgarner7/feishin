@@ -205,6 +205,7 @@ const song = z.object({
     genres: z.array(genre).nullable(),
     hasCoverArt: z.boolean(),
     id: z.string(),
+    ignoreScrobble: z.boolean().optional(),
     imageFiles: z.string().optional(),
     largeImageUrl: z.string().optional(),
     libraryPath: z.string().optional(),

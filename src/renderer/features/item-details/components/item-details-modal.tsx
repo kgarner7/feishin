@@ -308,6 +308,11 @@ const SongPropertyMapping: ItemDetailRow<Song>[] = [
         render: (song) => (song.peak?.track !== undefined ? `${song.peak.track}` : null),
     },
     { label: 'filter.comment', render: formatComment },
+    {
+        label: 'Ignore scrobble',
+        render: (song) =>
+            song.ignoreScrobble !== undefined ? BoolField(song.ignoreScrobble) : null,
+    },
     { key: 'id', label: 'filter.id' },
 ];
 

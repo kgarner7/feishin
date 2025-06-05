@@ -186,6 +186,7 @@ const normalizeSong = (
             name: genre.name,
         })),
         id,
+        ignoreScrobble: item.ignoreScrobble,
         imagePlaceholderUrl,
         imageUrl,
         itemType: LibraryItem.SONG,

@@ -338,6 +338,7 @@ export type Song = {
     gain: GainInfo | null;
     genres: Genre[];
     id: string;
+    ignoreScrobble?: boolean;
     imagePlaceholderUrl: null | string;
     imageUrl: null | string;
     itemType: LibraryItem.SONG;
