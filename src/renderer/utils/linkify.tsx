@@ -2,7 +2,7 @@ import { ReactNode } from 'react';
 
 // Inspired by https://github.com/navidrome/navidrome/blob/c530ccf13854e3a840ddf63eef5e2323fbe2827d/ui/src/common/AnchorMe.js
 const URL_REGEX =
-    /((?:https?:\/\/)?(?:[\w-]{1,32}(?:\.[\w-]{1,32})+)(?:\/[\w\-./?%&=][^.|^\s]*)?)/g;
+    /(?:http[s]?:\/\/.)?(?:www\.)?[-a-zA-Z0-9@%._\+~#=]{2,256}\.[a-z]{2,6}\b(?:[-a-zA-Z0-9@:%_\+.~#?&\/\/=]*)/g;
 
 export const replaceURLWithHTMLLinks = (text: string) => {
     const urlRegex = new RegExp(URL_REGEX, 'g');
