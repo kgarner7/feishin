@@ -325,7 +325,15 @@ const handleTags = (item: Album | Song, t: TFunction) => {
                         {tag.slice(0, 1).toLocaleUpperCase()}
                         {tag.slice(1)}
                     </td>
-                    <td>{fields.length === 0 ? BoolField(true) : fields.join(SEPARATOR_STRING)}</td>
+                    <td>
+                        {fields.length === 0
+                            ? BoolField(true)
+                            : tag === 'website'
+                              ? fields.map((item, idx) => (
+                                    <div key={idx}>{replaceURLWithHTMLLinks(item)}</div>
+                                ))
+                              : fields.join(SEPARATOR_STRING)}
+                    </td>
                 </tr>
             );
         });
