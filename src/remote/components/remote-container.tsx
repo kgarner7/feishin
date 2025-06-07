@@ -1,4 +1,4 @@
-import { Group, Image, Rating, Text, Title, Tooltip } from '@mantine/core';
+import { Group, Image, Text, Title, Tooltip } from '@mantine/core';
 import formatDuration from 'format-duration';
 import debounce from 'lodash/debounce';
 import { useCallback } from 'react';
@@ -19,6 +19,7 @@ import {
 import { RemoteButton } from '/@/remote/components/buttons/remote-button';
 import { WrapperSlider } from '/@/remote/components/wrapped-slider';
 import { useInfo, useSend, useShowImage } from '/@/remote/store';
+import { Rating } from '/@/renderer/components/rating';
 import { PlayerRepeat, PlayerStatus } from '/@/shared/types/types';
 
 export const RemoteContainer = () => {
@@ -145,6 +146,11 @@ export const RemoteContainer = () => {
                 >
                     <RiHeartLine size={25} />
                 </RemoteButton>
+            </Group>
+            <Group
+                grow
+                spacing={0}
+            >
                 {(song?.serverType === 'navidrome' || song?.serverType === 'subsonic') && (
                     <div style={{ margin: 'auto' }}>
                         <Tooltip
@@ -154,17 +160,13 @@ export const RemoteContainer = () => {
                             <Rating
                                 onChange={debouncedSetRating}
                                 onDoubleClick={() => debouncedSetRating(0)}
+                                size="md"
                                 sx={{ margin: 'auto' }}
                                 value={song.userRating ?? 0}
                             />
                         </Tooltip>
                     </div>
                 )}
-            </Group>
-            <Group
-                grow
-                spacing={0}
-            >
                 <RemoteButton
                     disabled={!song}
                     onClick={() => send({ event: 'saveQueue' })}
