@@ -64,6 +64,7 @@ export const RemoteContainer = () => {
                 <RemoteButton
                     disabled={!id}
                     onClick={() => send({ event: 'previous' })}
+                    size="xl"
                     tooltip="Previous track"
                     variant="default"
                 >
@@ -78,6 +79,7 @@ export const RemoteContainer = () => {
                             send({ event: 'play' });
                         }
                     }}
+                    size="xl"
                     tooltip={id && status === PlayerStatus.PLAYING ? 'Pause' : 'Play'}
                     variant="default"
                 >
@@ -90,6 +92,7 @@ export const RemoteContainer = () => {
                 <RemoteButton
                     disabled={!id}
                     onClick={() => send({ event: 'next' })}
+                    size="xl"
                     tooltip="Next track"
                     variant="default"
                 >
@@ -103,6 +106,7 @@ export const RemoteContainer = () => {
                 <RemoteButton
                     $active={shuffle || false}
                     onClick={() => send({ event: 'shuffle' })}
+                    size="xl"
                     tooltip={shuffle ? 'Shuffle tracks' : 'Shuffle disabled'}
                     variant="default"
                 >
@@ -111,6 +115,7 @@ export const RemoteContainer = () => {
                 <RemoteButton
                     $active={repeat !== undefined && repeat !== PlayerRepeat.NONE}
                     onClick={() => send({ event: 'repeat' })}
+                    size="xl"
                     tooltip={`Repeat ${
                         repeat === PlayerRepeat.ONE
                             ? 'One'
@@ -134,6 +139,7 @@ export const RemoteContainer = () => {
 
                         send({ event: 'favorite', favorite: !song.userFavorite, id });
                     }}
+                    size="xl"
                     tooltip={song?.userFavorite ? 'Unfavorite' : 'Favorite'}
                     variant="default"
                 >
@@ -162,6 +168,7 @@ export const RemoteContainer = () => {
                 <RemoteButton
                     disabled={!song}
                     onClick={() => send({ event: 'saveQueue' })}
+                    size="xl"
                     tooltip="Save queue"
                     variant="default"
                 >
@@ -170,6 +177,7 @@ export const RemoteContainer = () => {
 
                 <RemoteButton
                     onClick={() => send({ event: 'restoreQueue' })}
+                    size="xl"
                     tooltip="Restore queue"
                     variant="default"
                 >
