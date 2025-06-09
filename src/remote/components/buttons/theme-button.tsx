@@ -18,7 +18,7 @@ export const ThemeButton = () => {
         <RemoteButton
             mr={5}
             onClick={() => toggleDark()}
-            size="xl"
+            size="lg"
             tooltip="Toggle Theme"
             variant="default"
         >

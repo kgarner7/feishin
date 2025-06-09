@@ -1,7 +1,7 @@
 import { Group, Image, Text, Title, Tooltip } from '@mantine/core';
 import formatDuration from 'format-duration';
 import debounce from 'lodash/debounce';
-import { useCallback } from 'react';
+import { createRef, useCallback, useEffect, useRef } from 'react';
 import {
     RiDownloadCloud2Fill,
     RiHeartLine,
@@ -17,17 +17,116 @@ import {
 } from 'react-icons/ri';
 
 import { RemoteButton } from '/@/remote/components/buttons/remote-button';
+import { createSilentAudio } from '/@/remote/components/create-silent-audio';
 import { WrapperSlider } from '/@/remote/components/wrapped-slider';
-import { useInfo, useSend, useShowImage } from '/@/remote/store';
+import { useInfo, useMediaControl, useSend, useShowImage } from '/@/remote/store';
 import { Rating } from '/@/renderer/components/rating';
 import { PlayerRepeat, PlayerStatus } from '/@/shared/types/types';
+
+const MEDIA_EVENTS: MediaSessionAction[] = [
+    'pause',
+    'play',
+    'nexttrack',
+    'previoustrack',
+    'seekto',
+];
 
 export const RemoteContainer = () => {
     const { position, repeat, shuffle, song, status, volume } = useInfo();
     const send = useSend();
+    const control = useMediaControl();
     const showImage = useShowImage();
+    const audioObj = useRef<string>();
+    const audioRef = createRef<HTMLAudioElement>();
+
+    useEffect(() => {
+        if (!control) {
+            return () => {};
+        }
+
+        const audioSrc = song?.duration ? createSilentAudio(song.duration / 1000, 8000) : undefined;
+        audioObj.current = audioSrc;
+
+        return () => {
+            if (audioSrc) {
+                URL.revokeObjectURL(audioSrc);
+            }
+        };
+    }, [control, song?.duration]);
 
     const id = song?.id;
+
+    const setMetadata = useCallback(() => {
+        if (!song) {
+            navigator.mediaSession.metadata = null;
+            return;
+        }
+
+        navigator.mediaSession.metadata = new MediaMetadata({
+            album: song.album || undefined,
+            artist: song.artistName,
+            artwork: [{ src: song.imageUrl || '' }],
+            title: song.name,
+        });
+    }, [song]);
+
+    useEffect(() => {
+        if (control) {
+            navigator.mediaSession.setActionHandler('pause', () => {
+                send({ event: 'pause' });
+            });
+
+            navigator.mediaSession.setActionHandler('play', () => {
+                send({ event: 'play' });
+            });
+
+            navigator.mediaSession.setActionHandler('nexttrack', () => {
+                send({ event: 'next' });
+            });
+
+            navigator.mediaSession.setActionHandler('previoustrack', () => {
+                send({ event: 'previous' });
+            });
+
+            navigator.mediaSession.setActionHandler('seekto', (evt) => {
+                if (evt.seekTime !== undefined) {
+                    send({ event: 'position', position: evt.seekTime });
+                }
+            });
+
+            return () => {
+                for (const event of MEDIA_EVENTS) {
+                    navigator.mediaSession.setActionHandler(event, null);
+                }
+            };
+        }
+
+        return () => {};
+    }, [audioRef, control, send]);
+
+    useEffect(() => {
+        if (audioRef.current) {
+            if (status === PlayerStatus.PLAYING) {
+                audioRef.current.play();
+            } else {
+                audioRef.current.pause();
+            }
+        }
+    }, [audioRef, status]);
+
+    useEffect(() => {
+        if (audioRef.current) {
+            if (position !== undefined && song?.duration !== undefined) {
+                if (Math.abs(audioRef.current.currentTime - position) >= 0.3) {
+                    audioRef.current.currentTime = position;
+                }
+            }
+        }
+    }, [audioRef, position, song?.duration]);
+
+    useEffect(() => {
+        setMetadata();
+    }, [setMetadata]);
 
     const setRating = useCallback(
         (rating: number) => {
@@ -74,6 +173,7 @@ export const RemoteContainer = () => {
                 <RemoteButton
                     disabled={!id}
                     onClick={() => {
+                        setMetadata();
                         if (status === PlayerStatus.PLAYING) {
                             send({ event: 'pause' });
                         } else if (status === PlayerStatus.PAUSED) {
@@ -210,6 +310,13 @@ export const RemoteContainer = () => {
                 }
                 value={volume ?? 0}
             />
+            {control && (
+                <audio
+                    autoPlay
+                    ref={audioRef}
+                    src={audioObj.current}
+                />
+            )}
             {showImage && (
                 <Image
                     onError={() => send({ event: 'proxy' })}

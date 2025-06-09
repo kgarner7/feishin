@@ -12,7 +12,7 @@ export const ReconnectButton = () => {
             $active={!connected}
             mr={5}
             onClick={() => reconnect()}
-            size="xl"
+            size="lg"
             tooltip={connected ? 'Reconnect' : 'Not connected. Reconnect.'}
             variant="default"
         >

@@ -11,6 +11,7 @@ import {
 } from '@mantine/core';
 
 import { ImageButton } from '/@/remote/components/buttons/image-button';
+import { MediaButton } from '/@/remote/components/buttons/media-button';
 import { ReconnectButton } from '/@/remote/components/buttons/reconnect-button';
 import { ThemeButton } from '/@/remote/components/buttons/theme-button';
 import { RemoteContainer } from '/@/remote/components/remote-container';
@@ -54,6 +55,7 @@ export const Shell = () => {
                                 <ReconnectButton />
                                 <ImageButton />
                                 <ThemeButton />
+                                <MediaButton />
                             </Flex>
                         </Grid.Col>
                     </Grid>

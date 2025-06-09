@@ -13,6 +13,7 @@ export interface SettingsSlice extends SettingsState {
         reconnect: () => void;
         send: (data: ClientEvent) => void;
         toggleIsDark: () => void;
+        toggleMedia: () => void;
         toggleShowImage: () => void;
     };
 }
@@ -21,6 +22,7 @@ interface SettingsState {
     connected: boolean;
     info: Omit<SongUpdateSocket, 'currentTime'>;
     isDark: boolean;
+    mediaControl: boolean;
     showImage: boolean;
     socket?: StatefulWebSocket;
 }
@@ -33,6 +35,7 @@ const initialState: SettingsState = {
     connected: false,
     info: {},
     isDark: window.matchMedia('(prefers-color-scheme: dark)').matches,
+    mediaControl: false,
     showImage: true,
 };
 
@@ -237,6 +240,11 @@ export const useRemoteStore = create<SettingsSlice>()(
                             state.isDark = !state.isDark;
                         });
                     },
+                    toggleMedia: () => {
+                        set((state) => {
+                            state.mediaControl = !state.mediaControl;
+                        });
+                    },
                     toggleShowImage: () => {
                         set((state) => {
                             state.showImage = !state.showImage;
@@ -261,6 +269,8 @@ export const useInfo = () => useRemoteStore((state) => state.info);
 
 export const useIsDark = () => useRemoteStore((state) => state.isDark);
 
+export const useMediaControl = () => useRemoteStore((state) => state.mediaControl);
+
 export const useReconnect = () => useRemoteStore((state) => state.actions.reconnect);
 
 export const useShowImage = () => useRemoteStore((state) => state.showImage);
@@ -268,5 +278,7 @@ export const useShowImage = () => useRemoteStore((state) => state.showImage);
 export const useSend = () => useRemoteStore((state) => state.actions.send);
 
 export const useToggleDark = () => useRemoteStore((state) => state.actions.toggleIsDark);
+
+export const useToggleMediaControl = () => useRemoteStore((state) => state.actions.toggleMedia);
 
 export const useToggleShowImage = () => useRemoteStore((state) => state.actions.toggleShowImage);

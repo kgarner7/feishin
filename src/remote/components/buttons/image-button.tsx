@@ -11,7 +11,7 @@ export const ImageButton = () => {
         <RemoteButton
             mr={5}
             onClick={() => toggleImage()}
-            size="xl"
+            size="lg"
             tooltip={showImage ? 'Hide Image' : 'Show Image'}
             variant="default"
         >
