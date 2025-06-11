@@ -1,3 +1,5 @@
+// Adapted from https://github.com/edoudou/create-silent-audio
+
 export function createSilentAudio(time: number, freq = 44100) {
     const length = time * freq;
     const AudioContext = window.AudioContext;
