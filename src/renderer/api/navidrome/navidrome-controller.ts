@@ -455,14 +455,14 @@ export const NavidromeController: ControllerEndpoint = {
             throw new Error('Failed to get play queue');
         }
 
-        const { changedBy, items, position, queueIndex, updatedAt } = res.body.data;
+        const { changedBy, current, items, position, updatedAt } = res.body.data;
 
         const entries = items.map((song) => ndNormalize.song(song, apiClientProps.server));
 
         return {
             changed: updatedAt,
             changedBy,
-            currentIndex: queueIndex !== undefined ? queueIndex - 1 : 0,
+            currentIndex: current !== undefined ? current - 1 : 0,
             entry: entries,
             position,
             username: apiClientProps.server?.username ?? '',

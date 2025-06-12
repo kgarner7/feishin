@@ -329,11 +329,10 @@ const removeFromPlaylistParameters = z.object({
 const queue = z.object({
     changedBy: z.string(),
     createdAt: z.string(),
-    current: z.string(),
+    current: z.number(),
     id: z.string(),
     items: z.array(song),
     position: z.number(),
-    queueIndex: z.number(),
     updatedAt: z.string(),
     userId: z.string(),
 });
