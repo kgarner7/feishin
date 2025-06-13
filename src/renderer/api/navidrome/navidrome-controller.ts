@@ -462,7 +462,7 @@ export const NavidromeController: ControllerEndpoint = {
         return {
             changed: updatedAt,
             changedBy,
-            currentIndex: current !== undefined ? current - 1 : 0,
+            currentIndex: current !== undefined ? current : 0,
             entry: entries,
             position,
             username: apiClientProps.server?.username ?? '',
@@ -724,7 +724,7 @@ export const NavidromeController: ControllerEndpoint = {
         const res = await ssApiClient(apiClientProps).savePlayQueue2({
             body: {
                 id: query.songs,
-                index: query.currentIndex !== undefined ? query.currentIndex + 1 : undefined,
+                index: query.currentIndex !== undefined ? query.currentIndex : undefined,
                 position: query.positionMs,
             },
         });
