@@ -162,7 +162,7 @@ const normalizeSong = (
         discNumber: item.discNumber || 1,
         discSubtitle: null,
         duration: item.duration ? item.duration * 1000 : 0,
-        explicit: false,
+        explicit: item.explicitStatus === 'explicit',
         gain:
             item.replayGain && (item.replayGain.albumGain || item.replayGain.trackGain)
                 ? {
@@ -259,7 +259,7 @@ const normalizeAlbum = (
         comment: null,
         createdAt: item.created,
         duration: item.duration * 1000,
-        explicit: false,
+        explicit: item.explicitStatus === 'explicit',
         genres: getGenres(item),
         id: item.id.toString(),
         imagePlaceholderUrl: null,
