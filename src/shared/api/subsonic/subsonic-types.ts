@@ -116,7 +116,6 @@ const song = z.object({
 
 const album = z.object({
     album: z.string(),
-    albumArtists: z.array(simpleArtist),
     artist: z.string(),
     artistId: id,
     artists: z.array(simpleArtist),

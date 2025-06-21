@@ -556,7 +556,7 @@ export const ControlSettings = () => {
         {
             control: (
                 <Switch
-                    aria-label={t('setting.playerbarOpenDrawer ', { postProcess: 'sentenceCase' })}
+                    aria-label={t('setting.playerbarOpenDrawer', { postProcess: 'sentenceCase' })}
                     defaultChecked={settings.playerbarOpenDrawer}
                     onChange={(e) =>
                         setSettings({
