@@ -317,6 +317,14 @@ const normalizeAlbumArtist = (
         songCount = item.songCount;
     }
 
+    let homepage: null | string;
+
+    if (!item.externalUrl || item.externalUrl.includes('last.fm')) {
+        homepage = null;
+    } else {
+        homepage = item.externalUrl;
+    }
+
     return {
         albumCount,
         backgroundImageUrl: null,
@@ -328,6 +336,7 @@ const normalizeAlbumArtist = (
             itemType: LibraryItem.GENRE,
             name: genre.name,
         })),
+        homepage,
         id: item.id,
         imageUrl: imageUrl || null,
         itemType: LibraryItem.ALBUM_ARTIST,

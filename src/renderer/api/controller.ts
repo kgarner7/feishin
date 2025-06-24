@@ -124,9 +124,6 @@ export const controller: GeneralController = {
     getMusicFolderList(args) {
         return apiController('getMusicFolderList', args.apiClientProps.server?.type)?.(args);
     },
-    getPlayQueue(args) {
-        return apiController('getPlayQueue', args.apiClientProps.server?.type)?.(args);
-    },
     getPlaylistDetail(args) {
         return apiController('getPlaylistDetail', args.apiClientProps.server?.type)?.(args);
     },
@@ -138,6 +135,9 @@ export const controller: GeneralController = {
     },
     getPlaylistSongList(args) {
         return apiController('getPlaylistSongList', args.apiClientProps.server?.type)?.(args);
+    },
+    getPlayQueue(args) {
+        return apiController('getPlayQueue', args.apiClientProps.server?.type)?.(args);
     },
     getRandomSongList(args) {
         return apiController('getRandomSongList', args.apiClientProps.server?.type)?.(args);

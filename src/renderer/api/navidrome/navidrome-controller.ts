@@ -164,6 +164,7 @@ export const NavidromeController: ControllerEndpoint = {
             {
                 ...res.body.data,
                 ...(artistInfoRes.status === 200 && {
+                    externalUrl: artistInfoRes.body.artistInfo.lastFmUrl,
                     largeImageUrl:
                         artistInfoRes.body.artistInfo.largeImageUrl ||
                         artistInfoRes.body.artistInfo.mediumImageUrl ||

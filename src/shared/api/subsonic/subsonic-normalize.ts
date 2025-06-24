@@ -217,6 +217,7 @@ const normalizeAlbumArtist = (
         biography: null,
         duration: null,
         genres: [],
+        homepage: null,
         id: item.id.toString(),
         imageUrl,
         itemType: LibraryItem.ALBUM_ARTIST,

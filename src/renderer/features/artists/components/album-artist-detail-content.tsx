@@ -2,7 +2,7 @@ import { ColDef, RowDoubleClickedEvent } from '@ag-grid-community/core';
 import { Box, Grid, Group, Stack } from '@mantine/core';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FaLastfmSquare } from 'react-icons/fa';
+import { FaHome, FaLastfmSquare } from 'react-icons/fa';
 import { RiHeartFill, RiHeartLine, RiMoreFill } from 'react-icons/ri';
 import { SiMusicbrainz } from 'react-icons/si';
 import { generatePath, useParams } from 'react-router';
@@ -451,9 +451,26 @@ export const AlbumArtistDetailContent = ({ background }: AlbumArtistDetailConten
                         </Group>
                     </Box>
                 ) : null}
-                {externalLinks && (lastFM || musicBrainz) ? (
+                {externalLinks && (lastFM || musicBrainz || detailQuery.data?.homepage) ? (
                     <Box component="section">
                         <Group spacing="sm">
+                            {detailQuery.data?.homepage && (
+                                <Button
+                                    compact
+                                    component="a"
+                                    href={detailQuery.data.homepage}
+                                    radius="md"
+                                    rel="noopener noreferrer"
+                                    size="md"
+                                    target="_blank"
+                                    tooltip={{
+                                        label: t('action.openIn.home'),
+                                    }}
+                                    variant="subtle"
+                                >
+                                    <FaHome size={25} />
+                                </Button>
+                            )}
                             {lastFM && (
                                 <Button
                                     compact

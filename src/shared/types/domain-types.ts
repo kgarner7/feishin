@@ -195,6 +195,7 @@ export type AlbumArtist = {
     biography: null | string;
     duration: null | number;
     genres: Genre[];
+    homepage: null | string;
     id: string;
     imageUrl: null | string;
     itemType: LibraryItem.ALBUM_ARTIST;

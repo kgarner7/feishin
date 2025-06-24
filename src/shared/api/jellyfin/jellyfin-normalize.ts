@@ -341,6 +341,7 @@ const normalizeAlbumArtist = (
             itemType: LibraryItem.GENRE,
             name: entry.Name,
         })),
+        homepage: null,
         id: item.Id,
         imageUrl: getAlbumArtistCoverArtUrl({
             baseUrl: server?.url || '',

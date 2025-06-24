@@ -185,13 +185,24 @@ export const SubsonicController: ControllerEndpoint = {
         const artist = res.body.artist;
 
         let artistInfo;
+        let homepage: null | string;
+
         if (artistInfoRes.status === 200) {
             artistInfo = artistInfoRes.body.artistInfo;
+
+            if (!artistInfo.lastFmUrl || artistInfo.lastFmUrl.includes('last.fm')) {
+                homepage = null;
+            } else {
+                homepage = artistInfo.lastFmUrl;
+            }
+        } else {
+            homepage = null;
         }
 
         return {
             ...ssNormalize.albumArtist(artist, apiClientProps.server, 300),
             albums: artist.album?.map((album) => ssNormalize.album(album, apiClientProps.server)),
+            homepage,
             similarArtists:
                 artistInfo?.similarArtist?.map((artist) =>
                     ssNormalize.albumArtist(artist, apiClientProps.server, 300),
