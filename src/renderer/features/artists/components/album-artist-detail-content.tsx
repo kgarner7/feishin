@@ -451,7 +451,7 @@ export const AlbumArtistDetailContent = ({ background }: AlbumArtistDetailConten
                                     rel="noopener noreferrer"
                                     target="_blank"
                                     tooltip={{
-                                        label: t('action.openIn.lastfm'),
+                                        label: t('action.openIn.home'),
                                     }}
                                     variant="subtle"
                                 />
