@@ -475,7 +475,7 @@ export const AlbumArtistDetailContent = ({ background }: AlbumArtistDetailConten
                                     variant="subtle"
                                 />
                             )}
-                            {mbzId ? (
+                            {mbzId && musicBrainz ? (
                                 <ActionIcon
                                     component="a"
                                     href={`https://musicbrainz.org/artist/${mbzId}`}
