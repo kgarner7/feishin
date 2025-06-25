@@ -1476,7 +1476,7 @@ export const sortSongList = (songs: QueueSong[], sortBy: SongListSort, sortOrder
 
         case SongListSort.ID:
             if (order === 'desc') {
-                results = reverse(results);
+                results = reverse(results as any);
             }
             break;
 
@@ -1547,7 +1547,3 @@ export const sortAlbumArtistList = (
 
     return results;
 };
-export enum AppTheme {
-    DEFAULT_DARK = 'defaultDark',
-    DEFAULT_LIGHT = 'defaultLight',
-}

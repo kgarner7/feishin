@@ -12,7 +12,7 @@ export const MediaButton = () => {
             mr={5}
             onClick={() => toggleMedia()}
             size="lg"
-            tooltip={control ? 'media control enabled' : 'media control disabled'}
+            tooltip={{ label: control ? 'media control enabled' : 'media control disabled' }}
             variant="default"
         >
             {control ? <MdPhoneEnabled size={30} /> : <MdOutlinePhone size={30} />}

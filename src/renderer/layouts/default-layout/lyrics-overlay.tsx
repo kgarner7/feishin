@@ -1,22 +1,11 @@
-import { motion, useDragControls, Variants } from 'framer-motion';
+import { motion, useDragControls, Variants } from 'motion/react';
 import { useMemo, useRef, useState } from 'react';
-import styled from 'styled-components';
+
+import styles from './lyrics-overlay.module.css';
 
 import { Lyrics } from '/@/renderer/features/lyrics/lyrics';
 import { useLyricsStore } from '/@/renderer/store';
 import { Platform } from '/@/shared/types/types';
-
-const LyricsContainer = styled(motion.div)`
-    position: absolute;
-    width: 100%;
-    height: 100%;
-`;
-
-const LyricsDrawer = styled(motion.div)`
-    background: var(--main-bg);
-    border: 3px solid var(--generic-border-color);
-    border-radius: 10px;
-`;
 
 export const LyricsOverlay = () => {
     const dragControls = useDragControls();
@@ -59,14 +48,16 @@ export const LyricsOverlay = () => {
 
     return (
         open && (
-            <LyricsContainer
+            <motion.div
+                className={styles.lyricsContainer}
                 // This key is here to force rerender when lyric width changes. Otherwise
                 // the constraints are not updated properly
                 key={width}
                 ref={constraintsRef}
             >
-                <LyricsDrawer
+                <motion.div
                     animate="open"
+                    className={styles.lyricsDrawer}
                     drag="x"
                     dragConstraints={constraintsRef}
                     dragControls={dragControls}
@@ -86,8 +77,8 @@ export const LyricsOverlay = () => {
                     variants={variants}
                 >
                     <Lyrics />
-                </LyricsDrawer>
-            </LyricsContainer>
+                </motion.div>
+            </motion.div>
         )
     );
 };

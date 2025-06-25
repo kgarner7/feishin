@@ -1,14 +1,4 @@
-import {
-    AppShell,
-    Container,
-    Flex,
-    Grid,
-    Header,
-    Image,
-    MediaQuery,
-    Skeleton,
-    Title,
-} from '@mantine/core';
+import { AppShell, Container, Flex, Grid, Image, Skeleton, Title } from '@mantine/core';
 
 import { ImageButton } from '/@/remote/components/buttons/image-button';
 import { MediaButton } from '/@/remote/components/buttons/media-button';
@@ -21,48 +11,35 @@ export const Shell = () => {
     const connected = useConnected();
 
     return (
-        <AppShell
-            header={
-                <Header height={60}>
-                    <Grid>
-                        <Grid.Col span="auto">
-                            <div>
-                                <Image
-                                    fit="contain"
-                                    height={60}
-                                    src="/favicon.ico"
-                                    width={60}
-                                />
-                            </div>
-                        </Grid.Col>
-                        <MediaQuery
-                            smallerThan="sm"
-                            styles={{ display: 'none' }}
+        <AppShell padding="md">
+            <AppShell.Header>
+                <Grid>
+                    <Grid.Col span="auto">
+                        <div>
+                            <Image
+                                fit="contain"
+                                height={60}
+                                src="/favicon.ico"
+                                width={60}
+                            />
+                        </div>
+                    </Grid.Col>
+                    <Grid.Col hiddenFrom="md">
+                        <Title ta="center">Feishin Remote</Title>
+                    </Grid.Col>
+                    <Grid.Col span="auto">
+                        <Flex
+                            direction="row"
+                            justify="right"
                         >
-                            <Grid.Col
-                                sm={6}
-                                xs={0}
-                            >
-                                <Title ta="center">Feishin Remote</Title>
-                            </Grid.Col>
-                        </MediaQuery>
-
-                        <Grid.Col span="auto">
-                            <Flex
-                                direction="row"
-                                justify="right"
-                            >
-                                <ReconnectButton />
-                                <ImageButton />
-                                <ThemeButton />
-                                <MediaButton />
-                            </Flex>
-                        </Grid.Col>
-                    </Grid>
-                </Header>
-            }
-            padding="md"
-        >
+                            <ReconnectButton />
+                            <ImageButton />
+                            <ThemeButton />
+                            <MediaButton />
+                        </Flex>
+                    </Grid.Col>
+                </Grid>
+            </AppShell.Header>
             <Container>
                 {connected ? (
                     <RemoteContainer />
