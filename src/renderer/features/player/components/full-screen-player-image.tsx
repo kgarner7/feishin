@@ -1,6 +1,6 @@
 import { useSetState } from '@mantine/hooks';
 import clsx from 'clsx';
-import { AnimatePresence, HTMLMotionProps, motion, Variants } from 'motion/react';
+import { AnimatePresence, HTMLMotionProps, motion } from 'motion/react';
 import { Fragment, useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { generatePath } from 'react-router';
 import { Link } from 'react-router-dom';
@@ -21,29 +21,6 @@ import { Stack } from '/@/shared/components/stack/stack';
 import { TextTitle } from '/@/shared/components/text-title/text-title';
 import { Text } from '/@/shared/components/text/text';
 import { PlayerData, QueueSong } from '/@/shared/types/domain-types';
-
-const imageVariants: Variants = {
-    closed: {
-        opacity: 0,
-        transition: {
-            duration: 0.8,
-            ease: 'linear',
-        },
-    },
-    initial: {
-        opacity: 0,
-    },
-    open: (custom) => {
-        const { isOpen } = custom;
-        return {
-            opacity: isOpen ? 1 : 0,
-            transition: {
-                duration: 0.4,
-                ease: 'linear',
-            },
-        };
-    },
-};
 
 const scaleImageUrl = (imageSize: number, url?: null | string) => {
     return url
@@ -212,10 +189,8 @@ export const FullScreenPlayerImage = () => {
                             key={imageKey}
                             placeholder="var(--theme-colors-foreground-muted)"
                             src={imageState.topImage[0] || ''}
-                            variants={imageVariants}
                         />
                     )}
-
                     {imageState.current === 1 && (
                         <ImageWithPlaceholder
                             animate="open"
@@ -228,7 +203,6 @@ export const FullScreenPlayerImage = () => {
                             key={imageKey}
                             placeholder="var(--theme-colors-foreground-muted)"
                             src={imageState.bottomImage[0] || ''}
-                            variants={imageVariants}
                         />
                     )}
                 </AnimatePresence>
