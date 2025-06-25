@@ -88,7 +88,6 @@ import {
     LuSlidersHorizontal,
     LuSquare,
     LuSquareCheck,
-    LuSquareMenu,
     LuStar,
     LuStepBack,
     LuStepForward,
