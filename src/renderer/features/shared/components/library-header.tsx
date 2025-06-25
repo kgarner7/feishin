@@ -111,7 +111,9 @@ export const LibraryHeader = forwardRef(
                     {!isImageError && (
                         <Image
                             alt="cover"
-                            className={styles.image}
+                            className={
+                                styles.image + (blurExplicit && explicit ? ' exp-large' : '')
+                            }
                             loading="eager"
                             onError={onImageError}
                             // placeholder={imagePlaceholderUrl || 'var(--placeholder-bg)'}
