@@ -344,7 +344,7 @@ export const RightControls = ({ seekRef }: RightControlsProps) => {
                                 label: t('player.playbackSpeed', { postProcess: 'sentenceCase' }),
                                 openDelay: 0,
                             }}
-                            variant="transparent"
+                            variant="subtle"
                         />
                     </DropdownMenu.Target>
                     <DropdownMenu.Dropdown>
@@ -388,7 +388,7 @@ export const RightControls = ({ seekRef }: RightControlsProps) => {
                             : t('player.favorite', { postProcess: 'titleCase' }),
                         openDelay: 0,
                     }}
-                    variant="transparent"
+                    variant="subtle"
                 />
                 <ActionIcon
                     icon={isQueueExpanded ? 'panelRightClose' : 'panelRightOpen'}
@@ -401,7 +401,7 @@ export const RightControls = ({ seekRef }: RightControlsProps) => {
                         label: t('player.viewQueue', { postProcess: 'titleCase' }),
                         openDelay: 0,
                     }}
-                    variant="transparent"
+                    variant="subtle"
                 />
                 {server && (
                     <>
@@ -443,7 +443,7 @@ export const RightControls = ({ seekRef }: RightControlsProps) => {
                         label: muted ? t('player.muted', { postProcess: 'titleCase' }) : volume,
                         openDelay: 0,
                     }}
-                    variant="transparent"
+                    variant="subtle"
                 />
                 {!isMinWidth ? (
                     <PlayerbarSlider

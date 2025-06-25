@@ -52,7 +52,7 @@ export function Image({
                         </ImageContainer>
                     ) : null
                 }
-                loading="eager"
+                loading="lazy"
                 src={src}
                 style={style}
                 unloader={

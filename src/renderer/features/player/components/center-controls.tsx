@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next';
 
 import styles from './center-controls.module.css';
 
-import { PlayerButton } from '/@/renderer/features/player/components/player-button';
+import { PlayButton, PlayerButton } from '/@/renderer/features/player/components/player-button';
 import { PlayerbarSlider } from '/@/renderer/features/player/components/playerbar-slider';
 import { openShuffleAllModal } from '/@/renderer/features/player/components/shuffle-all-modal';
 import { useCenterControls } from '/@/renderer/features/player/hooks/use-center-controls';
@@ -124,12 +124,13 @@ export const CenterControls = ({ playersRef, seekRef }: CenterControlsProps) => 
                             <Icon
                                 fill="default"
                                 icon="mediaStop"
-                                size={buttonSize}
+                                size={buttonSize - 2}
                             />
                         }
                         onClick={handleStop}
                         tooltip={{
                             label: t('player.stop', { postProcess: 'sentenceCase' }),
+                            openDelay: 0,
                         }}
                         variant="tertiary"
                     />
@@ -151,6 +152,7 @@ export const CenterControls = ({ playersRef, seekRef }: CenterControlsProps) => 
                                           postProcess: 'sentenceCase',
                                       })
                                     : t('player.shuffle', { postProcess: 'sentenceCase' }),
+                            openDelay: 0,
                         }}
                         variant="tertiary"
                     />
@@ -165,6 +167,7 @@ export const CenterControls = ({ playersRef, seekRef }: CenterControlsProps) => 
                         onClick={handlePrevTrack}
                         tooltip={{
                             label: t('player.previous', { postProcess: 'sentenceCase' }),
+                            openDelay: 0,
                         }}
                         variant="secondary"
                     />
@@ -183,33 +186,16 @@ export const CenterControls = ({ playersRef, seekRef }: CenterControlsProps) => 
                                     context: 'back',
                                     postProcess: 'sentenceCase',
                                 }),
+
+                                openDelay: 0,
                             }}
                             variant="secondary"
                         />
                     )}
-                    <PlayerButton
+                    <PlayButton
                         disabled={currentSong?.id === undefined}
-                        icon={
-                            status === PlayerStatus.PAUSED ? (
-                                <Icon
-                                    icon="mediaPlay"
-                                    size={buttonSize}
-                                />
-                            ) : (
-                                <Icon
-                                    icon="mediaPause"
-                                    size={buttonSize}
-                                />
-                            )
-                        }
+                        isPaused={status === PlayerStatus.PAUSED}
                         onClick={handlePlayPause}
-                        tooltip={{
-                            label:
-                                status === PlayerStatus.PAUSED
-                                    ? t('player.play', { postProcess: 'sentenceCase' })
-                                    : t('player.pause', { postProcess: 'sentenceCase' }),
-                        }}
-                        variant="main"
                     />
                     {skip?.enabled && (
                         <PlayerButton
@@ -226,6 +212,8 @@ export const CenterControls = ({ playersRef, seekRef }: CenterControlsProps) => 
                                     context: 'forward',
                                     postProcess: 'sentenceCase',
                                 }),
+
+                                openDelay: 0,
                             }}
                             variant="secondary"
                         />
@@ -241,6 +229,7 @@ export const CenterControls = ({ playersRef, seekRef }: CenterControlsProps) => 
                         onClick={handleNextTrack}
                         tooltip={{
                             label: t('player.next', { postProcess: 'sentenceCase' }),
+                            openDelay: 0,
                         }}
                         variant="secondary"
                     />
@@ -279,10 +268,10 @@ export const CenterControls = ({ playersRef, seekRef }: CenterControlsProps) => 
                                             postProcess: 'sentenceCase',
                                         })
                             }`,
+                            openDelay: 0,
                         }}
                         variant="tertiary"
                     />
-
                     <PlayerButton
                         icon={
                             <Icon
@@ -299,6 +288,7 @@ export const CenterControls = ({ playersRef, seekRef }: CenterControlsProps) => 
                         }
                         tooltip={{
                             label: t('player.playRandom', { postProcess: 'sentenceCase' }),
+                            openDelay: 0,
                         }}
                         variant="tertiary"
                     />

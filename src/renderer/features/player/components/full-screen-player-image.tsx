@@ -159,8 +159,6 @@ export const FullScreenPlayerImage = () => {
         };
     }, [imageState, mainImageDimensions.idealSize, queue, setImageState]);
 
-    console.log(imageState);
-
     return (
         <Flex
             align="center"
