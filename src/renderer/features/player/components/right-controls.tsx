@@ -2,11 +2,8 @@ import { useHotkeys, useMediaQuery } from '@mantine/hooks';
 import isElectron from 'is-electron';
 import { MutableRefObject, useCallback, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { MdOutlineLyrics } from 'react-icons/md';
-import { RiDownloadCloud2Fill, RiUploadCloud2Fill } from 'react-icons/ri';
 
 import { api } from '/@/renderer/api';
-import { PlayerButton } from '/@/renderer/features/player/components/player-button';
 import { PlayerbarSlider } from '/@/renderer/features/player/components/playerbar-slider';
 import { usePlayQueueAdd } from '/@/renderer/features/player/hooks/use-playqueue-add';
 import { useRightControls } from '/@/renderer/features/player/hooks/use-right-controls';
@@ -408,29 +405,29 @@ export const RightControls = ({ seekRef }: RightControlsProps) => {
                 />
                 {server && (
                     <>
-                        <PlayerButton
-                            icon={<RiUploadCloud2Fill size="1.1rem" />}
+                        <ActionIcon
+                            icon="upload"
                             onClick={handleSaveQueue}
                             tooltip={{ label: 'Save queue', openDelay: 500 }}
-                            variant="secondary"
+                            variant="transparent"
                         />
-                        <PlayerButton
-                            icon={<RiDownloadCloud2Fill size="1.1rem" />}
+                        <ActionIcon
+                            icon="download"
                             onClick={handleRestoreQueue}
                             tooltip={{ label: 'Restore queue', openDelay: 500 }}
-                            variant="secondary"
+                            variant="transparent"
                         />
                     </>
                 )}
                 {!isMinWidth ? (
-                    <PlayerButton
-                        icon={<MdOutlineLyrics size="1.1rem" />}
+                    <ActionIcon
+                        icon="lyrics"
                         onClick={handleToggleLyrics}
                         tooltip={{
                             label: t('player.show_lyrics', { postProcess: 'titleCase' }),
                             openDelay: 500,
                         }}
-                        variant="secondary"
+                        variant="transparent"
                     />
                 ) : null}
                 <ActionIcon

@@ -1,5 +1,5 @@
 import AudioMotionAnalyzer from 'audiomotion-analyzer';
-import { createRef, useCallback, useEffect, useState } from 'react';
+import { createRef, useEffect, useState } from 'react';
 
 import styles from './visualizer.module.css';
 
@@ -11,8 +11,6 @@ export const Visualizer = () => {
     const canvasRef = createRef<HTMLDivElement>();
     const accent = useSettingsStore((store) => store.general.accent);
     const [motion, setMotion] = useState<AudioMotionAnalyzer>();
-
-    const [length, setLength] = useState(500);
 
     useEffect(() => {
         const { context, gain } = webAudio || {};
@@ -35,33 +33,10 @@ export const Visualizer = () => {
         return () => {};
     }, [accent, canvasRef, motion, webAudio]);
 
-    const resize = useCallback(() => {
-        const body = document.querySelector('.full-screen-player-queue-container');
-        const header = document.querySelector('.full-screen-player-queue-header');
-
-        if (body && header) {
-            const width = body.clientWidth - 30;
-            const height = body.clientHeight - header.clientHeight - 30;
-
-            setLength(Math.min(width, height));
-        }
-    }, []);
-
-    useEffect(() => {
-        resize();
-
-        window.addEventListener('resize', resize);
-
-        return () => {
-            window.removeEventListener('resize', resize);
-        };
-    }, [resize]);
-
     return (
         <div
             className={styles.container}
             ref={canvasRef}
-            style={{ height: length, width: length }}
         />
     );
 };

@@ -1,27 +1,17 @@
-import { Image, Title } from '@mantine/core';
 import formatDuration from 'format-duration';
 import debounce from 'lodash/debounce';
 import { createRef, useCallback, useEffect, useRef } from 'react';
-import {
-    RiDownloadCloud2Fill,
-    RiHeartLine,
-    RiPauseFill,
-    RiPlayFill,
-    RiRepeat2Line,
-    RiRepeatOneLine,
-    RiShuffleFill,
-    RiSkipBackFill,
-    RiSkipForwardFill,
-    RiUploadCloud2Fill,
-    RiVolumeUpFill,
-} from 'react-icons/ri';
+import { RiPauseFill, RiPlayFill, RiVolumeUpFill } from 'react-icons/ri';
 
-import { RemoteButton } from '/@/remote/components/buttons/remote-button';
 import { createSilentAudio } from '/@/remote/components/create-silent-audio';
-import { WrapperSlider } from '/@/remote/components/wrapped-slider';
+import { PlayerImage } from '/@/remote/components/player-image';
+import { WrappedSlider } from '/@/remote/components/wrapped-slider';
 import { useInfo, useMediaControl, useSend, useShowImage } from '/@/remote/store';
+import { ActionIcon } from '/@/shared/components/action-icon/action-icon';
+import { Flex } from '/@/shared/components/flex/flex';
 import { Group } from '/@/shared/components/group/group';
 import { Rating } from '/@/shared/components/rating/rating';
+import { Stack } from '/@/shared/components/stack/stack';
 import { Text } from '/@/shared/components/text/text';
 import { Tooltip } from '/@/shared/components/tooltip/tooltip';
 import { PlayerRepeat, PlayerStatus } from '/@/shared/types/types';
@@ -141,41 +131,116 @@ export const RemoteContainer = () => {
     const debouncedSetRating = debounce(setRating, 400);
 
     return (
-        <>
+        <Stack
+            gap="md"
+            h="100dvh"
+            w="100%"
+        >
+            {showImage && (
+                <Flex
+                    align="center"
+                    justify="center"
+                    w="100%"
+                >
+                    <PlayerImage src={song?.imageUrl} />
+                </Flex>
+            )}
             {id && (
-                <>
-                    <Title order={1}>{song.name}</Title>
-                    <Group align="flex-end">
-                        <Title order={2}>Album: {song.album}</Title>
-                        <Title order={2}>Artist: {song.artistName}</Title>
-                    </Group>
+                <Stack gap="xs">
+                    <Text
+                        fw={700}
+                        size="xl"
+                        style={{
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            whiteSpace: 'nowrap',
+                        }}
+                    >
+                        {song.name}
+                    </Text>
+                    <Text
+                        isMuted
+                        style={{
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            whiteSpace: 'nowrap',
+                        }}
+                    >
+                        {song.album}
+                    </Text>
+                    <Text
+                        isMuted
+                        style={{
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            whiteSpace: 'nowrap',
+                        }}
+                    >
+                        {song.artistName}
+                    </Text>
                     <Group justify="space-between">
-                        <Title order={3}>Duration: {formatDuration(song.duration)}</Title>
                         {song.releaseDate && (
-                            <Title order={3}>
-                                Released: {new Date(song.releaseDate).toLocaleDateString()}
-                            </Title>
+                            <Text isMuted>{new Date(song.releaseDate).toLocaleDateString()}</Text>
                         )}
-                        <Title order={3}>Plays: {song.playCount}</Title>
+                        <Text isMuted>Plays: {song.playCount}</Text>
                     </Group>
-                </>
+                </Stack>
             )}
             <Group
                 gap={0}
                 grow
             >
-                <RemoteButton
+                <ActionIcon
                     disabled={!id}
+                    icon="favorite"
+                    iconProps={{
+                        fill: song?.userFavorite ? 'primary' : 'default',
+                    }}
+                    onClick={() => {
+                        if (!id) return;
+
+                        send({ event: 'favorite', favorite: !song.userFavorite, id });
+                    }}
+                    tooltip={{
+                        label: song?.userFavorite ? 'Unfavorite' : 'Favorite',
+                    }}
+                    variant="transparent"
+                />
+                {(song?.serverType === 'navidrome' || song?.serverType === 'subsonic') && (
+                    <div style={{ margin: 'auto' }}>
+                        <Tooltip
+                            label="Double click to clear"
+                            openDelay={1000}
+                        >
+                            <Rating
+                                onChange={debouncedSetRating}
+                                onDoubleClick={() => debouncedSetRating(0)}
+                                style={{ margin: 'auto' }}
+                                value={song.userRating ?? 0}
+                            />
+                        </Tooltip>
+                    </div>
+                )}
+            </Group>
+            <Group
+                gap="xs"
+                grow
+            >
+                <ActionIcon
+                    disabled={!id}
+                    icon="mediaPrevious"
+                    iconProps={{
+                        fill: 'default',
+                        size: 'lg',
+                    }}
                     onClick={() => send({ event: 'previous' })}
                     size="xl"
                     tooltip={{
                         label: 'Previous track',
                     }}
                     variant="default"
-                >
-                    <RiSkipBackFill size={25} />
-                </RemoteButton>
-                <RemoteButton
+                />
+                <ActionIcon
                     disabled={!id}
                     onClick={() => {
                         setMetadata();
@@ -196,35 +261,52 @@ export const RemoteContainer = () => {
                     ) : (
                         <RiPlayFill size={25} />
                     )}
-                </RemoteButton>
-                <RemoteButton
+                </ActionIcon>
+                <ActionIcon
                     disabled={!id}
+                    icon="mediaNext"
+                    iconProps={{
+                        fill: 'default',
+                        size: 'lg',
+                    }}
                     onClick={() => send({ event: 'next' })}
                     size="xl"
                     tooltip={{
                         label: 'Next track',
                     }}
-                >
-                    <RiSkipForwardFill size={25} />
-                </RemoteButton>
+                    variant="default"
+                />
             </Group>
             <Group
-                gap={0}
+                gap="xs"
                 grow
             >
-                <RemoteButton
-                    isActive={shuffle || false}
+                <ActionIcon
+                    icon="mediaShuffle"
+                    iconProps={{
+                        fill: shuffle ? 'primary' : 'default',
+                        size: 'lg',
+                    }}
                     onClick={() => send({ event: 'shuffle' })}
                     size="xl"
                     tooltip={{
                         label: shuffle ? 'Shuffle tracks' : 'Shuffle disabled',
                     }}
                     variant="default"
-                >
-                    <RiShuffleFill size={25} />
-                </RemoteButton>
-                <RemoteButton
-                    isActive={repeat !== undefined && repeat !== PlayerRepeat.NONE}
+                />
+                <ActionIcon
+                    icon={
+                        repeat === undefined || repeat === PlayerRepeat.ONE
+                            ? 'mediaRepeatOne'
+                            : 'mediaRepeat'
+                    }
+                    iconProps={{
+                        fill:
+                            repeat !== undefined && repeat !== PlayerRepeat.NONE
+                                ? 'primary'
+                                : 'default',
+                        size: 'lg',
+                    }}
                     onClick={() => send({ event: 'repeat' })}
                     size="xl"
                     tooltip={{
@@ -237,106 +319,57 @@ export const RemoteContainer = () => {
                         }`,
                     }}
                     variant="default"
-                >
-                    {repeat === undefined || repeat === PlayerRepeat.ONE ? (
-                        <RiRepeatOneLine size={25} />
-                    ) : (
-                        <RiRepeat2Line size={25} />
-                    )}
-                </RemoteButton>
-                <RemoteButton
-                    disabled={!id}
-                    isActive={song?.userFavorite}
-                    onClick={() => {
-                        if (!id) return;
-
-                        send({ event: 'favorite', favorite: !song.userFavorite, id });
-                    }}
-                    size="xl"
-                    tooltip={{
-                        label: song?.userFavorite ? 'Unfavorite' : 'Favorite',
-                    }}
-                    variant="default"
-                >
-                    <RiHeartLine size={25} />
-                </RemoteButton>
-            </Group>
-            <Group
-                gap={0}
-                grow
-            >
-                {(song?.serverType === 'navidrome' || song?.serverType === 'subsonic') && (
-                    <div style={{ margin: 'auto' }}>
-                        <Tooltip
-                            label="Double click to clear"
-                            openDelay={1000}
-                        >
-                            <Rating
-                                onChange={debouncedSetRating}
-                                onDoubleClick={() => debouncedSetRating(0)}
-                                size="md"
-                                style={{ margin: 'auto' }}
-                                value={song.userRating ?? 0}
-                            />
-                        </Tooltip>
-                    </div>
-                )}
-                <RemoteButton
+                />
+                <ActionIcon
                     disabled={!song}
+                    icon="upload"
                     onClick={() => send({ event: 'saveQueue' })}
                     size="xl"
                     tooltip={{ label: 'Save queue' }}
                     variant="default"
-                >
-                    <RiUploadCloud2Fill size={25} />
-                </RemoteButton>
+                />
 
-                <RemoteButton
+                <ActionIcon
+                    icon="download"
                     onClick={() => send({ event: 'restoreQueue' })}
                     size="xl"
                     tooltip={{ label: 'Restore queue' }}
                     variant="default"
-                >
-                    <RiDownloadCloud2Fill size={25} />
-                </RemoteButton>
+                />
             </Group>
-            {id && position !== undefined && (
-                <WrapperSlider
-                    label={(value) => formatDuration(value * 1e3)}
-                    leftLabel={formatDuration(position * 1e3)}
-                    max={song.duration / 1e3}
-                    onChangeEnd={(e) => send({ event: 'position', position: e })}
-                    rightLabel={formatDuration(song.duration)}
-                    value={position}
+            <Stack gap="lg">
+                {id && position !== undefined && (
+                    <WrappedSlider
+                        label={(value) => formatDuration(value * 1e3)}
+                        leftLabel={formatDuration(position * 1e3)}
+                        max={song.duration / 1e3}
+                        onChangeEnd={(e) => send({ event: 'position', position: e })}
+                        rightLabel={formatDuration(song.duration)}
+                        value={position}
+                    />
+                )}
+                <WrappedSlider
+                    leftLabel={<RiVolumeUpFill size={20} />}
+                    max={100}
+                    onChangeEnd={(e) => send({ event: 'volume', volume: e })}
+                    rightLabel={
+                        <Text
+                            fw={600}
+                            size="xs"
+                        >
+                            {volume ?? 0}
+                        </Text>
+                    }
+                    value={volume ?? 0}
                 />
-            )}
-            <WrapperSlider
-                leftLabel={<RiVolumeUpFill size={20} />}
-                max={100}
-                onChangeEnd={(e) => send({ event: 'volume', volume: e })}
-                rightLabel={
-                    <Text
-                        fw={600}
-                        size="xs"
-                    >
-                        {volume ?? 0}
-                    </Text>
-                }
-                value={volume ?? 0}
-            />
-            {control && (
-                <audio
-                    autoPlay
-                    ref={audioRef}
-                    src={audioObj.current}
-                />
-            )}
-            {showImage && (
-                <Image
-                    onError={() => send({ event: 'proxy' })}
-                    src={song?.imageUrl?.replaceAll(/&(size|width|height=\d+)/g, '')}
-                />
-            )}
-        </>
+                {control && (
+                    <audio
+                        autoPlay
+                        ref={audioRef}
+                        src={audioObj.current}
+                    />
+                )}
+            </Stack>
+        </Stack>
     );
 };
