@@ -408,13 +408,13 @@ export const RightControls = ({ seekRef }: RightControlsProps) => {
                         <ActionIcon
                             icon="upload"
                             onClick={handleSaveQueue}
-                            tooltip={{ label: 'Save queue', openDelay: 500 }}
+                            tooltip={{ label: 'Save queue', openDelay: 0 }}
                             variant="subtle"
                         />
                         <ActionIcon
                             icon="download"
                             onClick={handleRestoreQueue}
-                            tooltip={{ label: 'Restore queue', openDelay: 500 }}
+                            tooltip={{ label: 'Restore queue', openDelay: 0 }}
                             variant="subtle"
                         />
                     </>
@@ -425,7 +425,7 @@ export const RightControls = ({ seekRef }: RightControlsProps) => {
                         onClick={handleToggleLyrics}
                         tooltip={{
                             label: t('player.show_lyrics', { postProcess: 'titleCase' }),
-                            openDelay: 500,
+                            openDelay: 0,
                         }}
                         variant="subtle"
                     />
