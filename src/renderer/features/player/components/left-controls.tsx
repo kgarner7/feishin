@@ -73,7 +73,7 @@ export const LeftControls = () => {
             <LayoutGroup>
                 <AnimatePresence
                     initial={false}
-                    mode="wait"
+                    mode="popLayout"
                 >
                     {!hideImage && (
                         <div className={styles.imageWrapper}>
@@ -85,7 +85,7 @@ export const LeftControls = () => {
                                 key="playerbar-image"
                                 onClick={handleToggleFullScreenPlayer}
                                 role="button"
-                                transition={{ duration: 0.3, ease: 'easeInOut' }}
+                                transition={{ duration: 0.2, ease: 'easeIn' }}
                             >
                                 <Tooltip
                                     label={t('player.toggleFullscreenPlayer', {
