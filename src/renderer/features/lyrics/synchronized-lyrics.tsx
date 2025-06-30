@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 import isElectron from 'is-electron';
-import { useCallback, useEffect, useRef } from 'react';
+import { Fragment, useCallback, useEffect, useRef } from 'react';
 
 import styles from './synchronized-lyrics.module.css';
 
@@ -343,7 +343,7 @@ export const SynchronizedLyrics = ({
                 />
             )}
             {lyrics.map(([time, text], idx) => (
-                <div key={idx}>
+                <Fragment key={idx}>
                     <LyricLine
                         alignment={settings.alignment}
                         className="lyric-line synchronized"
@@ -361,7 +361,7 @@ export const SynchronizedLyrics = ({
                             text={translatedLyrics.split('\n')[idx]}
                         />
                     )}
-                </div>
+                </Fragment>
             ))}
         </div>
     );

@@ -200,6 +200,7 @@ export interface SettingsState {
         clientId: string;
         enabled: boolean;
         showAsListening: boolean;
+        showPaused: boolean;
         showServerImage: boolean;
     };
     font: {
@@ -286,6 +287,7 @@ export interface SettingsState {
         mpvExtraParameters: string[];
         mpvProperties: MpvSettings;
         muted: boolean;
+        preservePitch: boolean;
         scrobble: {
             enabled: boolean;
             scrobbleAtDuration: number;
@@ -357,6 +359,7 @@ const initialState: SettingsState = {
         clientId: '1165957668758900787',
         enabled: false,
         showAsListening: false,
+        showPaused: true,
         showServerImage: false,
     },
     font: {
@@ -483,6 +486,7 @@ const initialState: SettingsState = {
             replayGainPreampDB: 0,
         },
         muted: false,
+        preservePitch: true,
         scrobble: {
             enabled: true,
             scrobbleAtDuration: 240,
