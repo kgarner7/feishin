@@ -195,7 +195,7 @@ const normalizeSong = (
         name: item.title,
         // Thankfully, Windows is merciful and allows a mix of separators. So, we can use the
         // POSIX separator here instead
-        path: (item.libraryPath ? item.libraryPath + '/' : '') + item.path,
+        path: item.path,
         peak:
             item.rgAlbumPeak || item.rgTrackPeak
                 ? { album: item.rgAlbumPeak, track: item.rgTrackPeak }
