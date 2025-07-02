@@ -327,8 +327,10 @@ export const SubsonicController: ControllerEndpoint = {
                 return artist.body.artist.album ?? [];
             });
 
+            const items = albums.map((album) => ssNormalize.album(album, apiClientProps.server));
+
             return {
-                items: albums.map((album) => ssNormalize.album(album, apiClientProps.server)),
+                items: sortAlbumList(items, query.sortBy, query.sortOrder),
                 startIndex: 0,
                 totalRecordCount: albums.length,
             };
