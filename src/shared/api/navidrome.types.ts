@@ -1,12 +1,12 @@
 import { SSArtistInfo } from '/@/shared/api/subsonic.types';
 
 export enum NDAlbumArtistListSort {
-    ALBUM_COUNT = 'albumCount',
+    ALBUM_COUNT = 'maincredit_album_count',
     FAVORITED = 'starred_at',
     NAME = 'name',
     PLAY_COUNT = 'playCount',
     RATING = 'rating',
-    SONG_COUNT = 'songCount',
+    SONG_COUNT = 'maincredit_song_count',
 }
 
 export enum NDAlbumListSort {

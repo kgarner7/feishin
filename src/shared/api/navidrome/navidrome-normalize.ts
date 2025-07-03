@@ -306,14 +306,8 @@ const normalizeAlbumArtist = (
     let songCount: number;
 
     if (item.stats) {
-        albumCount = Math.max(
-            item.stats.albumartist?.albumCount ?? 0,
-            item.stats.artist?.albumCount ?? 0,
-        );
-        songCount = Math.max(
-            item.stats.albumartist?.songCount ?? 0,
-            item.stats.artist?.songCount ?? 0,
-        );
+        albumCount = item.stats.maincredit.albumCount;
+        songCount = item.stats.maincredit.songCount;
     } else {
         albumCount = item.albumCount;
         songCount = item.songCount;
