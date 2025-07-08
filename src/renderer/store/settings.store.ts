@@ -290,6 +290,7 @@ export interface SettingsState {
         preservePitch: boolean;
         scrobble: {
             enabled: boolean;
+            notify: boolean;
             scrobbleAtDuration: number;
             scrobbleAtPercentage: number;
         };
@@ -489,6 +490,7 @@ const initialState: SettingsState = {
         preservePitch: true,
         scrobble: {
             enabled: true,
+            notify: false,
             scrobbleAtDuration: 240,
             scrobbleAtPercentage: 75,
         },
