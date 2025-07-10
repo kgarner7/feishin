@@ -306,8 +306,9 @@ const normalizeAlbumArtist = (
     let songCount: number;
 
     if (item.stats) {
-        albumCount = item.stats.maincredit.albumCount;
-        songCount = item.stats.maincredit.songCount;
+        // artist may have no primary credits. fall back to zero
+        albumCount = item.stats.maincredit?.albumCount || 0;
+        songCount = item.stats.maincredit?.songCount || 0;
     } else {
         albumCount = item.albumCount;
         songCount = item.songCount;
