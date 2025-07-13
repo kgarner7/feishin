@@ -110,10 +110,7 @@ export const MainContent = ({ shell }: { shell?: boolean }) => {
                         {showQueueDrawerButton && <SideDrawerQueue />}
                     </Suspense>
                     <FullScreenOverlay />
-                    <LeftSidebar
-                        isResizing={isResizing}
-                        startResizing={startResizing}
-                    />
+                    <LeftSidebar isResizing={isResizing} startResizing={startResizing} />
                     <LyricsOverlay />
                     <RightSidebar
                         isResizing={isResizingRight}

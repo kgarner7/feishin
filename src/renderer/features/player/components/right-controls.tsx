@@ -305,13 +305,7 @@ export const RightControls = ({ seekRef }: RightControlsProps) => {
     ]);
 
     return (
-        <Flex
-            align="flex-end"
-            direction="column"
-            h="100%"
-            px="1rem"
-            py="0.5rem"
-        >
+        <Flex align="flex-end" direction="column" h="100%" px="1rem" py="0.5rem">
             <Group h="calc(100% / 3)">
                 {showRating && (
                     <Rating
@@ -321,18 +315,8 @@ export const RightControls = ({ seekRef }: RightControlsProps) => {
                     />
                 )}
             </Group>
-            <Group
-                align="center"
-                gap="xs"
-                wrap="nowrap"
-            >
-                <DropdownMenu
-                    arrowOffset={12}
-                    offset={0}
-                    position="top-end"
-                    width={425}
-                    withArrow
-                >
+            <Group align="center" gap="xs" wrap="nowrap">
+                <DropdownMenu arrowOffset={12} offset={0} position="top-end" width={425} withArrow>
                     <DropdownMenu.Target>
                         <ActionIcon
                             icon="mediaSpeed"

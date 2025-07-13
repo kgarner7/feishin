@@ -62,10 +62,7 @@ export const Playerbar = () => {
                     <LeftControls />
                 </div>
                 <div className={styles.centerGridItem}>
-                    <CenterControls
-                        playersRef={playersRef}
-                        seekRef={handleSeekRef}
-                    />
+                    <CenterControls playersRef={playersRef} seekRef={handleSeekRef} />
                 </div>
                 <div className={styles.rightGridItem}>
                     <RightControls seekRef={handleSeekRef} />

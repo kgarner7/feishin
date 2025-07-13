@@ -95,10 +95,7 @@ export const DefaultCard = ({
                         />
                     </div>
                     <div className={styles.detailContainer}>
-                        <CardRows
-                            data={data}
-                            rows={controls.cardRows}
-                        />
+                        <CardRows data={data} rows={controls.cardRows} />
                     </div>
                 </div>
             </div>

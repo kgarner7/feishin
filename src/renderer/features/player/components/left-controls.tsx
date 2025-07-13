@@ -71,10 +71,7 @@ export const LeftControls = () => {
     return (
         <div className={styles.leftControlsContainer}>
             <LayoutGroup>
-                <AnimatePresence
-                    initial={false}
-                    mode="popLayout"
-                >
+                <AnimatePresence initial={false} mode="popLayout">
                     {!hideImage && (
                         <div className={styles.imageWrapper}>
                             <motion.div
@@ -129,19 +126,9 @@ export const LeftControls = () => {
                         </div>
                     )}
                 </AnimatePresence>
-                <motion.div
-                    className={styles.metadataStack}
-                    layout="position"
-                >
-                    <div
-                        className={styles.lineItem}
-                        onClick={stopPropagation}
-                    >
-                        <Group
-                            align="center"
-                            gap="xs"
-                            wrap="nowrap"
-                        >
+                <motion.div className={styles.metadataStack} layout="position">
+                    <div className={styles.lineItem} onClick={stopPropagation}>
+                        <Group align="center" gap="xs" wrap="nowrap">
                             <Text
                                 component={Link}
                                 fw={500}

@@ -75,10 +75,7 @@ export const PosterCard = ({
                     margin: controls.itemGap,
                 }}
             >
-                <div
-                    className={styles.linkContainer}
-                    onClick={() => navigate(path)}
-                >
+                <div className={styles.linkContainer} onClick={() => navigate(path)}>
                     <div
                         className={`${styles.imageContainer} ${data?.userFavorite ? styles.isFavorite : ''}`}
                     >
@@ -99,10 +96,7 @@ export const PosterCard = ({
                     </div>
                 </div>
                 <div className={styles.detailContainer}>
-                    <CardRows
-                        data={data}
-                        rows={controls.cardRows}
-                    />
+                    <CardRows data={data} rows={controls.cardRows} />
                 </div>
             </div>
         );

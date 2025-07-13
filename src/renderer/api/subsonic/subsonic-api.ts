@@ -107,20 +107,6 @@ export const contract = c.router({
             200: ssType._response.musicFolderList,
         },
     },
-    getPlayQueue: {
-        method: 'GET',
-        path: 'getPlayQueue.view',
-        responses: {
-            200: ssType._response.playQueue,
-        },
-    },
-    getPlayQueue2: {
-        method: 'GET',
-        path: 'getPlayQueue2.view',
-        responses: {
-            200: ssType._response.playQueue2,
-        },
-    },
     getPlaylist: {
         method: 'GET',
         path: 'getPlaylist.view',
@@ -135,6 +121,20 @@ export const contract = c.router({
         query: ssType._parameters.getPlaylists,
         responses: {
             200: ssType._response.getPlaylists,
+        },
+    },
+    getPlayQueue: {
+        method: 'GET',
+        path: 'getPlayQueue.view',
+        responses: {
+            200: ssType._response.playQueue,
+        },
+    },
+    getPlayQueue2: {
+        method: 'GET',
+        path: 'getPlayQueue2.view',
+        responses: {
+            200: ssType._response.playQueue2,
         },
     },
     getRandomSongList: {

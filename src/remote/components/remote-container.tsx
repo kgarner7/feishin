@@ -131,17 +131,9 @@ export const RemoteContainer = () => {
     const debouncedSetRating = debounce(setRating, 400);
 
     return (
-        <Stack
-            gap="md"
-            h="100dvh"
-            w="100%"
-        >
+        <Stack gap="md" h="100dvh" w="100%">
             {showImage && (
-                <Flex
-                    align="center"
-                    justify="center"
-                    w="100%"
-                >
+                <Flex align="center" justify="center" w="100%">
                     <PlayerImage src={song?.imageUrl} />
                 </Flex>
             )}
@@ -186,10 +178,7 @@ export const RemoteContainer = () => {
                     </Group>
                 </Stack>
             )}
-            <Group
-                gap={0}
-                grow
-            >
+            <Group gap={0} grow>
                 <ActionIcon
                     disabled={!id}
                     icon="favorite"
@@ -208,10 +197,7 @@ export const RemoteContainer = () => {
                 />
                 {(song?.serverType === 'navidrome' || song?.serverType === 'subsonic') && (
                     <div style={{ margin: 'auto' }}>
-                        <Tooltip
-                            label="Double click to clear"
-                            openDelay={1000}
-                        >
+                        <Tooltip label="Double click to clear" openDelay={1000}>
                             <Rating
                                 onChange={debouncedSetRating}
                                 onDoubleClick={() => debouncedSetRating(0)}
@@ -222,10 +208,7 @@ export const RemoteContainer = () => {
                     </div>
                 )}
             </Group>
-            <Group
-                gap="xs"
-                grow
-            >
+            <Group gap="xs" grow>
                 <ActionIcon
                     disabled={!id}
                     icon="mediaPrevious"
@@ -277,10 +260,7 @@ export const RemoteContainer = () => {
                     variant="default"
                 />
             </Group>
-            <Group
-                gap="xs"
-                grow
-            >
+            <Group gap="xs" grow>
                 <ActionIcon
                     icon="mediaShuffle"
                     iconProps={{
@@ -353,22 +333,13 @@ export const RemoteContainer = () => {
                     max={100}
                     onChangeEnd={(e) => send({ event: 'volume', volume: e })}
                     rightLabel={
-                        <Text
-                            fw={600}
-                            size="xs"
-                        >
+                        <Text fw={600} size="xs">
                             {volume ?? 0}
                         </Text>
                     }
                     value={volume ?? 0}
                 />
-                {control && (
-                    <audio
-                        autoPlay
-                        ref={audioRef}
-                        src={audioObj.current}
-                    />
-                )}
+                {control && <audio autoPlay ref={audioRef} src={audioObj.current} />}
             </Stack>
         </Stack>
     );

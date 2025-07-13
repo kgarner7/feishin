@@ -120,13 +120,7 @@ export const CenterControls = ({ playersRef, seekRef }: CenterControlsProps) => 
             <div className={styles.controlsContainer}>
                 <div className={styles.buttonsContainer}>
                     <PlayerButton
-                        icon={
-                            <Icon
-                                fill="default"
-                                icon="mediaStop"
-                                size={buttonSize - 2}
-                            />
-                        }
+                        icon={<Icon fill="default" icon="mediaStop" size={buttonSize - 2} />}
                         onClick={handleStop}
                         tooltip={{
                             label: t('player.stop', { postProcess: 'sentenceCase' }),
@@ -157,13 +151,7 @@ export const CenterControls = ({ playersRef, seekRef }: CenterControlsProps) => 
                         variant="tertiary"
                     />
                     <PlayerButton
-                        icon={
-                            <Icon
-                                fill="default"
-                                icon="mediaPrevious"
-                                size={buttonSize}
-                            />
-                        }
+                        icon={<Icon fill="default" icon="mediaPrevious" size={buttonSize} />}
                         onClick={handlePrevTrack}
                         tooltip={{
                             label: t('player.previous', { postProcess: 'sentenceCase' }),
@@ -174,11 +162,7 @@ export const CenterControls = ({ playersRef, seekRef }: CenterControlsProps) => 
                     {skip?.enabled && (
                         <PlayerButton
                             icon={
-                                <Icon
-                                    fill="default"
-                                    icon="mediaStepBackward"
-                                    size={buttonSize}
-                                />
+                                <Icon fill="default" icon="mediaStepBackward" size={buttonSize} />
                             }
                             onClick={() => handleSkipBackward(skip?.skipBackwardSeconds)}
                             tooltip={{
@@ -199,13 +183,7 @@ export const CenterControls = ({ playersRef, seekRef }: CenterControlsProps) => 
                     />
                     {skip?.enabled && (
                         <PlayerButton
-                            icon={
-                                <Icon
-                                    fill="default"
-                                    icon="mediaStepForward"
-                                    size={buttonSize}
-                                />
-                            }
+                            icon={<Icon fill="default" icon="mediaStepForward" size={buttonSize} />}
                             onClick={() => handleSkipForward(skip?.skipForwardSeconds)}
                             tooltip={{
                                 label: t('player.skip', {
@@ -219,13 +197,7 @@ export const CenterControls = ({ playersRef, seekRef }: CenterControlsProps) => 
                         />
                     )}
                     <PlayerButton
-                        icon={
-                            <Icon
-                                fill="default"
-                                icon="mediaNext"
-                                size={buttonSize}
-                            />
-                        }
+                        icon={<Icon fill="default" icon="mediaNext" size={buttonSize} />}
                         onClick={handleNextTrack}
                         tooltip={{
                             label: t('player.next', { postProcess: 'sentenceCase' }),
@@ -236,11 +208,7 @@ export const CenterControls = ({ playersRef, seekRef }: CenterControlsProps) => 
                     <PlayerButton
                         icon={
                             repeat === PlayerRepeat.ONE ? (
-                                <Icon
-                                    fill="primary"
-                                    icon="mediaRepeatOne"
-                                    size={buttonSize}
-                                />
+                                <Icon fill="primary" icon="mediaRepeatOne" size={buttonSize} />
                             ) : (
                                 <Icon
                                     fill={repeat === PlayerRepeat.NONE ? 'default' : 'primary'}
@@ -273,13 +241,7 @@ export const CenterControls = ({ playersRef, seekRef }: CenterControlsProps) => 
                         variant="tertiary"
                     />
                     <PlayerButton
-                        icon={
-                            <Icon
-                                fill="default"
-                                icon="mediaRandom"
-                                size={buttonSize}
-                            />
-                        }
+                        icon={<Icon fill="default" icon="mediaRandom" size={buttonSize} />}
                         onClick={() =>
                             openShuffleAllModal({
                                 handlePlayQueueAdd,
@@ -296,12 +258,7 @@ export const CenterControls = ({ playersRef, seekRef }: CenterControlsProps) => 
             </div>
             <div className={styles.sliderContainer}>
                 <div className={styles.sliderValueWrapper}>
-                    <Text
-                        fw={600}
-                        isMuted
-                        isNoSelect
-                        size="xs"
-                    >
+                    <Text fw={600} isMuted isNoSelect size="xs">
                         {formattedTime}
                     </Text>
                 </div>
@@ -329,12 +286,7 @@ export const CenterControls = ({ playersRef, seekRef }: CenterControlsProps) => 
                     />
                 </div>
                 <div className={styles.sliderValueWrapper}>
-                    <Text
-                        fw={600}
-                        isMuted
-                        isNoSelect
-                        size="xs"
-                    >
+                    <Text fw={600} isMuted isNoSelect size="xs">
                         {duration}
                     </Text>
                 </div>
