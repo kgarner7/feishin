@@ -37,7 +37,9 @@ export const RemoteContainer = () => {
             return () => {};
         }
 
-        const audioSrc = song?.duration ? createSilentAudio(song.duration / 1000, 8000) : undefined;
+        const audioSrc = song?.duration ? createSilentAudio(
+            Math.round(song.duration / 1000), 8000
+        ) : undefined;
         audioObj.current = audioSrc;
 
         return () => {
