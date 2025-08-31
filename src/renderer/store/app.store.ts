@@ -9,6 +9,7 @@ export interface AppSlice extends AppState {
     actions: {
         setAppStore: (data: Partial<AppSlice>) => void;
         setLyrics: (options: Partial<LyricsProps>) => void;
+        setPrivateMode: (enabled: boolean) => void;
         setSideBar: (options: Partial<SidebarProps>) => void;
         setTitleBar: (options: Partial<TitlebarProps>) => void;
     };
@@ -19,6 +20,7 @@ export interface AppState {
     isReorderingQueue: boolean;
     lyrics: LyricsProps;
     platform: Platform;
+    privateMode: boolean;
     sidebar: SidebarProps;
     titlebar: TitlebarProps;
 }
@@ -62,6 +64,11 @@ export const useAppStore = createWithEqualityFn<AppSlice>()(
                             state.lyrics = { ...state.lyrics, ...options };
                         });
                     },
+                    setPrivateMode: (privateMode) => {
+                        set((state) => {
+                            state.privateMode = privateMode;
+                        });
+                    },
                     setSideBar: (options) => {
                         set((state) => {
                             state.sidebar = { ...state.sidebar, ...options };
@@ -97,6 +104,7 @@ export const useAppStore = createWithEqualityFn<AppSlice>()(
                     width: 525,
                 },
                 platform: Platform.WINDOWS,
+                privateMode: false,
                 sidebar: {
                     collapsed: false,
                     expanded: [],
