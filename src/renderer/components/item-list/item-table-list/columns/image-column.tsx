@@ -84,6 +84,7 @@ export const ImageColumn = (props: ItemTableListInnerColumn) => {
                             [styles.imageContainerWithAspectRatio]:
                                 props.size === 'default' || props.size === 'large',
                         })}
+                        explicit={item.explicitStatus || null}
                         id={item?.imageId}
                         itemType={item?._itemType}
                         src={item?.imageUrl}

@@ -18,6 +18,7 @@ import { usePlayButtonClick } from '/@/renderer/features/shared/hooks/use-play-b
 import { useIsMutatingCreateFavorite } from '/@/renderer/features/shared/mutations/create-favorite-mutation';
 import { useIsMutatingDeleteFavorite } from '/@/renderer/features/shared/mutations/delete-favorite-mutation';
 import { useIsMutatingRating } from '/@/renderer/features/shared/mutations/set-rating-mutation';
+import { useGeneralSettings } from '/@/renderer/store';
 import { ActionIcon } from '/@/shared/components/action-icon/action-icon';
 import { Button } from '/@/shared/components/button/button';
 import { Center } from '/@/shared/components/center/center';
@@ -27,7 +28,7 @@ import { BaseImage } from '/@/shared/components/image/image';
 import { Rating } from '/@/shared/components/rating/rating';
 import { Spinner } from '/@/shared/components/spinner/spinner';
 import { Text } from '/@/shared/components/text/text';
-import { LibraryItem } from '/@/shared/types/domain-types';
+import { ExplicitStatus, LibraryItem } from '/@/shared/types/domain-types';
 import { Play } from '/@/shared/types/types';
 
 interface LibraryHeaderProps {
@@ -37,6 +38,7 @@ interface LibraryHeaderProps {
     imageUrl?: null | string;
     item: {
         children?: ReactNode;
+        explicit?: ExplicitStatus | null;
         imageId?: null | string;
         imageUrl?: null | string;
         route: string;
@@ -52,6 +54,7 @@ export const LibraryHeader = forwardRef(
         ref: Ref<HTMLDivElement>,
     ) => {
         const { t } = useTranslation();
+        const { blurExplicit } = useGeneralSettings();
         const [isImageError, setIsImageError] = useState<boolean | null>(false);
 
         const onImageError = () => {
@@ -105,6 +108,7 @@ export const LibraryHeader = forwardRef(
                     >
                         <BaseImage
                             alt="cover"
+                            explicit={blurExplicit && item.explicit === ExplicitStatus.EXPLICIT}
                             src={imageUrl}
                             style={{
                                 maxHeight: '100%',
@@ -117,7 +121,7 @@ export const LibraryHeader = forwardRef(
                 ),
                 fullScreen: true,
             });
-        }, [item.imageId, item.type]);
+        }, [blurExplicit, item.explicit, item.imageId, item.type]);
 
         return (
             <div className={clsx(styles.libraryHeader, containerClassName)} ref={ref}>
@@ -137,6 +141,7 @@ export const LibraryHeader = forwardRef(
                         <ItemImage
                             className={styles.image}
                             containerClassName={styles.image}
+                            explicit={item.explicit || null}
                             id={item.imageId}
                             itemType={item.type as LibraryItem}
                             onError={onImageError}

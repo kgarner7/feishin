@@ -215,6 +215,7 @@ export const AlbumDetailHeader = forwardRef<HTMLDivElement>((_props, ref) => {
             <LibraryHeader
                 item={{
                     children: headerItem,
+                    explicit: detailQuery?.data?.explicitStatus,
                     imageId: detailQuery?.data?.imageId,
                     imageUrl: detailQuery?.data?.imageUrl,
                     route: AppRoute.LIBRARY_ALBUMS,

@@ -116,7 +116,7 @@ import {
 } from 'react-icons/lu';
 import { MdOutlineVisibility, MdOutlineVisibilityOff } from 'react-icons/md';
 import { PiMouseLeftClickFill, PiMouseRightClickFill } from 'react-icons/pi';
-import { RiPlayListAddLine, RiRepeat2Line, RiRepeatOneLine } from 'react-icons/ri';
+import { RiHome6Fill, RiPlayListAddLine, RiRepeat2Line, RiRepeatOneLine } from 'react-icons/ri';
 import { SiMusicbrainz } from 'react-icons/si';
 
 import styles from './icon.module.css';
@@ -175,7 +175,7 @@ export const AppIcon = {
     folder: LuFolderOpen,
     genre: LuFlag,
     hash: LuHash,
-    home: LuSquareMenu,
+    home: RiHome6Fill,
     image: LuImage,
     info: LuInfo,
     itemAlbum: LuDisc3,

@@ -127,6 +127,7 @@ const DummyAlbumDetailRoute = () => {
                     <LibraryHeader
                         imageUrl={imageUrl}
                         item={{
+                            explicit: detailQuery?.data?.explicitStatus,
                             imageId: detailQuery?.data?.imageId,
                             imageUrl: detailQuery?.data?.imageUrl,
                             route: AppRoute.LIBRARY_SONGS,

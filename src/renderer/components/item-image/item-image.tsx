@@ -7,11 +7,12 @@ import {
     getServerById,
     useAuthStore,
     useCurrentServerId,
+    useGeneralSettings,
     useImageRes,
     useSettingsStore,
 } from '/@/renderer/store';
 import { BaseImage, ImageProps } from '/@/shared/components/image/image';
-import { LibraryItem } from '/@/shared/types/domain-types';
+import { ExplicitStatus, LibraryItem } from '/@/shared/types/domain-types';
 
 const getUnloaderIcon = (itemType: LibraryItem) => {
     switch (itemType) {
@@ -33,7 +34,8 @@ const getUnloaderIcon = (itemType: LibraryItem) => {
 };
 
 const BaseItemImage = (
-    props: Omit<ImageProps, 'id' | 'src'> & {
+    props: Omit<ImageProps, 'explicit' | 'id' | 'src'> & {
+        explicit: ExplicitStatus | null;
         id?: null | string;
         itemType: LibraryItem;
         serverId?: null | string;
@@ -41,7 +43,8 @@ const BaseItemImage = (
         type?: keyof z.infer<typeof GeneralSettingsSchema>['imageRes'];
     },
 ) => {
-    const { serverId, src, ...rest } = props;
+    const { blurExplicit } = useGeneralSettings();
+    const { explicit, serverId, src, ...rest } = props;
 
     const imageUrl = useItemImageUrl({
         id: props.id,
@@ -53,6 +56,7 @@ const BaseItemImage = (
 
     return (
         <BaseImage
+            explicit={blurExplicit && explicit === ExplicitStatus.EXPLICIT}
             src={imageUrl}
             unloaderIcon={getUnloaderIcon(props.itemType)}
             {...rest}

@@ -17,6 +17,7 @@ import {
     PlaylistSongListArgs,
     PlaylistSongListResponse,
     ServerListItemWithCredential,
+    Song,
     songListSortMap,
     sortOrderMap,
     tagListSortMap,
@@ -655,6 +656,26 @@ export const NavidromeController: InternalControllerEndpoint = {
     },
     getSimilarSongs: async (args) => {
         const { apiClientProps, query } = args;
+
+        const instantMixRes = await ndApiClient(apiClientProps).instantMix({
+            query: {
+                id: query.songId,
+            },
+        });
+
+        if (instantMixRes.status === 200 && instantMixRes.body) {
+            const similar = instantMixRes.body.data.reduce<Song[]>((acc, song) => {
+                if (song.id !== query.songId) {
+                    acc.push(ndNormalize.song(song, apiClientProps.server));
+                }
+
+                return acc;
+            }, []);
+
+            if (similar.length > 0) {
+                return similar;
+            }
+        }
 
         // Prefer getSimilarSongs (which queries last.fm) where available
         // otherwise find other tracks by the same album artist

@@ -10,6 +10,7 @@ import { AudioPlayer, PlayerOnProgressProps } from '/@/renderer/features/player/
 import { useRadioStore } from '/@/renderer/features/radio/hooks/use-radio-player';
 import { getMpvProperties } from '/@/renderer/features/settings/components/playback/mpv-properties';
 import {
+    useGeneralSettings,
     usePlaybackSettings,
     usePlayerActions,
     usePlayerStore,
@@ -60,6 +61,7 @@ export const MpvPlayerEngine = (props: MpvPlayerEngineProps) => {
     const mpvExtraParameters = useSettingsStore((store) => store.playback.mpvExtraParameters);
     const mpvProperties = useSettingsStore((store) => store.playback.mpvProperties);
     const [reloadTrigger, setReloadTrigger] = useState(0);
+    const { streamFile } = useGeneralSettings();
 
     useEffect(() => {
         const handleMpvReload = () => {
@@ -124,10 +126,10 @@ export const MpvPlayerEngine = (props: MpvPlayerEngineProps) => {
             if (!radioState.currentStreamUrl) {
                 const playerData = usePlayerStore.getState().getPlayerData();
                 const currentSongUrl = playerData.currentSong
-                    ? getSongUrl(playerData.currentSong, transcode)
+                    ? getSongUrl(playerData.currentSong, transcode, streamFile)
                     : undefined;
                 const nextSongUrl = playerData.nextSong
-                    ? getSongUrl(playerData.nextSong, transcode)
+                    ? getSongUrl(playerData.nextSong, transcode, streamFile)
                     : undefined;
 
                 if (currentSongUrl && nextSongUrl && !hasPopulatedQueueRef.current && mpvPlayer) {
@@ -275,7 +277,7 @@ export const MpvPlayerEngine = (props: MpvPlayerEngineProps) => {
                     return;
                 }
 
-                const nextSongUrl = song ? getSongUrl(song, transcode) : undefined;
+                const nextSongUrl = song ? getSongUrl(song, transcode, streamFile) : undefined;
                 mpvPlayer?.setQueueNext(nextSongUrl);
             },
             onPlayerPlay: () => {
@@ -283,7 +285,7 @@ export const MpvPlayerEngine = (props: MpvPlayerEngineProps) => {
             },
             onQueueCleared: () => {},
         },
-        [transcode],
+        [transcode, streamFile],
     );
 
     useImperativeHandle<MpvPlayerEngineHandle, MpvPlayerEngineHandle>(playerRef, () => ({
@@ -337,7 +339,7 @@ function handleMpvAutoNext(transcode: {
 }) {
     const playerData = usePlayerStore.getState().getPlayerData();
     const nextSongUrl = playerData.nextSong
-        ? getSongUrl(playerData.nextSong, transcode)
+        ? getSongUrl(playerData.nextSong, transcode, useSettingsStore.getState().general.streamFile)
         : undefined;
     mpvPlayer?.autoNext(nextSongUrl);
 }
@@ -354,12 +356,14 @@ function replaceMpvQueue(transcode: {
         return;
     }
 
+    const streamFile = useSettingsStore.getState().general.streamFile;
+
     const playerData = usePlayerStore.getState().getPlayerData();
     const currentSongUrl = playerData.currentSong
-        ? getSongUrl(playerData.currentSong, transcode)
+        ? getSongUrl(playerData.currentSong, transcode, streamFile)
         : undefined;
     const nextSongUrl = playerData.nextSong
-        ? getSongUrl(playerData.nextSong, transcode)
+        ? getSongUrl(playerData.nextSong, transcode, streamFile)
         : undefined;
     mpvPlayer?.setQueue(currentSongUrl, nextSongUrl, false);
 }

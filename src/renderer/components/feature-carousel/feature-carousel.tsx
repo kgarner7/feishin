@@ -119,6 +119,7 @@ const CarouselItem = ({ album }: CarouselItemProps) => {
                         <ItemImage
                             className={styles.albumImage}
                             containerClassName={styles.albumImageContainer}
+                            explicit={album.explicitStatus}
                             id={album.imageId}
                             itemType={LibraryItem.ALBUM}
                             src={imageUrl}

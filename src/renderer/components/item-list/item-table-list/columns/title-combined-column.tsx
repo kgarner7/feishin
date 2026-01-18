@@ -102,6 +102,7 @@ export const DefaultTitleCombinedColumn = (props: ItemTableListInnerColumn) => {
                 >
                     <ItemImage
                         containerClassName={styles.image}
+                        explicit={item?.explicitStatus ?? null}
                         id={item?.imageId}
                         itemType={item?._itemType}
                         src={item?.imageUrl}
@@ -237,6 +238,7 @@ export const QueueSongTitleCombinedColumn = (props: ItemTableListInnerColumn) =>
                 >
                     <ItemImage
                         containerClassName={styles.image}
+                        explicit={item?.explicitStatus ?? null}
                         id={item?.imageId}
                         itemType={item?._itemType}
                         serverId={item?._serverId}

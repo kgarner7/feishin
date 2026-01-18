@@ -1,7 +1,7 @@
 import { useMemo, useRef } from 'react';
 
 import { api } from '/@/renderer/api';
-import { TranscodingConfig } from '/@/renderer/store';
+import { TranscodingConfig, useGeneralSettings } from '/@/renderer/store';
 import { QueueSong } from '/@/shared/types/domain-types';
 
 export function useSongUrl(
@@ -10,6 +10,7 @@ export function useSongUrl(
     transcode: TranscodingConfig,
 ): string | undefined {
     const prior = useRef(['', '']);
+    const { streamFile } = useGeneralSettings();
 
     return useMemo(() => {
         if (song?._serverId) {
@@ -19,15 +20,18 @@ export function useSongUrl(
                 return prior.current[1];
             }
 
-            const url = api.controller.getStreamUrl({
-                apiClientProps: { serverId: song._serverId },
-                query: {
-                    bitrate: transcode.bitrate,
-                    format: transcode.format,
-                    id: song.id,
-                    transcode: transcode.enabled,
-                },
-            });
+            const url =
+                streamFile && song.path
+                    ? song.path
+                    : api.controller.getStreamUrl({
+                          apiClientProps: { serverId: song._serverId },
+                          query: {
+                              bitrate: transcode.bitrate,
+                              format: transcode.format,
+                              id: song.id,
+                              transcode: transcode.enabled,
+                          },
+                      });
 
             // transcoding enabled; save the updated result
             prior.current = [song._uniqueId, url];
@@ -40,22 +44,26 @@ export function useSongUrl(
     }, [
         song?._serverId,
         song?._uniqueId,
+        song?.path,
         song?.id,
         current,
+        streamFile,
         transcode.bitrate,
         transcode.format,
         transcode.enabled,
     ]);
 }
 
-export const getSongUrl = (song: QueueSong, transcode: TranscodingConfig) => {
-    return api.controller.getStreamUrl({
-        apiClientProps: { serverId: song._serverId },
-        query: {
-            bitrate: transcode.bitrate,
-            format: transcode.format,
-            id: song.id,
-            transcode: transcode.enabled,
-        },
-    });
+export const getSongUrl = (song: QueueSong, transcode: TranscodingConfig, local: boolean) => {
+    return local && song.path
+        ? song.path
+        : api.controller.getStreamUrl({
+              apiClientProps: { serverId: song._serverId },
+              query: {
+                  bitrate: transcode.bitrate,
+                  format: transcode.format,
+                  id: song.id,
+                  transcode: transcode.enabled,
+              },
+          });
 };

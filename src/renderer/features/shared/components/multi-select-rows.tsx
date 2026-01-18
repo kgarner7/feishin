@@ -49,6 +49,7 @@ export function ArtistMultiSelectRow({
         >
             <ItemImage
                 containerClassName={styles.rowImage}
+                explicit={null}
                 itemType={LibraryItem.ARTIST}
                 src={options[index].imageUrl}
                 type="table"

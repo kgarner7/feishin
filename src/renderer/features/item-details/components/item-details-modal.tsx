@@ -242,7 +242,14 @@ const AlbumArtistPropertyMapping: ItemDetailRow<AlbumArtist>[] = [
 
 const PlaylistPropertyMapping: ItemDetailRow<Playlist>[] = [
     { key: 'name', label: 'common.title' },
-    { key: 'description', label: 'common.description' },
+    {
+        key: 'description',
+        label: 'common.description',
+        render: (playlist) =>
+            playlist.description ? (
+                <Spoiler maxHeight={50}>{replaceURLWithHTMLLinks(playlist.description)}</Spoiler>
+            ) : null,
+    },
     { label: 'entity.genre_other', render: FormatGenre },
     {
         label: 'common.duration',
@@ -347,6 +354,10 @@ const SongPropertyMapping: ItemDetailRow<Song>[] = [
         render: (song) => (song.peak?.track !== undefined ? `${song.peak.track}` : null),
     },
     { label: 'filter.comment', render: formatComment },
+    {
+        label: 'Ignore scrobble',
+        render: (song) => (song.ignoreScrobble !== null ? BoolField(song.ignoreScrobble) : null),
+    },
     { key: 'id', label: 'filter.id' },
 ];
 

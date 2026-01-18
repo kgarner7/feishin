@@ -279,6 +279,7 @@ const normalizeSong = (
             songCount: null,
         })),
         id,
+        ignoreScrobble: item.ignoreScrobble || null,
         imageId: id,
         imageUrl: null,
         lastPlayedAt: normalizePlayDate(item),
@@ -288,7 +289,9 @@ const normalizeSong = (
         name: item.title,
         // Thankfully, Windows is merciful and allows a mix of separators. So, we can use the
         // POSIX separator here instead
-        path: item.path ? replacePathPrefix(item.path, pathReplace, pathReplaceWith) : null,
+        path: item.path
+            ? replacePathPrefix(item.libraryPath + item.path, pathReplace, pathReplaceWith)
+            : null,
         peak:
             item.rgAlbumPeak || item.rgTrackPeak
                 ? { album: item.rgAlbumPeak, track: item.rgTrackPeak }
@@ -437,6 +440,14 @@ const normalizeAlbumArtist = (
         songCount = item.songCount;
     }
 
+    let homepage: null | string;
+
+    if (!item.externalUrl || item.externalUrl.includes('last.fm')) {
+        homepage = null;
+    } else {
+        homepage = item.externalUrl;
+    }
+
     return {
         _itemType: LibraryItem.ALBUM_ARTIST,
         _serverId: server?.id || 'unknown',
@@ -455,6 +466,7 @@ const normalizeAlbumArtist = (
             name: genre.name,
             songCount: null,
         })),
+        homepage,
         id: item.id,
         imageId: item.id,
         imageUrl: imageUrl || null,

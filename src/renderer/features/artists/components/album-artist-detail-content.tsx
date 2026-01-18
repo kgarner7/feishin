@@ -450,6 +450,7 @@ const AlbumArtistMetadataTopSongs = ({
 interface AlbumArtistMetadataExternalLinksProps {
     artistName?: string;
     externalLinks: boolean;
+    homepage?: null | string;
     lastFM: boolean;
     mbzId?: null | string;
     musicBrainz: boolean;
@@ -458,6 +459,7 @@ interface AlbumArtistMetadataExternalLinksProps {
 const AlbumArtistMetadataExternalLinks = ({
     artistName,
     externalLinks,
+    homepage,
     lastFM,
     mbzId,
     musicBrainz,
@@ -474,6 +476,23 @@ const AlbumArtistMetadataExternalLinks = ({
                 })}
             </Text>
             <Group gap="sm">
+                {homepage && (
+                    <ActionIcon
+                        component="a"
+                        href={homepage}
+                        icon="home"
+                        iconProps={{
+                            fill: 'default',
+                            size: 'xl',
+                        }}
+                        rel="noopener noreferrer"
+                        target="_blank"
+                        tooltip={{
+                            label: t('action.openIn.home'),
+                        }}
+                        variant="subtle"
+                    />
+                )}
                 {lastFM && (
                     <ActionIcon
                         component="a"
@@ -541,6 +560,7 @@ const AlbumArtistMetadataSimilarArtists = ({
                 biography: null,
                 duration: null,
                 genres: [],
+                homepage: null,
                 id: relatedArtist.id,
                 imageId: relatedArtist.imageId,
                 imageUrl: relatedArtist.imageUrl,
@@ -692,6 +712,7 @@ export const AlbumArtistDetailContent = ({
                             <AlbumArtistMetadataExternalLinks
                                 artistName={detailQuery.data?.name}
                                 externalLinks={externalLinks}
+                                homepage={detailQuery.data?.homepage}
                                 lastFM={lastFM}
                                 mbzId={mbzId}
                                 musicBrainz={musicBrainz}

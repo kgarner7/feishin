@@ -601,6 +601,44 @@ export const ApplicationSettings = memo(() => {
             isHidden: false,
             title: t('setting.playerbarOpenDrawer', { postProcess: 'sentenceCase' }),
         },
+        {
+            control: (
+                <Switch
+                    aria-label={t('setting.blurExplicit', { postProcess: 'sentenceCase' })}
+                    defaultChecked={settings.blurExplicit}
+                    onChange={(e) => {
+                        setSettings({
+                            general: { ...settings, blurExplicit: e.currentTarget.checked },
+                        });
+                    }}
+                />
+            ),
+            description: t('setting.blurExplicit', {
+                context: 'description',
+                postProcess: 'sentenceCase',
+            }),
+            isHidden: false,
+            title: t('setting.blurExplicit', { postProcess: 'sentenceCase' }),
+        },
+        {
+            control: (
+                <Switch
+                    aria-label={t('setting.streamFile', { postProcess: 'sentenceCase' })}
+                    defaultChecked={settings.streamFile}
+                    onChange={(e) => {
+                        setSettings({
+                            general: { ...settings, streamFile: e.currentTarget.checked },
+                        });
+                    }}
+                />
+            ),
+            description: t('setting.streamFile', {
+                context: 'description',
+                postProcess: 'sentenceCase',
+            }),
+            isHidden: !isElectron(),
+            title: t('setting.streamFile', { postProcess: 'sentenceCase' }),
+        },
     ];
 
     return (

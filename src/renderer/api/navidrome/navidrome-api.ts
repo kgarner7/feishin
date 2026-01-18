@@ -167,6 +167,15 @@ export const contract = c.router({
             500: resultWithHeaders(ndType._response.error),
         },
     },
+    instantMix: {
+        method: 'GET',
+        path: 'instantMix',
+        query: ndType._parameters.instantMix,
+        responses: {
+            200: resultWithHeaders(ndType._response.songList),
+            500: resultWithHeaders(ndType._response.error),
+        },
+    },
     movePlaylistItem: {
         body: ndType._parameters.moveItem,
         method: 'PUT',

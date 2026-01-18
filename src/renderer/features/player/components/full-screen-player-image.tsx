@@ -7,7 +7,12 @@ import styles from './full-screen-player-image.module.css';
 
 import { useItemImageUrl } from '/@/renderer/components/item-image/item-image';
 import { AppRoute } from '/@/renderer/router/routes';
-import { useNativeAspectRatio, usePlayerData, usePlayerSong } from '/@/renderer/store';
+import {
+    useGeneralSettings,
+    useNativeAspectRatio,
+    usePlayerData,
+    usePlayerSong,
+} from '/@/renderer/store';
 import { Badge } from '/@/shared/components/badge/badge';
 import { Center } from '/@/shared/components/center/center';
 import { Flex } from '/@/shared/components/flex/flex';
@@ -16,7 +21,7 @@ import { Icon } from '/@/shared/components/icon/icon';
 import { Stack } from '/@/shared/components/stack/stack';
 import { Text } from '/@/shared/components/text/text';
 import { useSetState } from '/@/shared/hooks/use-set-state';
-import { LibraryItem } from '/@/shared/types/domain-types';
+import { ExplicitStatus, LibraryItem } from '/@/shared/types/domain-types';
 
 const imageVariants: Variants = {
     closed: {
@@ -45,8 +50,9 @@ const MotionImage = motion.img;
 
 const ImageWithPlaceholder = ({
     className,
+    explicit,
     ...props
-}: HTMLMotionProps<'img'> & { placeholder?: string }) => {
+}: HTMLMotionProps<'img'> & { explicit: boolean; placeholder?: string }) => {
     const nativeAspectRatio = useNativeAspectRatio();
 
     if (!props.src) {
@@ -66,7 +72,9 @@ const ImageWithPlaceholder = ({
 
     return (
         <MotionImage
-            className={clsx(styles.image, className)}
+            className={clsx(styles.image, className, {
+                [styles.explicit]: explicit,
+            })}
             style={{
                 objectFit: nativeAspectRatio ? 'contain' : 'cover',
                 width: nativeAspectRatio ? 'auto' : '100%',
@@ -81,6 +89,7 @@ export const FullScreenPlayerImage = () => {
 
     const currentSong = usePlayerSong();
     const { nextSong } = usePlayerData();
+    const { blurExplicit } = useGeneralSettings();
 
     const currentImageUrl = useItemImageUrl({
         id: currentSong?.imageId || undefined,
@@ -97,8 +106,10 @@ export const FullScreenPlayerImage = () => {
     });
 
     const [imageState, setImageState] = useSetState({
+        bottomExplicit: nextSong?.explicitStatus,
         bottomImage: nextImageUrl,
         current: 0,
+        topExplicit: currentSong?.explicitStatus,
         topImage: currentImageUrl,
     });
 
@@ -120,13 +131,23 @@ export const FullScreenPlayerImage = () => {
         const isTop = imageStateRef.current.current === 0;
 
         setImageState({
+            bottomExplicit: isTop ? currentSong?.explicitStatus : nextSong?.explicitStatus,
             bottomImage: isTop ? currentImageUrl : nextImageUrl,
             current: isTop ? 1 : 0,
+            topExplicit: isTop ? currentSong?.explicitStatus : nextSong?.explicitStatus,
             topImage: isTop ? nextImageUrl : currentImageUrl,
         });
 
         previousSongRef.current = currentSong?._uniqueId;
-    }, [currentSong?._uniqueId, currentImageUrl, nextSong?._uniqueId, nextImageUrl, setImageState]);
+    }, [
+        currentSong?._uniqueId,
+        currentImageUrl,
+        nextSong?._uniqueId,
+        nextImageUrl,
+        setImageState,
+        currentSong?.explicitStatus,
+        nextSong?.explicitStatus,
+    ]);
 
     return (
         <Flex
@@ -145,6 +166,9 @@ export const FullScreenPlayerImage = () => {
                             custom={{ isOpen: imageState.current === 0 }}
                             draggable={false}
                             exit="closed"
+                            explicit={
+                                blurExplicit && imageState.topExplicit === ExplicitStatus.EXPLICIT
+                            }
                             initial="closed"
                             key={`top-${currentSong?._uniqueId || 'none'}`}
                             placeholder="var(--theme-colors-foreground-muted)"
@@ -160,6 +184,10 @@ export const FullScreenPlayerImage = () => {
                             custom={{ isOpen: imageState.current === 1 }}
                             draggable={false}
                             exit="closed"
+                            explicit={
+                                blurExplicit &&
+                                imageState.bottomExplicit === ExplicitStatus.EXPLICIT
+                            }
                             initial="closed"
                             key={`bottom-${currentSong?._uniqueId || 'none'}`}
                             placeholder="var(--theme-colors-foreground-muted)"

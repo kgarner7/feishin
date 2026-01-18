@@ -121,6 +121,7 @@ export const LeftControls = () => {
                                             styles.playerbarImage,
                                             PlaybackSelectors.playerCoverArt,
                                         )}
+                                        explicit={currentSong?.explicitStatus || null}
                                         id={currentSong?.imageId}
                                         itemType={LibraryItem.SONG}
                                         loading="eager"

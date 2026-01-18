@@ -38,6 +38,7 @@ import {
     Album,
     AlbumArtist,
     Artist,
+    ExplicitStatus,
     LibraryItem,
     Playlist,
     Song,
@@ -147,6 +148,20 @@ export interface ItemCardDerivativeProps extends Omit<ItemCardProps, 'type'> {
     rows: DataRow[];
     showRating: boolean;
 }
+
+const getExplicitStatus = (
+    data: Album | AlbumArtist | Artist | Playlist | Song | undefined,
+): ExplicitStatus | null => {
+    if (!data) return null;
+
+    switch (data._itemType) {
+        case LibraryItem.ALBUM:
+        case LibraryItem.SONG:
+            return data.explicitStatus;
+        default:
+            return null;
+    }
+};
 
 const CompactItemCard = ({
     controls,
@@ -333,6 +348,7 @@ const CompactItemCard = ({
                     className={clsx(styles.image, {
                         [styles.isRound]: isRound,
                     })}
+                    explicit={getExplicitStatus(data)}
                     id={data?.imageId}
                     itemType={itemType}
                     src={(data as Album | AlbumArtist | Playlist | Song)?.imageUrl}
@@ -553,6 +569,7 @@ const DefaultItemCard = ({
             <>
                 <ItemImage
                     className={clsx(styles.image, { [styles.isRound]: isRound })}
+                    explicit={getExplicitStatus(data)}
                     id={data?.imageId}
                     itemType={itemType}
                     src={(data as Album | AlbumArtist | Playlist | Song)?.imageUrl}
@@ -835,6 +852,7 @@ const PosterItemCard = ({
             <>
                 <ItemImage
                     className={clsx(styles.image, { [styles.isRound]: isRound })}
+                    explicit={getExplicitStatus(data)}
                     id={(data as { imageId: string })?.imageId}
                     itemType={itemType}
                     src={(data as { imageUrl: string })?.imageUrl}

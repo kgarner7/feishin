@@ -556,6 +556,7 @@ const PlaylistTableItem = memo(
                     <Grid.Col span="content">
                         <Flex align="center" justify="center" px="sm">
                             <ItemImage
+                                explicit={null}
                                 id={item.imageId}
                                 imageContainerProps={{
                                     className: styles.imageContainer,

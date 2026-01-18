@@ -18,6 +18,7 @@ import { useInViewport } from '/@/shared/hooks/use-in-viewport';
 export interface ImageProps extends Omit<ImgHTMLAttributes<HTMLImageElement>, 'src'> {
     containerClassName?: string;
     enableAnimation?: boolean;
+    explicit: boolean;
     imageContainerProps?: Omit<ImageContainerProps, 'children'>;
     includeLoader?: boolean;
     includeUnloader?: boolean;
@@ -47,6 +48,7 @@ export function BaseImage({
     className,
     containerClassName,
     enableAnimation = false,
+    explicit,
     imageContainerProps,
     includeLoader = true,
     includeUnloader = true,
@@ -67,6 +69,7 @@ export function BaseImage({
                 <Img
                     className={clsx(styles.image, className, {
                         [styles.animated]: enableAnimation,
+                        [styles.explicit]: explicit,
                     })}
                     decoding="async"
                     fetchPriority="high"

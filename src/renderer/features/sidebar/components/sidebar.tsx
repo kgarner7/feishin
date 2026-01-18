@@ -20,6 +20,7 @@ import {
     useAppStore,
     useAppStoreActions,
     useFullScreenPlayerStore,
+    useGeneralSettings,
     usePlayerSong,
     useSetFullScreenPlayerStore,
 } from '/@/renderer/store';
@@ -36,7 +37,7 @@ import { ImageUnloader } from '/@/shared/components/image/image';
 import { ScrollArea } from '/@/shared/components/scroll-area/scroll-area';
 import { Text } from '/@/shared/components/text/text';
 import { Tooltip } from '/@/shared/components/tooltip/tooltip';
-import { LibraryItem } from '/@/shared/types/domain-types';
+import { ExplicitStatus, LibraryItem } from '/@/shared/types/domain-types';
 import { Platform } from '/@/shared/types/types';
 
 export const Sidebar = () => {
@@ -152,6 +153,7 @@ const SidebarImage = () => {
     const leftWidth = useAppStore((state) => state.sidebar.leftWidth);
     const { setSideBar } = useAppStoreActions();
     const currentSong = usePlayerSong();
+    const { blurExplicit } = useGeneralSettings();
 
     const imageUrl = useItemImageUrl({
         id: currentSong?.imageId || undefined,
@@ -206,7 +208,15 @@ const SidebarImage = () => {
                 })}
             >
                 {imageUrl ? (
-                    <img className={styles.sidebarImage} loading="eager" src={imageUrl} />
+                    <img
+                        className={clsx(styles.sidebarImage, {
+                            [styles.explicit]:
+                                blurExplicit &&
+                                currentSong?.explicitStatus === ExplicitStatus.EXPLICIT,
+                        })}
+                        loading="eager"
+                        src={imageUrl}
+                    />
                 ) : (
                     <ImageUnloader icon="emptySongImage" />
                 )}

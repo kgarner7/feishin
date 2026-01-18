@@ -208,6 +208,7 @@ export type AlbumArtist = {
     biography: null | string;
     duration: null | number;
     genres: Genre[];
+    homepage: null | string;
     id: string;
     imageId: null | string;
     imageUrl: null | string;
@@ -375,6 +376,7 @@ export type Song = {
     gain: GainInfo | null;
     genres: Genre[];
     id: string;
+    ignoreScrobble: boolean | null;
     imageId: null | string;
     imageUrl: null | string;
     lastPlayedAt: null | string;

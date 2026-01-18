@@ -532,6 +532,7 @@ const song = z.object({
     genres: z.array(genre).nullable(),
     hasCoverArt: z.boolean(),
     id: z.string(),
+    ignoreScrobble: z.boolean().optional(),
     imageFiles: z.string().optional(),
     largeImageUrl: z.string().optional(),
     libraryPath: z.string().optional(),
@@ -713,6 +714,11 @@ const queue = z.object({
     userId: z.string(),
 });
 
+const instantMixParameters = z.object({
+    count: z.number().max(50).optional(),
+    id: z.string(),
+});
+
 export const ndType = {
     _enum: {
         albumArtistList: NDAlbumArtistListSort,
@@ -730,6 +736,7 @@ export const ndType = {
         authenticate: authenticateParameters,
         createPlaylist: createPlaylistParameters,
         genreList: genreListParameters,
+        instantMix: instantMixParameters,
         moveItem: moveItemParameters,
         playlistList: playlistListParameters,
         removeFromPlaylist: removeFromPlaylistParameters,

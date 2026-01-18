@@ -20,6 +20,10 @@
     animation: fade-in 0.2s ease-in;
 }
 
+.image.explicit {
+    filter: blur(16px);
+}
+
 .loader {
     width: 100%;
     height: 100%;

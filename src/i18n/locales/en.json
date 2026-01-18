@@ -35,6 +35,7 @@
         "viewMore": "view more",
         "openApplicationDirectory": "open application directory",
         "openIn": {
+            "home": "Open in homepage",
             "lastfm": "Open in Last.fm",
             "musicbrainz": "Open in MusicBrainz"
         }
@@ -713,6 +714,8 @@
         "audioExclusiveMode": "audio exclusive mode",
         "audioPlayer_description": "select the audio player to use for playback",
         "audioPlayer": "audio player",
+        "blurExplicit": "Blur explicit albums/tracks",
+        "blurExplicit_description": "blur explicit album/track images if set",
         "buttonSize_description": "the size of the player bar buttons",
         "buttonSize": "player bar button size",
         "clearCache_description": "a 'hard clear' of feishin. in addition to clearing feishin's cache, empty the browser cache (saved images and other assets). server credentials and settings are preserved",
@@ -1012,7 +1015,9 @@
         "queryBuilderCustomFields_inputLabel": "label",
         "queryBuilderCustomFields_inputTag": "tag",
         "queryBuilderCustomFields": "custom fields",
-        "queryBuilderCustomFields_description": "add custom fields to use in query builders"
+        "queryBuilderCustomFields_description": "add custom fields to use in query builders",
+        "streamFile": "stream file from filesystem directly",
+        "streamFile_description": "if enabled, play the music directly from the local filesystem. only works for MPV (properly)"
     },
     "table": {
         "column": {
